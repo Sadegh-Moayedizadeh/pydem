@@ -12,6 +12,7 @@ Classes
     Wall: the class to creat walls as boundaries to the model
 """
 
+from collections import defaultdict
 from typing import Tuple
 from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
@@ -440,8 +441,26 @@ class Container(object):
     
     W, L = 0, 0
     
-    def __init__(self, length, width, particle_info):
-        pass
+    def __init__(
+        self,
+        length: float,
+        width: float,
+        particles_info: dict(dict),
+        ) -> None:
+        # docs here
+        self.length = length
+        self.width = width
+        self.particle_info = particles_info
+        # validate the particle_info dictionary
+        self.number_of_groups = len(particles_info.keys())
+        self.contacts = defaultdict(list)
+        self.particles = []
+        self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
+        self.bx = [dict() for i in range(self.number_of_groups)]
+        self.box_width = []
+        self.cob_length = []
+        self.W = 0
+        self.L = 0
     
     def generate(self):
         pass
