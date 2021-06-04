@@ -10,30 +10,40 @@ from pydem.geometry import two_dimensional_entities as shapes
 
 def determine_types(*args, **kwargs):
     """determining the type of arguments passed
-    
+
     Returns:
         a tuple containing the types of the passed arguments
     """
-    return tuple([type(item) for item in args] + [type(item) for item in kwargs.values()])
+    return tuple(
+        [type(item) for item in args] + [type(item) for item in kwargs.values()]
+    )
+
+
 func_table = defaultdict(dict)
+
+
 def overload(*types: type):
     """defineing an overload decorator to be able to use functions with
     the same name for different types of arguments
-    
+
     Args:
         *types (type): types of the input arguments expected for the
             decorated function
     Returns:
         the suitable function due to the given types
     """
+
     def wrapper(func):
         named_func = func_table[func.__name__]
         named_func[types] = func
+
         def call_func(*args: Any, **kwargs: Any):
             tps = determine_types(*args, **kwargs)
             f = named_func[tps]
             return f(*args, **kwargs)
+
         return call_func
+
     return wrapper
 
 

@@ -13,11 +13,11 @@ Classes
 """
 
 from typing import Tuple
-from .exceptions import SizeOutOfBound
+from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
 from geometry import two_dimensional_entities as shapes
 
-class Particle(object, metaclass = Restrictions):
+class Particle(object):
     """Base class to create soil particles
     
     Methods
@@ -80,6 +80,7 @@ class Particle(object, metaclass = Restrictions):
         Returns:
             float: the mass of the particle in Newtons
         """
+
         return (self.shape.area) * (self.density)
     
     @property
@@ -100,6 +101,20 @@ class Particle(object, metaclass = Restrictions):
         """
         
         return int(self.x / box_length) + int(self.y / box_width) * (nc)
+    
+    def move(self, delta_x: float, delta_y: float, delta_theta: float) -> None:
+        """relocate the particle with the given displacements
+
+        Args:
+            delta_x (float): displacement in the x coordinate
+            delta_y (float): displacement in the y coordinate
+            delta_theta (float): angle of rotation in radians
+        """
+        
+        self.x += delta_x
+        self.y += delta_y
+        self.inclination += delta_theta
+        # also need to move the geometrical representation of the particle
 
 
 class Clay(Particle):
@@ -140,12 +155,29 @@ class Clay(Particle):
         
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
-        self.shape = shapes.Rectangle(self.length, self.thickness)
+        self.midpoint = shapes.Point(self.x, self.y)
+        self.midline = shapes.LineSegment.from_point_and_inclination(self.midpoint, self.inclination, self.length)
+        self.shape = shapes.Rectangle.from_midline(self.midline, self.thickness)
+        self.segments = None
         super().__init__(*args, *kwargs)
     
     def segmentalize(self) -> None:
         """segmentalize the coresponding clay particles"""
-        pass
+        
+        particle_number = self.num
+        size = self.length/3
+        res = []
+        for i, midpoint in enumerate(self.midline.navigator(0.166)):
+            if i % 2 == 1:
+                attrs = self.__dict__
+                attrs['x'] = midpoint.x
+                attrs['y'] = midpoint.y
+                attrs['length'] = size
+                name = f'Particle {particle_number}-{i%2}'
+                new_particle = type(name, self.__bases__, attrs)
+                new_particle.num = particle_number
+                res.append(new_particle)
+        self.segments = res
 
 
 class Sand(Particle):
@@ -171,7 +203,8 @@ class Sand(Particle):
                 is outside the bounds specified as the class private
                 attributes
         """
-        
+
+        super().__init__(*args, *kwargs)        
         if kwargs['diameter'] < self.diameter_bounds[0]:
             raise SizeOutOfBound('the given diameter is lower than expected')
         elif kwargs['diameter'] > self.diameter_bounds[1]:
@@ -180,8 +213,7 @@ class Sand(Particle):
         self.diameter = kwargs.pop('diameter')
         x, y = kwargs['x'], kwargs['y']
         self.shape = shapes.Circle(x, y, self.diameter)
-        super().__init__(*args, *kwargs)
-
+# shift the super up everywhere
 
 class Kaolinite(Clay):
     """Class to create montmorillonite particels
@@ -330,7 +362,7 @@ class Montmorillonite(Clay):
         formula (str): general formula for montmorillonite particles
     """
     
-    length_bounds: Tuple(int, int) = (80, 220)
+    length_bounds: Tuple[int, int] = (80, 220)
     width_bounds: Tuple(int, int) = (1, 3)
     cec: float = 100
     ssa: float = 800
@@ -364,5 +396,63 @@ class Illite(Clay):
     pass
 
 
-class Wall(object):
-    pass
+class Wall(Particle):
+    """create walls to be used is boundaries of the model
+
+    Parents:
+        Particle: the base class upon which to build all the
+            particles in the model
+    """
+
+    density: float = 0    
+    stiffness: float = 0
+    
+    def __init__(self, *args, **kwargs):
+        """initializing the Wall instance
+        
+        Args:
+            x (float): x coordinate of the particle in nanometers
+            y (float): y coordinate of the particle in nanometers
+            inclination (float): the inclination of the particle in 
+                radians, ranges from '0' to '2*pi'
+            velocity (Tuple, optional): the velocity of the particle in 
+                respect to x coordinate, and y coordinate in nanometers
+                per second, and the rotational velocity in radians per
+                second respectively. Defaults to (0, 0, 0).
+            force (Tuple, optional): forces acting on the particle,
+                with the first two elements being the force in x axis
+                and the force in y axis respectively in Newtons, and
+                the third element being the moment acting on the
+                particle in Newton-metre. Defaults to (0, 0, 0).
+            num (int): number of the particle
+            is_fixed (bool): specifying if the wall is fixed or is able
+                to relocate
+        """
+        
+        self.is_fixed = kwargs.pop('is_fixed')
+        super().__init__(*args, **kwargs)
+        
+
+class Container(object):
+    """create the container in which the simulation for different tests
+    takes place
+    """
+    
+    W, L = 0, 0
+    
+    def __init__(self, length, width, particle_info):
+        pass
+    
+    def generate(self):
+        pass
+    
+    def _box(self):
+        pass
+    
+    def _add_particle(self):
+        pass
+    
+    def _fixup(self):
+        pass
+    
+    
