@@ -461,7 +461,7 @@ class Container(object):
         self.width = width
         if not self._validate_info(particles_info):
             raise RuntimeError('invalid input as particles_info')
-        particles_info = {k : v for k, v in sorted(particles_info.items(), key = lambda x: x[1]['size_upper_bound'])}
+        particles_info = sorted(particles_info, key = lambda x: x['size_upper_bound'], reverse = True)
         self.particles_info = particles_info
         self.number_of_groups = len(particles_info.keys())
         self.contacts = defaultdict(list)
@@ -533,39 +533,66 @@ class Container(object):
         return width, length
     
     def generate(self):
-        # docs here
+        """generating the list of particles in place with the given
+        particles_info array to the Container class
+        """
         
         total_quantity = sum(d['quantity'] for d in self.particles_info)
-        hierarchy = len(self.particles_info) - 1
+        index = 0
         while len(self.particles) < total_quantity:
-            group_num = len(self.particles_info) - hierarchy - 1
-            n0 = len(self.particles)
-            self._add_particle()
-            if (len(self.particles) == sum(info['quantity'][:group_num])+info['quantity'][group_num] and len(self.particles) == n0 + 1:
-                hierarchy -= 1
+            self._add_particle(index)
+            if len(self.particles) == sum(self.particles_info[i]['quantity'] for i in range(index + 1)):
+                index += 1
     
     def _add_particle(self, index):
-        # docs here
+        """private method to add one new particle to the self.particles
+        array
+
+        Args:
+            index (int): the index which points to the appropriate set
+                of particles in the self.particles_info array
+
+        Raises:
+            RuntimeError: raises when the container is too dense and
+                generation of a new particle sounds impossible
+        """
         
         particle_type = self.type_reference(self.particles_info[index]['type'])
-        new_particle = particle_type(
-            x = random.uniform(0, self.length),
-            y = random.uniform(0, self.width),
-            length = random.uniform(
-                self.particles_info[index]['size_lower_bound'],
-                self.particles_info[index]['size_upper_bound'],
-                ),
-            inclination = random.uniform(0, 2*np.pi)
-        )
+        trials = 0
+        while True:
+            if trials > 50:
+                raise RuntimeError('the container is too dense')
+            new_particle = particle_type(
+                x = random.uniform(0, self.length),
+                y = random.uniform(0, self.width),
+                length = random.uniform(
+                    self.particles_info[index]['size_lower_bound'],
+                    self.particles_info[index]['size_upper_bound'],
+                    ),
+                inclination = random.uniform(0, 2*np.pi)
+            )
+            if self._single_particle_contact_check(new_particle):
+                del new_particle
+                trials += 1
+            else:
+                self.particles.append(new_particle)
+                # update self.boxes and self.correspond_boxes
+                break
+    
+    def _single_particle_contact_check(self, particle):
+        # docs here
+
+        # check contact with particles in the boxes in touch with the given particle
+        return False
         
-    
-        contacts, b, bx = contact.mechanical(len(particles)-1, box_length, box_width, nr, nc,
-        hierarchy, particles, b, bx, contacts)
-    
-        return fixup(particles, contacts, b, bx, hierarchy)
-    
-    def _fixup(self):
+    def update_contact_list(self):
+        # docs here
+        
+        # recreate the self.contacts array
         pass
     
-    
-    
+    def touching_boxes(self):
+        # docs here
+        
+        # find the boxes that the given particle touches
+        pass
