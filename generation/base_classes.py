@@ -12,6 +12,8 @@ Classes
     Wall: the class to creat walls as boundaries to the model
 """
 
+import random
+import numpy as np
 from collections import defaultdict
 from typing import Tuple
 from generation.exceptions import SizeOutOfBound
@@ -58,17 +60,14 @@ class Particle(object):
         
         self.x = x
         self.y = y
-        self.size = size
         self.inclination = inclination
         self.velocity = velocity
         self.force = force
-        self.num = num
+        self.num = self.last_num
 
     def __new__(cls, name, bases, attrs):
-        attrs['num'] = cls.last_num
         cls.last_num += 1
-        instance = super().__new__(cls, name, bases, attrs)
-        return instance
+        super().__new__(cls, name, bases, attrs)
     
     def __del__(self):
         self.last_num -= 1
@@ -163,7 +162,9 @@ class Clay(Particle):
         super().__init__(*args, *kwargs)
     
     def segmentalize(self) -> None:
-        """segmentalize the coresponding clay particles"""
+        """segmentalize the coresponding clay particles into 3 equal
+        segments
+        """
         
         particle_number = self.num
         size = self.length/3
@@ -178,6 +179,7 @@ class Clay(Particle):
                 new_particle = type(name, self.__bases__, attrs)
                 new_particle.num = particle_number
                 res.append(new_particle)
+        self.last_num -= 3
         self.segments = res
 
 
@@ -206,12 +208,12 @@ class Sand(Particle):
         """
 
         super().__init__(*args, *kwargs)        
-        if kwargs['diameter'] < self.diameter_bounds[0]:
+        if kwargs['length'] < self.diameter_bounds[0]:
             raise SizeOutOfBound('the given diameter is lower than expected')
-        elif kwargs['diameter'] > self.diameter_bounds[1]:
+        elif kwargs['length'] > self.diameter_bounds[1]:
             raise SizeOutOfBound('the given diameter is higher than expected')
         
-        self.diameter = kwargs.pop('diameter')
+        self.diameter = kwargs.pop('length')
         x, y = kwargs['x'], kwargs['y']
         self.shape = shapes.Circle(x, y, self.diameter)
 # shift the super up everywhere
@@ -277,6 +279,7 @@ class Kaolinite(Clay):
                 class private attributes
         """
         
+        kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
 
 
@@ -312,7 +315,7 @@ class Quartz(Sand):
         """initialize the montmorillonite particle
 
         Args:
-            diameter (float): the diameter of the sand particle
+            length (float): the diameter of the sand particle
             x (float): x coordinate of the particle in nanometers
             y (float): y coordinate of the particle in nanometers
             inclination (float): the inclination of the particle in 
@@ -390,6 +393,7 @@ class Montmorillonite(Clay):
                 class private attributes
         """
         
+        kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
 
 
@@ -439,39 +443,129 @@ class Container(object):
     takes place
     """
     
-    W, L = 0, 0
+    type_reference = {
+        'kaolinite' : Kaolinite,
+        'montmorillonite' : Montmorillonite,
+        'illite' : Illite,
+        'quartz' : Quartz,
+        }
     
     def __init__(
         self,
         length: float,
         width: float,
-        particles_info: dict(dict),
+        particles_info: list(dict),
         ) -> None:
         # docs here
         self.length = length
         self.width = width
-        self.particle_info = particles_info
-        # validate the particle_info dictionary
+        if not self._validate_info(particles_info):
+            raise RuntimeError('invalid input as particles_info')
+        particles_info = {k : v for k, v in sorted(particles_info.items(), key = lambda x: x[1]['size_upper_bound'])}
+        self.particles_info = particles_info
         self.number_of_groups = len(particles_info.keys())
         self.contacts = defaultdict(list)
         self.particles = []
         self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
-        self.bx = [dict() for i in range(self.number_of_groups)]
-        self.box_width = []
-        self.cob_length = []
-        self.W = 0
-        self.L = 0
+        self.correspond_boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
+        self.box_width, self.box_length = self._make_boxes()
+    
+    def _validate_info(self, info: list(dict)) -> bool:
+        """validate the array passed in as the particles info
+
+        Args:
+            info (list): the particles_info array passed in when
+                instantiating
+        
+        Returns:
+            (bool): True or False indicating the validity of the passed
+                in particles_info array
+        """
+        
+        essential_attributes = ['type', 'size_upper_bound',
+                                'size_lower_bound', 'quantity',]
+        valid_types = list(self.type_reference.keys())
+        if not isinstance(info, list):
+            return False
+        for d in info:
+            if not isinstance(d, dict):
+                return False
+            for att in essential_attributes:
+                if not att in d.keys():
+                    return False
+            if not d['type'] in valid_types:
+                return False
+            if d['size_lower_bound'] > d['size_upper_bound']:
+                return False
+            if d['size_lower_bound'] < 0 or d['size_upper_bound'] < 0 or d['quantity'] < 0:
+                return False
+        return True
+    
+    def _make_boxes(self) -> list:
+        """calculate the width and length for the boxes corresponding
+        to each particle size range (a.k.a hierarchy)
+
+        Returns:
+            list: list containing appropriate width and length for
+                boxes in each particle size range
+        """
+        
+        length, width = [], []
+        for i, d in enumerate(self.particles_info):
+            if i == 0:
+                length.append(d['size_upper_bound'])
+                width.append(d['size_upper_bound'])
+                while (self.width % width[-1] != 0):
+                    width[-1] += 1
+                while (self.lenght % length != 0):
+                    length[-1] += 1
+            else:
+                width.append(width[-1] * (d['size_upper_bound'] // width[-1]
+                                          + ((d['size_upper_bound'] / width[-1]) % 1 != 0)))
+                nr = self.width / width[-2]
+                while nr % (width[-1] / width[-2]) != 0:
+                    width[-1] += width[-2]
+                length.append(length[-1] * (d['size_upper_bound'] // length[-1]
+                                          + ((d['size_upper_bound'] / length[-1]) % 1 != 0)))
+                nr = self.length / length[-2]
+                while nr % (length[-1] / length[-2]) != 0:
+                    length[-1] += length[-2]
+        return width, length
     
     def generate(self):
-        pass
+        # docs here
+        
+        total_quantity = sum(d['quantity'] for d in self.particles_info)
+        hierarchy = len(self.particles_info) - 1
+        while len(self.particles) < total_quantity:
+            group_num = len(self.particles_info) - hierarchy - 1
+            n0 = len(self.particles)
+            self._add_particle()
+            if (len(self.particles) == sum(info['quantity'][:group_num])+info['quantity'][group_num] and len(self.particles) == n0 + 1:
+                hierarchy -= 1
     
-    def _box(self):
-        pass
+    def _add_particle(self, index):
+        # docs here
+        
+        particle_type = self.type_reference(self.particles_info[index]['type'])
+        new_particle = particle_type(
+            x = random.uniform(0, self.length),
+            y = random.uniform(0, self.width),
+            length = random.uniform(
+                self.particles_info[index]['size_lower_bound'],
+                self.particles_info[index]['size_upper_bound'],
+                ),
+            inclination = random.uniform(0, 2*np.pi)
+        )
+        
     
-    def _add_particle(self):
-        pass
+        contacts, b, bx = contact.mechanical(len(particles)-1, box_length, box_width, nr, nc,
+        hierarchy, particles, b, bx, contacts)
+    
+        return fixup(particles, contacts, b, bx, hierarchy)
     
     def _fixup(self):
         pass
+    
     
     
