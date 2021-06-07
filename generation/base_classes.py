@@ -19,6 +19,7 @@ from typing import Tuple
 from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
 from geometry import two_dimensional_entities as shapes
+from geometry import two_dimentional_operations as operations
 
 class Particle(object):
     """Base class to create soil particles
@@ -469,6 +470,8 @@ class Container(object):
         self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.correspond_boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.box_width, self.box_length = self._make_boxes()
+        self.nr = [self.width // w for w in self.box_width]
+        self.nc = [self.length // l for l in self.box_length]
     
     def _validate_info(self, info: list(dict)) -> bool:
         """validate the array passed in as the particles info
@@ -591,8 +594,198 @@ class Container(object):
         # recreate the self.contacts array
         pass
     
-    def touching_boxes(self):
-        # docs here
+    def touching_boxes(self, particle, index: int) -> list:
+        """finds the boxes in touch with the given particle in the
+        specified size hierarchy
+
+        Args:
+            particle (Particle): the particle for which to calculate
+                the boxes in contact with            
+            index (int): the size hieratchy
+
+        Returns:
+            list: an array containing the number of boxes in touch
+                with the given particle in the specified hierarchy
+        """
         
-        # find the boxes that the given particle touches
-        pass
+        res = []
+        row = particle.nb // self.nc[index]
+        column = particle.nb % self.nr[index]
+        
+        # lower box
+        if row > 0:
+            corner1 = shapes.Point(
+                (column * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb - self.nc[index])
+
+        # upper box
+        if row < (self.nr[index] - 1):
+            corner1 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row + 2) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                (column * self.box_length[index]), 
+                ((row + 2) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb + self.nc[index])
+
+        # left box
+        if column > 0:
+            corner1 = shapes.Point(
+                ((column - 1) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                (column * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column - 1) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb - 1)
+
+        # right box
+        if column < (self.nc[index] - 1):
+            corner1 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb + 1)
+
+        # upper left box
+        if row < (self.nr[index] - 1) and column > 0:
+            corner1 = shapes.Point(
+                ((column - 1) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row + 2) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column  - 1) * self.box_length[index]),
+                ((row + 2) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb + self.nc[index] - 1)
+
+        # upper right box
+        if row < (self.nr[index] - 1) and column < (self.nc[index] - 1):
+            corner1 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                ((row + 1) * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                ((row + 2) * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row + 2) * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb + self.nc[index] + 1)
+
+        # lower left box
+        if column > 0 and row > 0:
+            corner1 = shapes.Point(
+                ((column - 1) * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                (column * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                (column * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column - 1) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb - self.nc[index] - 1)
+
+        # lower right box
+        if row > 0 and column < (self.nc[index] - 1):
+            corner1 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            corner2 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                ((row - 1) * self.box_width[index])
+                )
+            corner3 = shapes.Point(
+                ((column + 2) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            corner4 = shapes.Point(
+                ((column + 1) * self.box_length[index]),
+                (row * self.box_width[index])
+                )
+            box = shapes.Rectangle(corner1, corner2, corner3, corner4)
+            if operations.intersection(particle.shape, box):
+                res.append(particle.nb - self.nc[index] + 1)
+
+        return res
