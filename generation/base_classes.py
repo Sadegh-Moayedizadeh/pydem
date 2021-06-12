@@ -12,6 +12,7 @@ Classes
     Wall: the class to creat walls as boundaries to the model
 """
 
+import multiprocessing
 import random
 import numpy as np
 from collections import defaultdict
@@ -36,6 +37,7 @@ class Particle(object):
         x: float,
         y: float,
         inclination: float,
+        hierarchy: int,
         velocity: Tuple(float, float, float) = (0, 0, 0),
         force: Tuple(float, float, float) = (0, 0, 0),
         num: int = 0,
@@ -57,6 +59,9 @@ class Particle(object):
                 the third element being the moment acting on the
                 particle in Newton-metre. Defaults to (0, 0, 0).
             num (int): number of the particle
+            hierarchy (int): the hierarchy of particle in the container
+                due to its size in comparison to the size of other
+                particles
         """
         
         self.x = x
@@ -65,6 +70,7 @@ class Particle(object):
         self.velocity = velocity
         self.force = force
         self.num = self.last_num
+        self.hierarchy = hierarchy
 
     def __new__(cls, name, bases, attrs):
         cls.last_num += 1
@@ -464,11 +470,10 @@ class Container(object):
             raise RuntimeError('invalid input as particles_info')
         particles_info = sorted(particles_info, key = lambda x: x['size_upper_bound'], reverse = True)
         self.particles_info = particles_info
-        self.number_of_groups = len(particles_info.keys())
-        self.contacts = defaultdict(list)
+        self.number_of_groups = len(particles_info)
+        self.contacts = defaultdict(set)
         self.particles = []
         self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
-        self.correspond_boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.box_width, self.box_length = self._make_boxes()
         self.nr = [self.width // w for w in self.box_width]
         self.nc = [self.length // l for l in self.box_length]
@@ -547,7 +552,7 @@ class Container(object):
             if len(self.particles) == sum(self.particles_info[i]['quantity'] for i in range(index + 1)):
                 index += 1
     
-    def _add_particle(self, index):
+    def _add_particle(self, index: int) -> None:
         """private method to add one new particle to the self.particles
         array
 
@@ -572,29 +577,59 @@ class Container(object):
                     self.particles_info[index]['size_lower_bound'],
                     self.particles_info[index]['size_upper_bound'],
                     ),
-                inclination = random.uniform(0, 2*np.pi)
+                inclination = random.uniform(0, 2*np.pi),
+                hierarchy = index
             )
             if self._single_particle_contact_check(new_particle):
                 del new_particle
                 trials += 1
             else:
                 self.particles.append(new_particle)
-                # update self.boxes and self.correspond_boxes
+                for index in range(new_particle.hierarchy, self.number_of_groups):
+                    for box in self.touching_boxes(new_particle, index):
+                        self.boxes[index][box].append(new_particle)
                 break
     
-    def _single_particle_contact_check(self, particle):
-        # docs here
+    def _single_particle_contact_check(self, particle, generation_phase: bool = True) -> bool:
+        """checking if the given particle is in contact with any other
+            particle
 
-        # check contact with particles in the boxes in touch with the given particle
+        Args:
+            particle: the given particle to check if it's in contact
+                with any other particle
+            generation_phase (bool): specifying if the container is in
+                the generation phase or not
+
+        Returns:
+            bool: True of False indicating the contacting situation of
+                the given particle
+        """
+
+        for box in self.touching_boxes(particle, particle.hierarchy):
+            for particle2 in self.boxes[particle.hierarchy][box]:
+                contact = operations.intersection(particle.shape, particle2.shape)
+                if contact:
+                    if particle.num != particle2.num:
+                        if not generation_phase:
+                            self.contacts[particle].add[(particle2, contact)]
+                            self.contacts[particle2].add[(particle, contact)]
+                            return
+                        return True
+        if not generation_phase:
+            return
         return False
         
     def update_contact_list(self):
-        # docs here
+        """recreating the self.contacts dictionary
+        """
         
-        # recreate the self.contacts array
-        pass
+        self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
+        self.contacts = defaultdict(set)
+        self.particles = sorted(self.particles, key = lambda x: x.hierarchy)
+        for particle in self.particles:
+            self._single_particle_contact_check(particle, generation_phase = False)
     
-    def touching_boxes(self, particle, index: int) -> list:
+    def touching_boxes(self, particle, index) -> list:
         """finds the boxes in touch with the given particle in the
         specified size hierarchy
 
