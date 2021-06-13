@@ -16,7 +16,7 @@ import multiprocessing
 import random
 import numpy as np
 from collections import defaultdict
-from typing import Tuple
+from typing import Tuple, List, Dict, Set, Type, Any, Union
 from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
 from geometry import two_dimensional_entities as shapes
@@ -26,8 +26,19 @@ class Particle(object):
     """Base class to create soil particles
     
     Methods
-        box_num (int): calculates the number of box corresponding to 
-        the particle, used in contact detection
+        box_num: calculates the number of box corresponding to 
+            the particle, used in contact detection
+        mass: caculates the mass of the Particle object using its
+            density and its geometric shape
+        moment_of_inertia: calculates the moment of inertia of the
+            Particle instance
+        move: relocates the Particle instance with the given differences
+            in x and y coordinate and the amount of rotation it 
+            experiences
+    
+    Class Attributes:
+        last_num (int): the number to keep track of the last number
+            associated to a particle
     """
 
     last_num: int = 0
@@ -38,8 +49,8 @@ class Particle(object):
         y: float,
         inclination: float,
         hierarchy: int,
-        velocity: Tuple(float, float, float) = (0, 0, 0),
-        force: Tuple(float, float, float) = (0, 0, 0),
+        velocity: Tuple[float, float, float] = (0, 0, 0),
+        force: Tuple[float, float, float] = (0, 0, 0),
         num: int = 0,
         ) -> None:
         """initializing the Particle instance
@@ -72,13 +83,21 @@ class Particle(object):
         self.num = self.last_num
         self.hierarchy = hierarchy
 
-    def __new__(cls, name, bases, attrs):
+    def __new__(cls, name: str, bases: Tuple, attrs: Dict) -> None:
         cls.last_num += 1
         super().__new__(cls, name, bases, attrs)
     
-    def __del__(self):
+    def __del__(self) -> None:
         self.last_num -= 1
         super().__del__(self)
+    
+    def __hash__(self) -> int:
+        return self.num
+    
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, self.__class__) and other.__hash__ == self.__hash__:
+            return True
+        return False
 
     @property
     def mass(self) -> float:
@@ -121,7 +140,8 @@ class Particle(object):
         self.x += delta_x
         self.y += delta_y
         self.inclination += delta_theta
-        # also need to move the geometrical representation of the particle
+        self.shape.move(delta_x, delta_y)
+        self.shape.rotate(delta_theta)
 
 
 class Clay(Particle):
@@ -134,7 +154,7 @@ class Clay(Particle):
         segmentalize: to be defined
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """initialize clay attributes
         
         Args:
@@ -145,30 +165,45 @@ class Clay(Particle):
             inclination (float): the inclination of the particle in 
                 radians, ranges from '0' to '2*pi'
         
+        Other Attributes:
+            midpoint (Type[shapes.Point]): shapes.Point instance
+                denoting the center of the particle
+            midline (Type[shapes.LineSegment]): shapes.LineSegment
+                instance denoting the longer axis of the Clay particle
+            shape (Type[shapes.Rectangle]): the geometric representation
+                of the Clay instance
+            segments (List): an array containing the segments of the
+                Clay instance to be used to model the flexibility of the
+                particle
+        
         Exceptions:
-            SizeOutOfBound (Exception): raises when the given thickness
+            RuntimeError (Exception): raises when the given thickness
                 and length are outside the bounds specified as the
                 class private attributes
         """
         
         if kwargs['thickness'] < self.width_bounds[0]:
-            raise SizeOutOfBound('the given thickness is lower than expected')
+            raise RuntimeError('the given thickness is lower than expected')
         elif kwargs['thickness'] > self.width_bounds[1]:
-            raise SizeOutOfBound('the given thickness is higher than expected')
+            raise RuntimeError('the given thickness is higher than expected')
         elif kwargs['length'] < self.length_bounds[0]:
-            raise SizeOutOfBound('the given length is lower than expected')
+            raise RuntimeError('the given length is lower than expected')
         elif kwargs['length'] > self.length_bounds[1]:
-            raise SizeOutOfBound('the given length is higher than expected')
+            raise RuntimeError('the given length is higher than expected')
         
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
-        self.midpoint = shapes.Point(self.x, self.y)
-        self.midline = shapes.LineSegment.from_point_and_inclination(self.midpoint, self.inclination, self.length)
-        self.shape = shapes.Rectangle.from_midline(self.midline, self.thickness)
-        self.segments = None
+        self.midpoint: Type[shapes.Point] = shapes.Point(self.x, self.y)
+        self.midline: Type[shapes.LineSegment] = shapes.LineSegment.from_point_and_inclination(
+            self.midpoint, self.inclination, self.length
+            )
+        self.shape: Type[shapes.Rectangle] = shapes.Rectangle.from_midline(
+            self.midline, self.thickness
+            )
+        self.segments: List = self.segmentalize()
         super().__init__(*args, *kwargs)
     
-    def segmentalize(self) -> None:
+    def segmentalize(self) -> List:
         """segmentalize the coresponding clay particles into 3 equal
         segments
         """
@@ -288,6 +323,9 @@ class Kaolinite(Clay):
         
         kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
+    
+    def __repr__(self) -> str:
+        return f'Kaolinite-{self.num}'
 
 
 class Quartz(Sand):
@@ -336,6 +374,9 @@ class Quartz(Sand):
         """
         
         super().__init__(*args, **kwargs)
+
+    def __repr__(self) -> str:
+        return f'Quartz-{self.num}'
 
 
 class Montmorillonite(Clay):
@@ -403,9 +444,75 @@ class Montmorillonite(Clay):
         kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
 
+    def __repr__(self) -> str:
+        return f'Montmorillonite-{self.num}'
+
 
 class Illite(Clay):
-    pass
+    """Class to create illite particels
+
+    Parents:
+        Clay: the base class to create different clay particles upon,
+            it includes the common methods and attributes shared among
+            the clay particles
+        Particle: the base class to create soil particles upon, it
+            contains all the methods and attributes common among all
+            the soil particles
+    
+    Class Attributes:
+        length_bounds (Tuple(int, int)): upper and lower boundaries
+            of the length of illite particles as the first and
+            second elements of the tuple respectively
+        width_bounds (Tuple(int, int)): upper and lower boundaries of
+            the thickness of illite particles as the first and
+            second elements of the tuple respectively
+        cec (float): cation exchange capacity of the illite particle
+        ssa (float): special surface area of the illite particle
+        hamaker_constant (float): a constant defined for a van der-
+            waals body-body interaction in Jules
+        boltzman_constant (float): the proportionality factor that 
+            relates the average relative kinetic energy of particles
+            with the thermodynamic temrature, in Jules
+        young_modulus (float): the young modulus assiciated with
+            montmorillonite particls in Newtons per nanometers square
+        density (float): the density of illite particles
+        maximum_stiffness_coefficient (float): maximum stiffness
+            coefficient of the illite particle
+        formula (str): general formula for illite particles
+    """
+    
+    length_bounds: Tuple[int, int] = (80, 220)
+    width_bounds: Tuple(int, int) = (1, 3)
+    cec: float = 100
+    ssa: float = 800
+    hamaker_constant: float = 8.7e-21
+    boltzman_constant: float = 1.38e-23
+    young_modulus: float = 2e-8
+    density: float = 2.35e-33
+    maximum_stiffness_coefficient: float = 1.5e-7
+    formula: str = '(Na,Ca)0.33(Al,Mg)2(Si4O10)(OH)2·nH2O'
+
+    def __init__(self, *args, **kwargs) -> None:
+        """initialize the illite particle
+
+        Args:
+            thickness (float): thickness of the particle
+            length (float): length of the particle
+            x (float): x coordinate of the particle in nanometers
+            y (float): y coordinate of the particle in nanometers
+            inclination (float): the inclination of the particle in 
+                radians, ranges from '0' to '2*pi'
+        Exceptions:
+            SizeOutOfBound (Exception): raises when the given thickness
+                and length are outside the bounds specified as the
+                class private attributes
+        """
+        
+        kwargs['thickness'] = 2
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self) -> str:
+        return f'Montmorillonite-{self.num}'
 
 
 class Wall(Particle):
@@ -430,12 +537,12 @@ class Wall(Particle):
             velocity (Tuple, optional): the velocity of the particle in 
                 respect to x coordinate, and y coordinate in nanometers
                 per second, and the rotational velocity in radians per
-                second respectively. Defaults to (0, 0, 0).
+                second respectively; Defaults to (0, 0, 0).
             force (Tuple, optional): forces acting on the particle,
                 with the first two elements being the force in x axis
                 and the force in y axis respectively in Newtons, and
                 the third element being the moment acting on the
-                particle in Newton-metre. Defaults to (0, 0, 0).
+                particle in Newton-metre; Defaults to (0, 0, 0).
             num (int): number of the particle
             is_fixed (bool): specifying if the wall is fixed or is able
                 to relocate
@@ -448,6 +555,29 @@ class Wall(Particle):
 class Container(object):
     """create the container in which the simulation for different tests
     takes place
+    
+    Class Attributes:
+        type_reference (Dict): dictionary used to relate the given
+            particle type in string to its corresponding class
+    
+    Methods:
+        _validate_info: validate the given particle_info array to
+            initialize the container
+        _make_boxes: calculate the length and width for boxes in
+            different particle size hierarchies
+        generate: generate all the particle with the given information
+            on their type, size and quantity in the particle_info array
+        _add_particle: adds one particle to the self.particles array
+        _single_particle_contact_check: checks wether if the given
+            particle is in contact with any other particle; in the
+            generation phase returns True if it hits only one particle
+            while in the middle of the simulation updates the
+            self.contacts array with all the contacting particles
+        update_contact_list: clears and refills the self.cantacts array
+            and also self.boxes dictionary
+        touching_boxes: calculates the boxes in touch with the given
+            particle in a specific size hierarchy and returns the number
+            of those boxes in an array
     """
     
     type_reference = {
@@ -463,22 +593,62 @@ class Container(object):
         width: float,
         particles_info: list(dict),
         ) -> None:
-        # docs here
+        """initialize the Container instance
+
+        Args:
+            length (float): the length of the container instance
+            width (float): the width of the container instance
+            particles_info (list): the information assiciated to the
+                particles to be generated in the container in and array
+                in which every element is a dictionary in which the
+                keys "type, size_upper_bound, size_lower_bound,
+                quantity" have to be present;
+        
+        Other Attributes:
+            number_of_groups (int): the number of categories of
+                particles which is basically the length of the given
+                particles_info array
+            contacts (Type[defaultdict]): a dictionary in which keys
+                are the generated particles in the container and values            
+                are lists that hold tuples in which the first element
+                is the particle in contact with the key particle and
+                the second element is itself a tuple containing the 
+                geometrical entities representing the location of the
+                contact
+            particles (List): an array containing all the particles in
+                the container
+            boxes (Dict): a dictionary in which each key represents a
+                size hierarchy and holds a dictionary with the number
+                of boxes in the corresponding hierarchy as keys and a
+                list containing the particles in touch with that box
+            box_width (List): an array containing the whith of boxes in
+                the corresponding size hierarchy
+            box_length (List): an array containing the legth of boxes in
+                the corresponding size hierarchy
+            nr (List): an array containing the number of rows in each
+                corresponding size hierarchy
+            nc (List): an array containing the number of columns in each
+                corresponding size hierarchy
+
+        Raises:
+            RuntimeError: when the given particles_info array is invalid
+        """
+        
         self.length = length
         self.width = width
         if not self._validate_info(particles_info):
             raise RuntimeError('invalid input as particles_info')
         particles_info = sorted(particles_info, key = lambda x: x['size_upper_bound'], reverse = True)
         self.particles_info = particles_info
-        self.number_of_groups = len(particles_info)
-        self.contacts = defaultdict(set)
-        self.particles = []
-        self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
+        self.number_of_groups: int = len(particles_info)
+        self.contacts: Type[defaultdict] = defaultdict(set)
+        self.particles: List = []
+        self.boxes: Dict = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.box_width, self.box_length = self._make_boxes()
-        self.nr = [self.width // w for w in self.box_width]
-        self.nc = [self.length // l for l in self.box_length]
+        self.nr: List = [self.width // w for w in self.box_width]
+        self.nc: List = [self.length // l for l in self.box_length]
     
-    def _validate_info(self, info: list(dict)) -> bool:
+    def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
 
         Args:
@@ -509,7 +679,7 @@ class Container(object):
                 return False
         return True
     
-    def _make_boxes(self) -> list:
+    def _make_boxes(self) -> Tuple[List, List]:
         """calculate the width and length for the boxes corresponding
         to each particle size range (a.k.a hierarchy)
 
@@ -540,8 +710,8 @@ class Container(object):
                     length[-1] += length[-2]
         return width, length
     
-    def generate(self):
-        """generating the list of particles in place with the given
+    def generate(self) -> None:
+        """generate the list of particles in-place regarding the given
         particles_info array to the Container class
         """
         
@@ -588,9 +758,13 @@ class Container(object):
                 for index in range(new_particle.hierarchy, self.number_of_groups):
                     for box in self.touching_boxes(new_particle, index):
                         self.boxes[index][box].append(new_particle)
-                break
+                return
     
-    def _single_particle_contact_check(self, particle, generation_phase: bool = True) -> bool:
+    def _single_particle_contact_check(
+        self,
+        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
+        generation_phase: bool = True
+        ) -> bool:
         """checking if the given particle is in contact with any other
             particle
 
@@ -613,13 +787,13 @@ class Container(object):
                         if not generation_phase:
                             self.contacts[particle].add[(particle2, contact)]
                             self.contacts[particle2].add[(particle, contact)]
-                            return
-                        return True
+                        else:
+                            return True
         if not generation_phase:
             return
         return False
         
-    def update_contact_list(self):
+    def update_contact_list(self) -> None:
         """recreating the self.contacts dictionary
         """
         
@@ -629,7 +803,11 @@ class Container(object):
         for particle in self.particles:
             self._single_particle_contact_check(particle, generation_phase = False)
     
-    def touching_boxes(self, particle, index) -> list:
+    def touching_boxes(
+        self,
+        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
+        index: int
+        ) -> List:
         """finds the boxes in touch with the given particle in the
         specified size hierarchy
 
