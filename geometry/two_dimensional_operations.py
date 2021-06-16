@@ -422,18 +422,163 @@ def intersection(
 
 
 @overload(shapes.Rectangle, shapes.Circle)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Circle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and circle
+    instance
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+
+    res = []
+    for line in entity1.edges:
+        inter = intersection(line, entity2)
+        if inter:
+            res.append(inter)
+    return tuple(res)
 
 
 @overload(shapes.Rectangle, shapes.Line)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Line]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and line
+    instance
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+
+    res = []
+    for line in entity1.edges:
+        inter = intersection(line, entity2)
+        if inter:
+            res.append(inter)
+    return tuple(res)
 
 
 @overload(shapes.Rectangle, shapes.LineSegment)
+def intersection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.LineSegment]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and line segment
+    instance
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+
+    res = []
+    for line in entity1.edges:
+        inter = intersection(line, entity2)
+        if inter:
+            res.append(inter)
+    return tuple(res)
+
+
+@overload(shapes.Circle, shapes.Point)
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """find the intersection between the given point and circle
+
+    Args:
+        entity1 (Type[shapes.Circle]): the shapes.Circle instance
+        entity2 (Type[shapes.Point]): the shapes.Point instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given point
+            and circle which is a point with the same coordinates as
+            the given point if it is located on the perimeter of the
+            circle, otherwise None
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Circle, shapes.Polygon)
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given polygon and circle
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection points between the
+            two given entities in a tuple
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Circle, shapes.Rectangle)
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and circle
+    instance
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Circle, shapes.Circle)
+def intersection(entity1, entity2):
+    # docs here
+    
+    pass
+
+
+@overload(shapes.Circle, shapes.Line)
 def intersection(entity1, entity2):
     pass
+
+
+@overload(shapes.Circle, shapes.LineSegment)
+def intersection(entity1, entity2):
+    pass
+
+
 
 def is_inside():
     # define it with overload
