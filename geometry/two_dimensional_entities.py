@@ -455,6 +455,14 @@ class Circle(object):
         return ((np.pi) * (self.diameter) ** 2) / 4
 
     @property
+    def radius(self) -> float:
+        """calculate the radius of the Circle instance
+
+        Returns:
+            float: the radius of the Circle instance
+        """
+        return (self.diameter / 2)
+    @property
     def perimeter(self) -> float:
         """calculate the perimeter of the Circle instance
 

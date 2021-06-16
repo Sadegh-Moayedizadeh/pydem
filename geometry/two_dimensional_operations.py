@@ -566,7 +566,15 @@ def intersection(
 def intersection(entity1, entity2):
     # docs here
     
-    pass
+    dist = distance(entity1.center, entity2.center)
+    if dist > (entity1.radius + entity2.radius):
+        return
+    if entity1.radius > (dist + entity2.radius) or entity2.radius > (dist + entity1.radius):
+        return
+    if dist == (entity1.radius + entity2.radius):
+        ratio = entity1.radius / (entity1.radius + entity2.radius)
+        return shapes.LineSegment(entity1.center, entity2.center).midpoint(ratio)
+    # check stackoverflow to find a formula to find intersection points
 
 
 @overload(shapes.Circle, shapes.Line)
