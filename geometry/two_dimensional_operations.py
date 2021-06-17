@@ -2,6 +2,7 @@
 dimentional geometric shapes
 """
 
+import numpy as np
 from collections import defaultdict
 from typing import Any, Type, Tuple
 from geometry import two_dimensional_entities as shapes
@@ -563,8 +564,26 @@ def intersection(
 
 
 @overload(shapes.Circle, shapes.Circle)
-def intersection(entity1, entity2):
-    # docs here
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Circle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given two circles, could be
+    None if there isn't any intersection, which happens when two circles
+    are far apart or one is completelpy inside another; could be a
+    single point when they only touch each other; could be a tuple of
+    two points when they intersect
+
+    Args:
+        entity1 (Type[shapes.Circle]): the first given shapes.Circle
+            instance
+        entity2 (Type[shapes.Circle]): the second given shapes.Circle
+            instace
+
+    Returns:
+        Tuple[Type[shapes.Point]]: intesection points if they exist,
+            otherwise None
+    """
     
     dist = distance(entity1.center, entity2.center)
     if dist > (entity1.radius + entity2.radius):
@@ -574,18 +593,215 @@ def intersection(entity1, entity2):
     if dist == (entity1.radius + entity2.radius):
         ratio = entity1.radius / (entity1.radius + entity2.radius)
         return shapes.LineSegment(entity1.center, entity2.center).midpoint(ratio)
-    # check stackoverflow to find a formula to find intersection points
+    # formula from:
+    # https://math.stackexchange.com/questions/256100/how-can-i-find-the-points-at-which-two-circles-intersect
+    # written by "salix alba": https://math.stackexchange.com/users/139342/salix-alba
+    l = ((entity1.radius)**2 - (entity2.radius)**2 + (dist)**2) / (2*dist)
+    h = np.sqrt((entity1.radius)**2 - (l)**2)
+    exp1 = (l / dist) * (entity2.center.x - entity1.center.x)
+    exp2 = (h / dist) * (entity2.center.y - entity1.center.y)
+    x1 = exp1 + exp2 + entity1.center.x
+    x2 = exp1 - exp2 + entity1.center.x
+    exp1 = (l / dist) * (entity2.center.y - entity1.center.y)
+    exp2 = (h / dist) * (entity2.center.x - entity1.center.x)
+    y1 = exp1 - exp2 + entity1.center.y
+    y2 = exp1 + exp2 + entity1.center.y
+    return (shapes.Point(x1, y1), shapes.Point(x2, y2))
 
 
 @overload(shapes.Circle, shapes.Line)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Line]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds intersection between an infinite line an a circle; could
+    be None, a single point, or two points
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection between the given
+            instances
+    """
+    
+    # formula from:
+    # https://math.stackexchange.com/questions/228841/how-do-i-calculate-the-intersections-of-a-straight-line-and-a-circle
+    # written by "Fly by Night": https://math.stackexchange.com/users/38495/fly-by-night
+    a = (entity2.slope)**2 + 1
+    b = 2 * (
+        ((entity2.slope) * (entity2.width)) 
+        - ((entity2.slope) * (entity1.center.y))
+        - (entity1.center.x)
+        )
+    c = (
+        (entity1.center.y)**2
+        - (entity1.radius)**2
+        + (entity1.center.x)**2
+        - 2 * ((entity1.center.y) * (entity2.width))
+        + (entity2.width)**2
+    )
+    try:
+        x1 = (-1 * (b) + np.sqrt(b**2 - 4*a*c)) / (2*a)
+        x2 = (-1 * (b) - np.sqrt(b**2 - 4*a*c)) / (2*a)
+    except:
+        return
+    if x1 == x2:
+        return shapes.Point(x1, entity2.get_y(x1))
+    y1 = entity2.get_y(x1)
+    y2 = entity2.get_y(x2)
+    return (shapes.Point(x1, y1), shapes.Point(x2, y2))
 
 
 @overload(shapes.Circle, shapes.LineSegment)
+def intersection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.LineSegment]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between a line segment and a circle
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instances
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection between the given
+            entities
+    """
+    
+    inter = intersection(entity1, entity2.infinite)
+    if inter is None:
+        return
+    res = []
+    for point in inter:
+        if intersection(point, entity2):
+            res.append(point)
+    return tuple(res)
+
+
+@overload(shapes.Line, shapes.Point)
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between the given point and line
+
+    Args:
+        entity1 (Type[shapes.Line]): the shapes.Line instance
+        entity2 (Type[shapes.Point]): the shapes.Point instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given point
+            and line which happens when the point is located on the
+            line and will be a point with the same coordinates of the
+            given entity1, otherwise None
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Line, shapes.Polygon)
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given polygon and line
+    instance
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection points between the
+            two given entities inside a tuple
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Line, shapes.Rectangle)
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and line
+    instance
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Line, shapes.Circle)
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Circle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds intersection between an infinite line an a circle; could
+    be None, a single point, or two points
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection between the given
+            instances
+    """
+    
+    return intersection(entity2, entity1)
+
+
+@overload(shapes.Line, shapes.Line)
 def intersection(entity1, entity2):
     pass
 
+
+@overload(shapes.Line, shapes.LineSegment)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Point)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Polygon)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Rectangle)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Circle)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Line)
+def intersection(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.LineSegment)
+def intersection(entity1, entity2):
+    pass
 
 
 def is_inside():
