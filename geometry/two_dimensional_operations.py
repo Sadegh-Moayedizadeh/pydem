@@ -765,43 +765,176 @@ def intersection(
 
 
 @overload(shapes.Line, shapes.Line)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Line]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between two lines
+
+    Args:
+        entity1 (Type[shapes.Line]): the first given shapes.Line
+            instance
+        entity2 (Type[shapes.Line]): the socond given shapes.Line
+            instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between two given entities
+    """
+    
+    if entity1.slope == entity2.slope:
+        return
+    x = (entity2.width - entity1.width) / (entity1.slope - entity2.slope)
+    y = entity1.get_y(x)
+    return shapes.Point(x, y)
 
 
 @overload(shapes.Line, shapes.LineSegment)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.LineSegment]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between an infinite line and a finite
+    line segment
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given two entities
+    """
+    
+    inter = intersection(entity1, entity2.infinite)
+    if inter and intersection(inter, entity2):
+        return inter
 
 
 @overload(shapes.LineSegment, shapes.Point)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between the given poin and line segment
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Point]): the shapes.Point instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given point
+            and line segment which happens when the point is located on
+            the line and will be a point with the same coordinates of 
+            the given entity1, otherwise None
+    """
+    
+    return intersection(entity2, entity1)
 
 
 @overload(shapes.LineSegment, shapes.Polygon)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given polygon and line
+    segment entity
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection points between the
+            two given entities inside a tuple
+    """
+    
+    return intersection(entity2, entity1)
 
 
 @overload(shapes.LineSegment, shapes.Rectangle)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between the given rectangle and line segment
+    instance
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: a tuple of points which to denote
+            the intersection between the given entities
+    """
+    
+    return intersection(entity2, entity1)
 
 
 @overload(shapes.LineSegment, shapes.Circle)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Circle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the intersection between a line segment and a circle
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instances
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the intersection between the given
+            entities
+    """
+    
+    return intersection(entity2, entity1)
 
 
 @overload(shapes.LineSegment, shapes.Line)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Line]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between an infinite line and a finite
+    line segment
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given two entities
+    """
+    
+    return intersection(entity2, entity1)
 
 
 @overload(shapes.LineSegment, shapes.LineSegment)
-def intersection(entity1, entity2):
-    pass
+def intersection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.LineSegment]
+    ) -> Type[shapes.Point]:
+    """finds the intersection between two finite line segments
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the first given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.LineSegment]): the second given shapes.LineSegment
+            instance
+
+    Returns:
+        Type[shapes.Point]: the intersection between the given entities
+    """
+    
+    inter = intersection(entity1.infinite, entity2.infinite)
+    if inter and intersection(inter, entity1) and intersection(inter, entity2):
+        return inter
 
 
 def is_inside():
