@@ -47,6 +47,33 @@ def overload(*types: type):
     return wrapper
 
 
+def opposite_sides(
+    line: Type[shapes.Line],
+    point1: Type[shapes.Point],
+    point2: Type[shapes.Point]
+    ) -> bool:
+    """checks if the given points are located on the opposite sides of
+    the given line
+
+    Args:
+        line (Type[shapes.Line]): the given shapes.Line instance
+        point1 (Type[shapes.Point]): the first given shapes.Point
+            instance
+        point2 (Type[shapes.Point]): the second given shapes.Point
+            instance
+
+    Returns:
+        bool: True or False indicating if the given points are on the
+            opposite sides of the given line
+    """
+    
+    dif1 = (point1.y) - ((line.slope) * (point1.x) + (line.width))
+    dif2 = (point2.y) - ((line.slope) * (point2.x) + (line.width))
+    sign1 = dif1 / abs(dif1)
+    sign2 = dif2 / abs(dif2)
+    return (sign1 != sign2)
+
+
 @overload(shapes.Point, shapes.Point)
 def intersection(
     entity1: Type[shapes.Point],
@@ -937,9 +964,53 @@ def intersection(
         return inter
 
 
-def is_inside():
-    # define it with overload
+@overload(shapes.Point, shapes.Point)
+def is_inside(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Point]
+    ) -> bool:
+    """specifies if the first given entity is completely located inside
+    of the second given entity
+
+    Args:
+        entity1 (Type[shapes.Point]): the firts given shapes.Point
+            instance
+        entity2 (Type[shapes.Point]): the second given shapes.Point
+            instance
+
+    Returns:
+        bool: True or False indicating if the first entity is inside
+            the second one
+    """
+    
+    return False
+
+
+@overload(shapes.Point, shapes.Polygon)
+def is_inside(entity1, entity2):
+    # draw a semi infinite line and see how many points it intersects
     pass
+
+
+@overload(shapes.Point, shapes.Rectangle)
+def is_inside(entity1, entity2):
+    pass
+
+
+@overload(shapes.Point, shapes.Circle)
+def is_inside(entity1, entity2):
+    pass
+
+
+@overload(shapes.Point, shapes.Line)
+def is_inside(entity1, entity2):
+    pass
+
+
+@overload(shapes.Point, shapes.LineSegment)
+def is_inside(entity1, entity2):
+    pass
+
 
 def distance():
     # define it with overload
