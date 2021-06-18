@@ -650,6 +650,20 @@ class Line(object):
         """
 
         return np.arctan(self.slope)
+    
+    def normal(self, point):
+        """returns a Line instance which is normal to the current Line
+        instace
+
+        Returns:
+            [type]: the Line instance normal to the current one
+        """
+        
+        if self.slope == 0:
+            new_slope = np.tan(np.math.pi / 2)
+        else:
+            new_slope = -1 / self.slope
+        return Line.from_point_and_inclination(np.arctan(new_slope), point)
 
     def get_x(self, y: float) -> float:
         """calculate the 'x' coordinate of a point on the Line instance
