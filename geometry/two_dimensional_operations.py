@@ -1380,33 +1380,131 @@ def is_inside(
 
 
 @overload(shapes.Circle, shapes.Point)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Point]
+    ) -> bool:
+    """checks if the given circle is located inside the given point
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Circle, shapes.Polygon)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Polygon]
+    ) -> bool:
+    """checks if the given circle is located inside the given polygon
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if not is_inside(entity1.center, entity2):
+        return False
+    for line in entity2.vertices:
+        if distance(entity1.center, line) <= entity1.radius:
+            return False
+    return True
 
 
 @overload(shapes.Circle, shapes.Rectangle)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Rectangle]
+    ) -> bool:
+    """checks if the given circle is located inside the given Rectangle
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if not is_inside(entity1.center, entity2):
+        return False
+    for line in entity2.vertices:
+        if distance(entity1.center, line) <= entity1.radius:
+            return False
+    return True
 
 
 @overload(shapes.Circle, shapes.Circle)
 def is_inside(entity1, entity2):
-    pass
+    """checks if the first given circle is located inside the scond
+    given Rectangle
+
+    Args:
+        entity1 (Type[shapes.Circle]): the first given shapes.Circle
+            instance
+        entity2 (Type[shapes.Circle]): the second given shapes.Circle
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if distance(entity1.center, entity2.center) + entity2.radius < entity1.radius:
+        return True
+    return False
 
 
 @overload(shapes.Circle, shapes.Line)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Line]
+    ) -> bool:
+    """checks if the given circle is located inside the given Rline
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Circle, shapes.LineSegment)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.LineSegment]
+    ) -> bool:
+    """checks if the given circle is located inside the given line
+    segment
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Line, shapes.Point)
@@ -1415,59 +1513,245 @@ def is_inside(entity1, entity2):
 
 
 @overload(shapes.Line, shapes.Polygon)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Polygon]
+    ) -> bool:
+    """checks if the given line is located inside the given polygon
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Circle instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Line, shapes.Rectangle)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Rectangle]
+    ) -> bool:
+    """checks if the given line is located inside the given Rectangle
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Line, shapes.Circle)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Circle]
+    ) -> bool:
+    """checks if the given line is located inside the given circle
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Line, shapes.Line)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.Line]
+    ) -> bool:
+    """checks if the first given line is located inside the second
+    given line
+
+    Args:
+        entity1 (Type[shapes.Line]): the first given shapes.Line
+            instance
+        entity2 (Type[shapes.Line]): the second given shapes.Line
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.Line, shapes.LineSegment)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.Line],
+    entity2: Type[shapes.LineSegment]
+    ) -> bool:
+    """checks if the given line is located inside the given line
+    segment
+
+    Args:
+        entity1 (Type[shapes.Line]): the given shapes.Line instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.LineSegment, shapes.Point)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Point]
+    ) -> bool:
+    """checks if the given line segment is located inside the given
+        point
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
 
 
 @overload(shapes.LineSegment, shapes.Polygon)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Polygon]
+    ) -> bool:
+    """checks if the given line segment is located inside the given
+        polygon
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if is_inside(entity1.end1, entity2) and is_inside(entity1.end2, entity2):
+        return True
+    return False
 
 
 @overload(shapes.LineSegment, shapes.Rectangle)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Rectangle]
+    ):
+    """checks if the given line segment is located inside the given
+        rectangle
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if is_inside(entity1.end1, entity2) and is_inside(entity1.end2, entity2):
+        return True
+    return False
 
 
 @overload(shapes.LineSegment, shapes.Circle)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Circle]
+    ) -> bool:
+    """checks if the given line segment is located inside the given
+        circle
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    if is_inside(entity1.end1, entity2) and is_inside(entity1.end2, entity2):
+        return True
+    return False
 
 
 @overload(shapes.LineSegment, shapes.Line)
-def is_inside(entity1, entity2):
-    pass
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Line]
+    ) -> bool:
+    """checks if the given line segment is located inside the given
+    line
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
+
 
 @overload(shapes.LineSegment, shapes.LineSegment)
-def is_inside(entity1, entity2):
+def is_inside(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.LineSegment]
+    ) -> bool:
+    """checks if the first given line segment is located inside the
+    second given line segment
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the first given
+            shapes.LineSegment instance
+        entity2 (Type[shapes.LineSegment]): the seond given
+            shapes.LineSegment instance
+
+    Returns:
+        bool: True or False indicating if entity1 is located completely
+            inside entity2
+    """
+    
+    return False
+
+
+def distance(entity1, entity2):
+    # define it with overload
     pass
 
-
-def distance():
-    # define it with overload
+def offset(entity1, entity2):
     pass
