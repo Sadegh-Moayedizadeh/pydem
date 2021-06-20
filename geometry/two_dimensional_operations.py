@@ -1749,9 +1749,217 @@ def is_inside(
     return False
 
 
+@overload(shapes.Point, shapes.Point)
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Point]
+    ) -> float:
+    """calculates the distance between the two given points
+
+    Args:
+        entity1 (Type[shapes.Point]): the first given shapes.Point
+            instance
+        entity2 (Type[shapes.Point]): the second given shapes.Point
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return np.sqrt((entity1.x - entity2.x)**2 + (entity1.y - entity2.y)**2)
+
+
+@overload(shapes.Point, shapes.Polygon)
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Polygon]
+    ) -> float:
+    """calculates the distance between the given point and polygon
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = 1
+    if is_inside(entity1, entity2):
+        factor = -1
+    return min([distance(entity1, line) for line in entity2.vertices]) * factor
+
+
+@overload(shapes.Point, shapes.Rectangle)
 def distance(entity1, entity2):
-    # define it with overload
+    return min([distance(entity1, line) for line in entity2.vertices])
+
+
+@overload(shapes.Point, shapes.Circle)
+def distance(entity1, entity2):
+    return distance(entity1, entity2.center) - entity2.radius
+
+
+@overload(shapes.Point, shapes.Line)
+def distance(entity1, entity2):
     pass
+
+
+@overload(shapes.Point, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.Point)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.Polygon)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.Rectangle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.Circle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.Line)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Polygon, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.Point)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.Polygon)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.Rectangle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.Circle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.Line)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Rectangle, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.Point)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.Polygon)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.Rectangle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.Circle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.Line)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Circle, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.Point)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.Polygon)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.Rectangle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.Circle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.Line)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.Line, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Point)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Polygon)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Rectangle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Circle)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.Line)
+def distance(entity1, entity2):
+    pass
+
+
+@overload(shapes.LineSegment, shapes.LineSegment)
+def distance(entity1, entity2):
+    pass
+
 
 def offset(entity1, entity2):
     pass
