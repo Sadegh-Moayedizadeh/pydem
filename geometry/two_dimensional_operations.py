@@ -1792,83 +1792,327 @@ def distance(
 
 
 @overload(shapes.Point, shapes.Rectangle)
-def distance(entity1, entity2):
-    return min([distance(entity1, line) for line in entity2.vertices])
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Rectangle]
+    ) -> float:
+    """calculates the distance between the given point and rectangle
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = 1
+    if is_inside(entity1, entity2):
+        factor = -1
+    return min([distance(entity1, line) for line in entity2.vertices]) * factor
 
 
 @overload(shapes.Point, shapes.Circle)
-def distance(entity1, entity2):
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Circle]
+    ) -> float:
+    """calculates the distance between the given point and circle
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
     return distance(entity1, entity2.center) - entity2.radius
 
 
 @overload(shapes.Point, shapes.Line)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Line]
+    ) -> float:
+    """calculates the distance between the given point and line
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return distance(entity1, offset(entity1, entity2))
 
 
 @overload(shapes.Point, shapes.LineSegment)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.LineSegment]
+    ) -> float:
+    """calculates the distance between the given point and line segment
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    point2 = offset(entity1, entity2.infinite)
+    if intersection(point2, entity2):
+        return distance(entity1, point2)
+    return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
 
 
 @overload(shapes.Polygon, shapes.Point)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Polygon],
+    entity2: Type[shapes.Point]
+    ) ->  float:
+    """calculates the distance between the given polygon and point
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return distance(entity2, entity1)
 
 
 @overload(shapes.Polygon, shapes.Polygon)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Polygon],
+    entity2: Type[shapes.Polygon]
+    ) -> float:
+    """calculates the distance between the given two polygon
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the first given shapes.Polygon
+            instance
+        entity2 (Type[shapes.Polygon]): the second given shapes.Polygon
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = 1
+    if is_inside(entity1, entity2) or is_inside(entity2, entity1):
+        factor = -1
+    return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
 @overload(shapes.Polygon, shapes.Rectangle)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Polygon],
+    entity2: Type[shapes.Rectangle]
+    ) -> float:
+    """calculates the distance between the given polygon and rectangle
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = 1
+    if is_inside(entity1, entity2) or is_inside(entity2, entity1):
+        factor = -1
+    return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
 @overload(shapes.Polygon, shapes.Circle)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Polygon],
+    entity2: Type[shapes.Circle]
+    ) -> float:
+    """calculates the distance between the given polygon and circle
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+        entity2 (Type[shapes.Cirle]): the given shapes.Circle instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
+    return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
 @overload(shapes.Polygon, shapes.Line)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Polygon],
+    entity2: Type[shapes.Line]
+    ) -> float:
+    """calculates the distance between the given polygon and Line
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return min(distance(line, entity2) for line in entity1.edges)
 
 
 @overload(shapes.Polygon, shapes.LineSegment)
 def distance(entity1, entity2):
-    pass
+    """calculates the distance between the given polygon and line
+    segment
+
+    Args:
+        entity1 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
+    return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
 @overload(shapes.Rectangle, shapes.Point)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Point]
+    ) -> float:
+    """calculates the distance between the given rectangle and point
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return distance(entity2, entity1)
 
 
 @overload(shapes.Rectangle, shapes.Polygon)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Polygon]
+    ) -> float:
+    """calculates the distance between the given rectangle and polygon
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return distance(entity2, entity1)
 
 
 @overload(shapes.Rectangle, shapes.Rectangle)
 def distance(entity1, entity2):
-    pass
+    """calculates the distance between the given two rectangles
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the first given
+            shapes.Rectangle instance
+        entity2 (Type[shapes.Rectangle]): the second given
+            shapes.Rectangle instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = 1
+    if is_inside(entity1, entity2) or is_inside(entity2, entity1):
+        factor = -1
+    return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
 @overload(shapes.Rectangle, shapes.Circle)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Circle]
+    ) -> float:
+    """calculates the distance between the given rectangle and circle
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Cirle]): the given shapes.Circle instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
+    return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
 @overload(shapes.Rectangle, shapes.Line)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Line]
+    ) -> float:
+    """calculates the distance between the given rectangle and Line
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    return min(distance(line, entity2) for line in entity1.edges)
 
 
 @overload(shapes.Rectangle, shapes.LineSegment)
-def distance(entity1, entity2):
-    pass
+def distance(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.LineSegment]
+    ) -> float:
+    """calculates the distance between the given rectangle and line
+    segment
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        float: the distance between the two given entities
+    """
+    
+    factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
+    return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
 @overload(shapes.Circle, shapes.Point)
