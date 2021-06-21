@@ -2485,33 +2485,124 @@ def distance(
 
 
 @overload(shapes.Point, shapes.Point)
-def offset(entity1, entity2):
-    pass
+def offset(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the offset of the first given point on the second one
+
+    Args:
+        entity1 (Type[shapes.Point]): the first given shapes.Point
+            instance
+        entity2 (Type[shapes.Point]): the second given shapes.Point
+            instance
+
+    Returns:
+        Type[shapes.Point]: the offset of the first entity on the
+            second one
+    """
+    
+    return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Point, shapes.Polygon)
-def offset(entity1, entity2):
-    pass
+def offset(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the offset of the given point on the given polygon
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+            second one
+    """
+    
+    if is_inside(entity1, entity2):
+        return None
+    return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
 @overload(shapes.Point, shapes.Rectangle)
-def offset(entity1, entity2):
-    pass
+def offset(
+    entity1: Type[shapes.Point],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.Point]]:
+    """finds the offset of the given point on the given rectangle
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+            second one
+    """
+    
+    if is_inside(entity1, entity2):
+        return None
+    return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
 @overload(shapes.Point, shapes.Circle)
 def offset(entity1, entity2):
-    pass
+    """finds the offset of the given point on the given circle
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+            second one
+    """
+    
+    if is_inside(entity1, entity2):
+        return None
+    line = shapes.LineSegment(entity1, entity2.center)
+    return intersection(line, entity2)
 
 
 @overload(shapes.Point, shapes.Line)
 def offset(entity1, entity2):
-    pass
+    """finds the offset of the given point on the given line
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+            second one
+    """
+
+    line = shapes.Line.from_point_and_inclination(entity1, (entity2.inclination + np.math.pi))
+    return intersection(line, entity2)
 
 
 @overload(shapes.Point, shapes.LineSegment)
 def offset(entity1, entity2):
-    pass
+    """finds the offset of the given point on the given line segment
+
+    Args:
+        entity1 (Type[shapes.Point]): the given shapes.Point instance
+        entity2 (Type[shapes.LineSegment]): the given
+            shapes.LineSegment instance
+
+    Returns:
+        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+            second one
+    """
+
+    point = offset(entity1, entity2.infinite)
+    if intersection(point, entity2):
+        return point
+    return None
 
 
 @overload(shapes.Polygon, shapes.Point)
