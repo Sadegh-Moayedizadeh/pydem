@@ -1,16 +1,11 @@
 """Contains all the classes to construct 2D entities used in the model
 """
 
-from typing import Tuple, Any, Optional
+from typing import Tuple, Any, Optional, Type, Union
 import numpy as np
 from itertools import count
-from pydem.geometry.exceptions import BadEntries
 from collections import defaultdict
-from pydem.geometry.two_dimensional_operations import (
-    is_crossed,
-    is_perpendecular,
-    distance,
-)
+import geometry.two_dimensional_operations as operations
 
 
 class Point(object):
@@ -57,12 +52,12 @@ class Point(object):
         return cls(x, y)
 
     @property
-    def get_rtheta(self) -> Tuple(float, float):
+    def get_rtheta(self) -> Tuple[float, float]:
         """Gives the 'r-theta' coordinates of the Point object in a
         tuple
 
         Returns:
-            coordinates (Tuple(float, float)): a tuple containing the
+            coordinates (Tuple[float, float]): a tuple containing the
                 'r' and 'theta' coordinates of the Point object
         """
 
@@ -120,17 +115,17 @@ class Polygon(object):
             coordinates of its vertices
     """
 
-    def __init__(self, *vertices: Point) -> None:
+    def __init__(self, *vertices: Type[Point]) -> None:
         """Initializing the Polygin object with the given series of
         Point objects
 
         Args:
-            *vertices (Point): series of Point objects which are the
+            *vertices (Type[Point]): series of Point objects which are the
                 vertices of the polygon, the order of points given is
                 important and will stay the same for this object
 
         Raises:
-            BadEntries: in three scenarios:
+            RuntimeError: in three scenarios:
                 when the number of the given vertices is less than three,
                     which makes it impossible to form a polygon
                 when the given vertices are given in a way that the edges
@@ -140,24 +135,27 @@ class Polygon(object):
 
         self.vertices = vertices
         if self.number_of_vertices < 3:
-            raise BadEntries(
+            raise RuntimeError(
                 "the number of given points should be equal or more than three"
             )
         dd = defaultdict(int)
         for vertex in vertices:
             dd[(vertex.x, vertex.y)] += 1
             if dd[(vertex.x, vertex.y)] == 2:
-                raise BadEntries("the same vertex entered twice")
+                raise RuntimeError("the same vertex entered twice")
         for edge1 in self.edges:
             for edge2 in self.edges:
-                if edge1 != edge2 and is_crossed(edge1, edge2):
-                    raise BadEntries(
+                if edge1 != edge2 and operations.intersection(edge1, edge2):
+                    raise RuntimeError(
                         "the given vertices form a polygon with intersecting edges"
                     )
 
     @classmethod
     def as_regular(
-        cls, centre: Point, diameter: float, number_of_vertices: int
+        cls,
+        centre: Type[Point],
+        diameter: float,
+        number_of_vertices: int
     ) -> "Polygon":
         """Alternative constructor of Polygon instances which are
         regular, which means they can be circumscribed by a circle and
@@ -165,7 +163,7 @@ class Polygon(object):
         loaceted at the horizental diameter of the circumcircle
 
         Args:
-            centre (Point): a Point object which is the centre of the
+            centre (Type[Point]): a Point object which is the centre of the
                 circumcircle of the polygons
             diamete (float): the diameter of the circumcircle of the
                 polygon
@@ -192,7 +190,19 @@ class Polygon(object):
         return len(self.vertices)
 
     @property
-    def edges(self) -> Tuple(LineSegment):
+    def centre(self) -> Type[Point]:
+        """calculates the center of the polygon
+
+        Returns:
+            Type[Point]: the center of the current polygon instance
+        """
+          
+        x = sum(point.x for point in self.vertices) / len(self.vertices)
+        y = sum(point.y for point in self.vertices) / len(self.vertices)
+        return Point(x, y)
+    
+    @property
+    def edges(self) -> Any:
         """Create a tuple of edges of the Polygon as LineSegment
         objects"""
 
@@ -269,7 +279,7 @@ class Rectangle(Polygon):
             *vertices (Point): the vertices of the Rectangle
 
         Raises:
-            BadEntries: raises this exception in two scenarios:
+            RuntimeError: raises this exception in two scenarios:
                 when the number of the given vertices is not equal to
                     four
                 when the given vertices are in a way that the resultant
@@ -280,15 +290,15 @@ class Rectangle(Polygon):
         edges = self.edges
         n = self.number_of_vertices
         if n != 4:
-            raise BadEntries("you should enter exactly four vertices")
+            raise RuntimeError("you should enter exactly four vertices")
         for i in range(n):
-            if not is_perpendecular(edges[i], edges[i - 1]):
-                raise BadEntries(
+            if abs(edges[i].inclination - edges[i - 1].inclination) != (np.math.pi / 2):
+                raise RuntimeError(
                     "the given vertices do not form a rectangle with perpendecular edges"
                 )
 
     @classmethod
-    def from_midline(cls, midline: LineSegment, tolerance: float) -> "Rectangle":
+    def from_midline(cls, midline: "LineSegment", tolerance: float) -> "Rectangle":
         """An alternative constructor to create a Rectangle instance
         from a given midline and a tolerance from that line
 
@@ -322,7 +332,7 @@ class Rectangle(Polygon):
         return cls(vertex1, vertex2, vertex3, vertex4)
 
     @classmethod
-    def from_diagonal(cls, diagonal: LineSegment) -> "Rectangle":
+    def from_diagonal(cls, diagonal: "LineSegment") -> "Rectangle":
         """Alternative constructor to create a horizental rectangle
         from a given diagonal
 
@@ -351,7 +361,7 @@ class Rectangle(Polygon):
         return self.edges[0].length * self.edges[1].length
 
     @property
-    def midlines(self) -> Tuple(LineSegment):
+    def midlines(self) -> Tuple["LineSegment"]:
         """calculate the two midlines of the Rectangle instance
 
         Returns:
@@ -369,7 +379,7 @@ class Rectangle(Polygon):
         return tuple(lines)
 
     @property
-    def diagonals(self) -> Tuple(LineSegment):
+    def diagonals(self) -> Tuple["LineSegment"]:
         """calculating the diagonals of the Rectangle instance
 
         Returns:
@@ -397,7 +407,7 @@ class Rectangle(Polygon):
         return self.diagonals[0].midpoint
 
     @property
-    def circumcircle(self) -> Circle:
+    def circumcircle(self) -> "Circle":
         """calculating the circumcircle of the Rectangle instance
 
         Returns:
@@ -435,14 +445,14 @@ class Circle(object):
             diameter (float): the diameter of the circle
 
         Raises:
-            BadEntries: when the given diameter is zero or a negative
+            RuntimeError: when the given diameter is zero or a negative
                 number
         """
 
         self.centre = centre
         self.diameter = diameter
         if self.diameter <= 0:
-            raise BadEntries("the given diameter should be a positive non-zero number")
+            raise RuntimeError("the given diameter should be a positive non-zero number")
 
     @property
     def area(self) -> float:
@@ -472,7 +482,7 @@ class Circle(object):
 
         return (np.pi) * (self.diameter)
 
-    def get_point_on_perimeter(self, angle: float) -> Point:
+    def get_point_on_perimeter(self, angle: float) -> Type[Point]:
         """calculating the point on the perimeter of the Circle
         instance with the given angle
 
@@ -487,7 +497,7 @@ class Circle(object):
         y = y0 + (r) * (np.sin(angle))
         return Point(x, y)
 
-    def navigator(self, start: float, step: float, rounds: int) -> Point:
+    def navigator(self, start: float, step: float, rounds: int) -> Type[Point]:
         """a generator that generates Point objects located on the
         Circle instance with the given starting angle, step to take to
         reach to the next point as an angle, and number of rounds to
@@ -501,7 +511,7 @@ class Circle(object):
                 Circle before this generator terminates
 
         Raises:
-            BadEntries: when the given step is zero which makes it
+            RuntimeError: when the given step is zero which makes it
                 imposible to navigate on the Cirlces' perimeter
 
         Yields:
@@ -509,7 +519,7 @@ class Circle(object):
         """
 
         if step == 0:
-            raise BadEntries("the given step should not be zero")
+            raise RuntimeError("the given step should not be zero")
         r = 0
         location = (start) % (2 * np.pi)
         while r < rounds:
@@ -592,13 +602,13 @@ class Line(object):
         self.width = width
 
     @classmethod
-    def from_points(cls, point1: Point, point2: Point) -> "Line":
+    def from_points(cls, point1: Type[Point], point2: Type[Point]) -> "Line":
         """Alternative constructor to create a Line instance given two
         Point objects located on the line
 
         Args:
-            point1 (Point): the frist point located on the line
-            point2 (Point): the second point located on the line
+            point1 (Type[Point]): the frist point located on the line
+            point2 (Type[Point]): the second point located on the line
         """
 
         x1, y1 = point1.x, point1.y
@@ -611,12 +621,16 @@ class Line(object):
         return cls(slope, width)
 
     @classmethod
-    def from_point_and_inclination(cls, point: Point, inclination: float) -> "Line":
+    def from_point_and_inclination(
+        cls,
+        point: Type[Point],
+        inclination: float
+        ) -> "Line":
         """Alternative constructor to create a Line instance given a
         single point on the line and an inclination angle
 
         Args:
-            point (Point): a single point on the line
+            point (Type[Point]): a single point on the line
             inclination (float): the inclination of the line in radian
         """
 
@@ -651,12 +665,16 @@ class Line(object):
 
         return np.arctan(self.slope)
     
-    def normal(self, point):
+    def normal(self, point: Type[Point]) -> "Line":
         """returns a Line instance which is normal to the current Line
         instace
+        
+        Args:
+            point (Type[Point]): the given point on the Line instace
+                to draw the normal from
 
         Returns:
-            [type]: the Line instance normal to the current one
+            Type[Line]: the Line instance normal to the current one
         """
         
         if self.slope == 0:
@@ -679,7 +697,7 @@ class Line(object):
         try:
             res = (y - self.witdth) / (self.slope)
         except ZeroDivisionError:
-            raise BadEntries(
+            raise RuntimeError(
                 "the line instance has the slope of zero, asking for an 'x' coordinate is invalid in this case"
             )
         return res
@@ -709,7 +727,7 @@ class Line(object):
                 this generator
 
         Raises:
-            BadEntries: when the given step is zero which makes it
+            RuntimeError: when the given step is zero which makes it
                 impossible to navigate on the line
 
         Yields:
@@ -717,20 +735,20 @@ class Line(object):
         """
 
         if step == 0:
-            raise BadEntries("the given step should be a non-zero value")
-        if not is_on_perimeter(start, self) or not is_on_perimeter(end, self):
-            raise BadEntries(
+            raise RuntimeError("the given step should be a non-zero value")
+        if not operations.intersection(start, self) or not operations.intersection(end, self):
+            raise RuntimeError(
                 "the given start and end points should be loacated on the Line instance"
             )
         dist = 0
-        limit = distance(start, end)
+        limit = operations.distance(start, end)
         point = start
         delta_x = np.cos(self.inclination) * (step)
         delta_y = np.sin(self.inclination) * (step)
         while dist < limit:
             yield point
             point.move(delta_x, delta_y)
-            dist = distance(point, start)
+            dist = operations.distance(point, start)
 
     def move(self, delta_x: float, delta_y: float) -> None:
         """moving the Line instance with the given changes in its
@@ -797,19 +815,19 @@ class LineSegment(object):
             its 'x' and 'y' coordinates
     """
 
-    def __init__(self, end1: Point, end2: Point) -> None:
+    def __init__(self, end1: Type[Point], end2: Type[Point]) -> None:
         """Initializing the LineSegment object
 
         Args:
-            end1 (Point): the first end of the LineSegment entity
-            end2 (Point): the seconf end of the LineSegment entity
+            end1 (Type[Point]): the first end of the LineSegment entity
+            end2 (Type[Point]): the seconf end of the LineSegment entity
 
         Raises:
-            BadEntries: when the given points have the same coordinates
+            RuntimeError: when the given points have the same coordinates
         """
 
         if end1 == end2:
-            raise BadEntries(
+            raise RuntimeError(
                 "the given points have the same coordinates, they can't produce a line segment"
             )
         self.end1 = end1
@@ -817,7 +835,7 @@ class LineSegment(object):
 
     @classmethod
     def from_point_and_inclination(
-        cls, point: Point, inclination: float, size: float
+        cls, point: Type[Point], inclination: float, size: float
     ) -> "LineSegment":
         """Alternative constructor to create a LineSegment instance
         given a point and an inclination and a size"""
@@ -843,7 +861,7 @@ class LineSegment(object):
         return np.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
     @property
-    def circumcircle(self) -> Circle:
+    def circumcircle(self) -> Type[Circle]:
         """calculate the circumcircle of the LineSegment instance
 
         Returns:
@@ -883,7 +901,7 @@ class LineSegment(object):
         return res
 
     @property
-    def infinite(self) -> Line:
+    def infinite(self) -> Type[Line]:
         """calculate a Line object which witholds the LineSegment
         instance
 
@@ -907,8 +925,8 @@ class LineSegment(object):
 
         x = self.infinite.get_x(y)
         point = Point(x, y)
-        if not is_on_perimeter(point, self):
-            raise BadEntries(
+        if not operations.intersection(point, self):
+            raise RuntimeError(
                 "the current LineSegment instance does not reach the given width"
             )
         return x
@@ -927,13 +945,13 @@ class LineSegment(object):
 
         y = self.infinite.get_y(x)
         point = Point(x, y)
-        if not is_on_perimeter(point, self):
-            raise BadEntries(
+        if not operations.intersection(point, self):
+            raise RuntimeError(
                 "the current LineSegment instance does not reach the given length"
             )
         return y
 
-    def midpoint(self, ratio: float) -> Point:
+    def midpoint(self, ratio: float) -> Type[Point]:
         """finds a point on the LineSegment object located at the given
         ratio, taken the 'end1' attribute of the object as the starting
         point
@@ -949,14 +967,14 @@ class LineSegment(object):
         """
 
         if ratio < 0 or ratio > 1:
-            raise BadEntries("the given ratio should have a value between zero and one")
+            raise RuntimeError("the given ratio should have a value between zero and one")
         point = self.end1
         delta_x = (np.cos(self.inclination)) * (self.length) * (ratio)
         delta_y = (np.sin(self.inclination)) * (self.length) * (ratio)
         point.move(delta_x, delta_y)
         return point
 
-    def navigator(self, step: float) -> Point:
+    def navigator(self, step: float) -> Type[Point]:
         """a generator that generates Point objects that are located on
         the LineSegment instance with the given step as a ratio
 
@@ -969,7 +987,7 @@ class LineSegment(object):
         """
 
         if step < 0 or step > 1:
-            raise BadEntries("the given ratio should have a value between zero and one")
+            raise RuntimeError("the given ratio should have a value between zero and one")
         point = self.end1
         dist = 0
         delta_x = (np.cos(self.inclination)) * (self.length) * (step)
@@ -1010,3 +1028,11 @@ class LineSegment(object):
         ):
             return True
         return False
+
+
+class Arc(object):
+    pass
+
+
+class Interval(object):
+    pass
