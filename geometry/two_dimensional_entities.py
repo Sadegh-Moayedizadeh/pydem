@@ -1031,8 +1031,96 @@ class LineSegment(object):
 
 
 class Arc(object):
-    pass
+    """construct a two dimensional arc which is basically a portion of
+    a circle
+    """
+    
+    def __init__(
+        self,
+        base: Type[Circle],
+        end1: Type[Point],
+        end2: Type[Point]
+        ) -> None:
+        """initialize the Arc instance
+
+        Args:
+            base (Type[Circle]): the base circle object
+            end1 (Type[Point]): the first end of the arc
+            end2 (Type[Point]): the second end of the arc
+        
+        Raises:
+            RuntimeError: when any of the given points are not located
+                on the base circle
+        """
+
+        if not operations.intersection(end1, base) or operations.intersection(end2, base):
+            raise RuntimeError('the given points are not located on the given base circle')
+        self.base = base
+        self.end1 = end1
+        self.end2 = end2
+    
+    @classmethod
+    def from_angles(
+        cls,
+        base: Type[Circle],
+        angle1: float,
+        angle2: float
+        ) -> "Arc":
+        """Alternative constructor to create an arc from the given base
+        circle and corresponding angles calculated from the horizental
+        plain
+        
+        Args:
+            base (Type[Circle]): the base circle object
+            angle1 (float): the starting angle of the arc in radian
+            angle2 (float): the ending angle of the arc in radian
+        """
+        
+        end1 = base.get_point_on_perimeter(angle1)
+        end2 = base.get_point_on_perimeter(angle2)
+        return cls(base, end1, end2)
+    
+    def __eq__(self, other: Any) -> bool:
+        """the equality condition of two arcs
+
+        Args:
+            other (Any): the geometrical entity with which to compare
+                the equality condition of the current Arc instance
+        """
+        
+        if isinstance(other, Arc) and self.base == other.base:
+            if self.end1 == other.end1 and self.end2 == other.end2:
+                return True
+        return False
 
 
 class Interval(object):
-    pass
+    """construct an interval object which is a collection of arcs on
+    a same base circle or line segment on a same infinite line
+    """
+    
+    def __init__(
+        self,
+        base: Union[Type[Circle], Type[Line], Type[LineSegment]]
+        ) -> None:
+        """initialize the Interval instance with the given base entity
+
+        Args:
+            base (Union[Type[Circle], Type[Line], Type[LineSegment]]):
+                the base on which to construct the interval object
+        """
+        
+        self.base = base
+        self.entities = []
+    
+    def add(self, *entities):
+        pass
+    
+    def remove(self, *entities):
+        pass
+    
+    def __eq__(self, other: Any):
+        pass
+
+    def __repr__(self):
+        pass
