@@ -1094,14 +1094,14 @@ class Arc(object):
         return False
 
 
-class Interval(object):
-    """construct an interval object which is a collection of arcs on
-    a same base circle or line segment on a same infinite line
+class LineInterval(object):
+    """construct an interval object which is a collection of line
+    segments on a same direction
     """
     
     def __init__(
         self,
-        base: Union[Type[Circle], Type[Line], Type[LineSegment]]
+        base: Union[Type[Line], Type[LineSegment]]
         ) -> None:
         """initialize the Interval instance with the given base entity
 
@@ -1113,14 +1113,213 @@ class Interval(object):
         self.base = base
         self.entities = []
     
-    def add(self, *entities):
-        pass
+    def add(self, *entities: Type[LineSegment]) -> None:
+        """adding the given LineSegment to the intervals in the the
+        current LineInterval instance; the entities are ordered
+        according to their x coordinate
+        
+        Raises:
+            RuntimeError: when the given entity is not located
+                completely on the base line
+        """
+        
+        for entity in entities:
+            cond1 = bool(operations.intersection(entity.end1, self.base))
+            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if not cond1 or not cond2:
+                raise RuntimeError('the given entity is not located on the base line')
+            if len(self.entities) == 0:
+                self.entities.append(entity)
+                continue
+            prev = self._find_prev(entity)
+            if prev == -1:
+                nex = prev + 1
+                if entity.end2.x > self.entities[nex].end1.x:
+                    line1 = entity
+                    line2 = self.entities.pop(nex)
+                else:
+                    line1 = entity
+                    line2 = entity
+                prev += 1
+            else:
+                if prev < len(self.entities) - 1:
+                    nex = prev + 1
+                    if entity.end1.x < self.entities[prev].end2.x:
+                        if entity.end2.x > self.entities[nex].end1.x:
+                            line1 = self.entities.pop(prev)
+                            line2 = self.entities.pop(prev)
+                        else:
+                            line1 = self.entities.pop(prev)
+                            line2 = entity
+                    else:
+                        if entity.end2.x > self.entities[nex].end1.x:
+                            line1 = entity
+                            line2 = self.entities.pop(nex)
+                        else:
+                            line1 = entity
+                            line2 = entity
+                        prev += 1
+                else:
+                    if entity.end1.x < self.entities[prev].end2.x:
+                        line1 = self.entities.pop(prev)
+                        line2 = entity
+                    else:
+                        line1 = entity
+                        line2 = entity
+                        prev += 1
+            new = LineSegment(line1.end1, line2.end2)
+            self.entities.insert(prev, new)
     
-    def remove(self, *entities):
-        pass
-    
-    def __eq__(self, other: Any):
-        pass
+    def remove(self, *entities: Type[LineSegment]) -> None:
+        """removing the the coordinates that overlap with the given
+        LineSegment entity from the current LineInterval instance's
+        entities array
+        
+        Raises:
+            RuntimeError: when the given entity is not located
+                completely on the base line
+        """
+        
+        for entity in entities:
+            cond1 = bool(operations.intersection(entity.end1, self.base))
+            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if not cond1 or not cond2:
+                raise RuntimeError('the given entity is not located on the base line')
+            if len(self.entities) == 0:
+                return
+            prev = self._find_prev(entity)
+            if prev == -1:
+                nex = prev + 1
+                if entity.end2.x > self.entities[nex].end1.x:
+                    line2 = self.entities.pop(nex)
+                    new = LineSegment(entity.end2, line2.end2)
+                    self.entities.insert(0, new)
+                else:
+                    continue
+            else:
+                if prev < len(self.entities) - 1:
+                    nex = prev + 1
+                    if entity.end1.x < self.entities[prev].end2.x:
+                        if entity.end2.x > self.entities[nex].end1.x:
+                            line1 = self.entities.pop(prev)
+                            line2 = self.entities.pop(prev)
+                            new1 = LineSegment(line1.end1, entity.end1)
+                            new2 = LineSegment(entity.end2, line2.end2)
+                            self.entities.insert(prev, new1)
+                            self.entities.insert(nex, new2)
+                        else:
+                            line1 = self.entities.pop(prev)
+                            new = LineSegment(line1.end1, entity.end1)
+                            self.entities.insert(prev, new)
+                    else:
+                        if entity.end2.x > self.entities[nex].end1.x:
+                            line2 = self.entities.pop(nex)
+                            new = LineSegment(entity.end2, line2.end2)
+                            self.entities.insert(nex, new)
+                        else:
+                            continue
+                else:
+                    if entity.end1.x < self.entities[prev].end2.x:
+                        line1 = self.entities.pop(prev)
+                        new = LineSegment(line1.end1, entity.end1)
+                        self.entities.insert(prev, new)
+                    else:
+                        continue
 
-    def __repr__(self):
-        pass
+    def _find_prev(
+        self,
+        entity: Type[LineSegment]
+        ) -> int:
+        """finds the index of the an entity insdide the self.entities
+        array with the immidiate preceding x coordinate of its first
+        end using binary search
+
+        Args:
+            entity (Type[LineSegment]): the given entity to find its
+                previous entity in the self.entities array
+
+        Returns:
+            int: the index of the entity prior to the given one in the
+                self.entites array
+        """
+        
+        if len(self.entities) == 0:
+            return -1
+        left = 0
+        right = len(self.entities) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if entity.end1.x < self.entities[mid].end1.x:
+                right = mid - 1
+            else:
+                left = mid + 1
+        return left if self.entities[left].end1.x < entity.x else (left - 1)      
+
+    def __add__(self, other: "LineInterval") -> "LineInterval":
+        """adding the given LineInterval instance to the current one
+
+        Returns:
+            Type[LineInterval]: the current LineInterval instance after
+                the given being added to it
+        
+        Raises:
+            RuntimeError: when the given object to be added does not
+                have the same base line with the current instance
+        """
+        
+        if other.base != self.base:
+            raise RuntimeError(
+                'the given LineInterval instances do not have the same base lines'
+                )
+        for line in other.entities:
+            self.add(line)
+        return self
+
+    def __sub__(self, other: "LineInterval") -> "LineInterval":
+        """removing the given LineInterval instance from the current
+        one
+
+        Returns:
+            Type[LineInterval]: the current LineInterval instance after
+                the given removed from it
+        Raises:
+            RuntimeError: when the given object to be subtracted does not
+                have the same base line with the current instance
+        """
+        
+        if other.base != self.base:
+            raise RuntimeError(
+                'the given LineInterval instances do not have the same base lines'
+                )
+        for line in other.entities:
+            self.remove(line)
+        return self
+    
+    def __eq__(self, other: Any) -> bool:
+        """checking the equality condition between the current
+        LineInterval instance and the given object
+
+        Args:
+            other (Any): the given object to check the equality
+                condition with
+
+        Returns:
+            bool: True or False indicating the equality condition
+        """
+        
+        if isinstance(other, LineInterval):
+            for line1, line2 in zip(self.entities, other.entities):
+                if line1 != line2:
+                    return False
+            return True
+        return False
+
+    def __repr__(self) -> str:
+        """the string representation of the LineInterval object
+
+        Returns:
+            str: the string representation of the current instance
+        """
+        
+        res = [[(line.end1.x, line.end1.y), (line.end2.x, line.end2.y)] for line in self.entities]
+        return res.__str__
