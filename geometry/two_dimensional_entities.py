@@ -1101,13 +1101,13 @@ class LineInterval(object):
     
     def __init__(
         self,
-        base: Union[Type[Line], Type[LineSegment]]
+        base: Type[Line]
         ) -> None:
         """initialize the Interval instance with the given base entity
 
         Args:
-            base (Union[Type[Circle], Type[Line], Type[LineSegment]]):
-                the base on which to construct the interval object
+            base (Type[Line]): the base on which to construct the
+                interval object
         """
         
         self.base = base
@@ -1132,6 +1132,14 @@ class LineInterval(object):
                 self.entities.append(entity)
                 continue
             prev = self._find_prev(entity)
+            nex  = self._find_next(entity)
+            if nex > len(self.entities) - 1:
+                self.entities = self.entities[:prev + 1]
+            else:
+                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+            if len(self.entities) == 0:
+                self.entities.append(entity)
+                continue
             if prev == -1:
                 nex = prev + 1
                 if entity.end2.x > self.entities[nex].end1.x:
@@ -1188,6 +1196,13 @@ class LineInterval(object):
             if len(self.entities) == 0:
                 return
             prev = self._find_prev(entity)
+            nex  = self._find_next(entity)
+            if nex > len(self.entities) - 1:
+                self.entities = self.entities[:prev + 1]
+            else:
+                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+            if len(self.entities) == 0:
+                return
             if prev == -1:
                 nex = prev + 1
                 if entity.end2.x > self.entities[nex].end1.x:
@@ -1253,8 +1268,38 @@ class LineInterval(object):
                 right = mid - 1
             else:
                 left = mid + 1
-        return left if self.entities[left].end1.x < entity.x else (left - 1)      
+        return left if self.entities[left].end1.x < entity.end1.x else (left - 1)      
 
+    def _find_next(
+        self,
+        entity: Type[LineSegment]
+        ) -> int:
+        """finds the LineSegment instance in the self.entities array
+        which is the first element to have an x coordinate of its
+        second end bigger than the one for the given entity
+
+        Args:
+            entity (Type[LineSegment]): the given LineSegment instance
+                to find its interceding element in the self.entities
+                array
+
+        Returns:
+            int: the index of the next instance in the self.entities
+                array
+        """
+        
+        if len(self.entities) == 0:
+            return -1
+        left = 0
+        right = len(self.entities) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if entity.end2.x > self.entities[mid].end2.x:
+                right = mid - 1
+            else:
+                left = mid - 1
+        return right if self.entities[right].end2.x > entity.end2.x else (right + 1)
+    
     def __add__(self, other: "LineInterval") -> "LineInterval":
         """adding the given LineInterval instance to the current one
 
@@ -1323,3 +1368,23 @@ class LineInterval(object):
         
         res = [[(line.end1.x, line.end1.y), (line.end2.x, line.end2.y)] for line in self.entities]
         return res.__str__
+
+
+class ArcInterval(object):
+    def __init__(self, base):
+        self.base = base
+        self.entities = []
+    def add(self, *entities):
+        pass
+    def remove(self, *entities):
+        pass
+    def _find_prev(self, entity):
+        pass
+    def __eq__(self, other: Any):
+        pass
+    def __add__(self, other):
+        pass
+    def __sub__(self, other):
+        pass
+    def __repr__(self):
+        pass
