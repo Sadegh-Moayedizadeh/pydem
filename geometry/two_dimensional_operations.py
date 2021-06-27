@@ -2607,7 +2607,7 @@ def offset(entity1, entity2):
 
 @overload(shapes.Polygon, shapes.Point)
 def offset(entity1, entity2):
-    pass
+    return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Polygon, shapes.Polygon)
@@ -2622,22 +2622,31 @@ def offset(entity1, entity2):
 
 @overload(shapes.Polygon, shapes.Circle)
 def offset(entity1, entity2):
-    pass
+    interval = shapes.ArcInterval(entity2)
+    for line in entity1.edges:
+        interval.add(offset(line, entity2))
+    return interval
 
 
 @overload(shapes.Polygon, shapes.Line)
 def offset(entity1, entity2):
-    pass
+    interval = shapes.LineInterval(entity2)
+    for line in entity1.edges:
+        interval.add(offset(line, entity2))
+    return interval
 
 
 @overload(shapes.Polygon, shapes.LineSegment)
 def offset(entity1, entity2):
-    pass
+    interval = shapes.LineInterval(entity2)
+    for line in entity1.edges:
+        interval.add(offset(line, entity2))
+    return interval
 
 
 @overload(shapes.Rectangle, shapes.Point)
 def offset(entity1, entity2):
-    pass
+    return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Rectangle, shapes.Polygon)
