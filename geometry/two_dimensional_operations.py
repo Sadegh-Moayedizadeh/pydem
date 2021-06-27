@@ -1847,7 +1847,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity1, offset(entity1, entity2))
+    return distance(entity1, progection(entity1, entity2))
 
 
 @overload(shapes.Point, shapes.LineSegment)
@@ -1866,7 +1866,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    point2 = offset(entity1, entity2.infinite)
+    point2 = progection(entity1, entity2.infinite)
     if intersection(point2, entity2):
         return distance(entity1, point2)
     return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
@@ -2214,7 +2214,7 @@ def distance(
     
     if intersection(entity1, entity2):
         return 0
-    return distance(entity1.center, offset(entity1.center, entity2)) - entity1.radius
+    return distance(entity1.center, progection(entity1.center, entity2)) - entity1.radius
 
 
 @overload(shapes.Circle, shapes.LineSegment)
@@ -2236,7 +2236,7 @@ def distance(
     
     if intersection(entity1, entity2):
         return 0
-    point2 = offset(entity1.center, entity2.infinite)
+    point2 = progection(entity1.center, entity2.infinite)
     if intersection(point2, entity2):
         return distance(entity1.center, point2) - entity1.radius
     return min(distance(entity1.center, point2), distance(entity1.center, point2)) - entity1.radius
@@ -2485,11 +2485,11 @@ def distance(
 
 
 @overload(shapes.Point, shapes.Point)
-def offset(
+def progection(
     entity1: Type[shapes.Point],
     entity2: Type[shapes.Point]
     ) -> Type[shapes.Point]:
-    """finds the offset of the first given point on the second one
+    """finds the progection of the first given point on the second one
 
     Args:
         entity1 (Type[shapes.Point]): the first given shapes.Point
@@ -2498,7 +2498,7 @@ def offset(
             instance
 
     Returns:
-        Type[shapes.Point]: the offset of the first entity on the
+        Type[shapes.Point]: the progection of the first entity on the
             second one
     """
     
@@ -2506,11 +2506,11 @@ def offset(
 
 
 @overload(shapes.Point, shapes.Polygon)
-def offset(
+def progection(
     entity1: Type[shapes.Point],
     entity2: Type[shapes.Polygon]
     ) -> Tuple[Type[shapes.Point]]:
-    """finds the offset of the given point on the given polygon
+    """finds the progection of the given point on the given polygon
 
     Args:
         entity1 (Type[shapes.Point]): the given shapes.Point instance
@@ -2518,7 +2518,7 @@ def offset(
             instance
 
     Returns:
-        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+        Tuple[Type[shapes.Point]]: the progection of the first entity on the
             second one
     """
     
@@ -2528,11 +2528,11 @@ def offset(
 
 
 @overload(shapes.Point, shapes.Rectangle)
-def offset(
+def progection(
     entity1: Type[shapes.Point],
     entity2: Type[shapes.Rectangle]
     ) -> Tuple[Type[shapes.Point]]:
-    """finds the offset of the given point on the given rectangle
+    """finds the progection of the given point on the given rectangle
 
     Args:
         entity1 (Type[shapes.Point]): the given shapes.Point instance
@@ -2540,7 +2540,7 @@ def offset(
             instance
 
     Returns:
-        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+        Tuple[Type[shapes.Point]]: the progection of the first entity on the
             second one
     """
     
@@ -2550,15 +2550,15 @@ def offset(
 
 
 @overload(shapes.Point, shapes.Circle)
-def offset(entity1, entity2):
-    """finds the offset of the given point on the given circle
+def progection(entity1, entity2):
+    """finds the progection of the given point on the given circle
 
     Args:
         entity1 (Type[shapes.Point]): the given shapes.Point instance
         entity2 (Type[shapes.Circle]): the given shapes.Circle instance
 
     Returns:
-        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+        Tuple[Type[shapes.Point]]: the progection of the first entity on the
             second one
     """
     
@@ -2569,15 +2569,15 @@ def offset(entity1, entity2):
 
 
 @overload(shapes.Point, shapes.Line)
-def offset(entity1, entity2):
-    """finds the offset of the given point on the given line
+def progection(entity1, entity2):
+    """finds the progection of the given point on the given line
 
     Args:
         entity1 (Type[shapes.Point]): the given shapes.Point instance
         entity2 (Type[shapes.Line]): the given shapes.Line instance
 
     Returns:
-        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+        Tuple[Type[shapes.Point]]: the progection of the first entity on the
             second one
     """
 
@@ -2586,8 +2586,8 @@ def offset(entity1, entity2):
 
 
 @overload(shapes.Point, shapes.LineSegment)
-def offset(entity1, entity2):
-    """finds the offset of the given point on the given line segment
+def progection(entity1, entity2):
+    """finds the progection of the given point on the given line segment
 
     Args:
         entity1 (Type[shapes.Point]): the given shapes.Point instance
@@ -2595,172 +2595,172 @@ def offset(entity1, entity2):
             shapes.LineSegment instance
 
     Returns:
-        Tuple[Type[shapes.Point]]: the offset of the first entity on the
+        Tuple[Type[shapes.Point]]: the progection of the first entity on the
             second one
     """
 
-    point = offset(entity1, entity2.infinite)
+    point = progection(entity1, entity2.infinite)
     if intersection(point, entity2):
         return point
     return None
 
 
 @overload(shapes.Polygon, shapes.Point)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Polygon, shapes.Polygon)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Polygon, shapes.Rectangle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Polygon, shapes.Circle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     interval = shapes.ArcInterval(entity2)
     for line in entity1.edges:
-        interval.add(offset(line, entity2))
+        interval.add(progection(line, entity2))
     return interval
 
 
 @overload(shapes.Polygon, shapes.Line)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     interval = shapes.LineInterval(entity2)
     for line in entity1.edges:
-        interval.add(offset(line, entity2))
+        interval.add(progection(line, entity2))
     return interval
 
 
 @overload(shapes.Polygon, shapes.LineSegment)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     interval = shapes.LineInterval(entity2)
     for line in entity1.edges:
-        interval.add(offset(line, entity2))
+        interval.add(progection(line, entity2))
     return interval
 
 
 @overload(shapes.Rectangle, shapes.Point)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Rectangle, shapes.Polygon)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Rectangle, shapes.Rectangle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Rectangle, shapes.Circle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Rectangle, shapes.Line)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Rectangle, shapes.LineSegment)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.Point)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.Polygon)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.Rectangle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.Circle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.Line)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Circle, shapes.LineSegment)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.Point)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.Polygon)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.Rectangle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.Circle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.Line)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.Line, shapes.LineSegment)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.Point)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.Polygon)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.Rectangle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.Circle)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.Line)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
 @overload(shapes.LineSegment, shapes.LineSegment)
-def offset(entity1, entity2):
+def progection(entity1, entity2):
     pass
 
 
