@@ -1124,10 +1124,19 @@ class LineInterval(object):
         """
         
         for entity in entities:
-            cond1 = bool(operations.intersection(entity.end1, self.base))
-            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if isinstance(self.base, LineSegment):
+                cond1 = bool(operations.intersection(entity.end1, self.base.infinite))
+                cond2 = bool(operations.intersection(entity.end2, self.base.infinite))
+            else:
+                cond1 = bool(operations.intersection(entity.end1, self.base))
+                cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
                 raise RuntimeError('the given entity is not located on the base line')
+            if isinstance(self.base, LineSegment):
+                if entity.end1.x < self.base.end1.x:
+                    entity.end1 = self.base.end1
+                if entity.end2.x > self.base.end2.x:
+                    entity.end2 = self.base.end2
             if len(self.entities) == 0:
                 self.entities.append(entity)
                 continue
@@ -1187,12 +1196,21 @@ class LineInterval(object):
             RuntimeError: when the given entity is not located
                 completely on the base line
         """
-        
+
         for entity in entities:
-            cond1 = bool(operations.intersection(entity.end1, self.base))
-            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if isinstance(self.base, LineSegment):
+                cond1 = bool(operations.intersection(entity.end1, self.base.infinite))
+                cond2 = bool(operations.intersection(entity.end2, self.base.infinite))
+            else:
+                cond1 = bool(operations.intersection(entity.end1, self.base))
+                cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
                 raise RuntimeError('the given entity is not located on the base line')
+            if isinstance(self.base, LineSegment):
+                if entity.end1.x < self.base.end1.x:
+                    entity.end1 = self.base.end1
+                if entity.end2.x > self.base.end2.x:
+                    entity.end2 = self.base.end2
             if len(self.entities) == 0:
                 return
             prev = self._find_prev(entity)
