@@ -104,7 +104,7 @@ class Polygon(object):
         object: base class to create python objects
 
     Methods:
-        as_regular: creates a regular polygon due to the given centre
+        as_regular: creates a regular polygon due to the given center
             and radius of the circumcircle and the number of vertices
         number_of_vertices: returns the number of vertices of the
             Polygon instance
@@ -153,7 +153,7 @@ class Polygon(object):
     @classmethod
     def as_regular(
         cls,
-        centre: Type[Point],
+        center: Type[Point],
         diameter: float,
         number_of_vertices: int
     ) -> "Polygon":
@@ -163,7 +163,7 @@ class Polygon(object):
         loaceted at the horizental diameter of the circumcircle
 
         Args:
-            centre (Type[Point]): a Point object which is the centre of the
+            center (Type[Point]): a Point object which is the center of the
                 circumcircle of the polygons
             diamete (float): the diameter of the circumcircle of the
                 polygon
@@ -171,7 +171,7 @@ class Polygon(object):
                 polygon
         """
 
-        circumcircle = Circle(centre, diameter)
+        circumcircle = Circle(center, diameter)
         n = number_of_vertices
         points = [
             circumcircle.get_point_on_perimeter(angle)
@@ -190,7 +190,7 @@ class Polygon(object):
         return len(self.vertices)
 
     @property
-    def centre(self) -> Type[Point]:
+    def center(self) -> Type[Point]:
         """calculates the center of the polygon
 
         Returns:
@@ -268,7 +268,7 @@ class Rectangle(Polygon):
         midlines: finds the two midlines of the Rectangle instance as a
             tuple with the longer one at the index zero
         diagonals: finds the diagonals of the Rectangle instance
-        centre: finds the centre of the Rectangle instance
+        center: finds the center of the Rectangle instance
         circumcircle: finds the circumcircle of the Rectangle instance
     """
 
@@ -397,11 +397,11 @@ class Rectangle(Polygon):
         return lines
 
     @property
-    def centre(self) -> Point:
-        """calculating the centre of the Rectangle instance
+    def center(self) -> Point:
+        """calculating the center of the Rectangle instance
 
         Returns:
-            the centre of the Rectangle instance as a Point object
+            the center of the Rectangle instance as a Point object
         """
 
         return self.diagonals[0].midpoint
@@ -415,7 +415,7 @@ class Rectangle(Polygon):
             object
         """
 
-        return Circle(centre=self.centre, diameter=self.diagonals[0].length)
+        return Circle(center=self.center, diameter=self.diagonals[0].length)
 
 
 class Circle(object):
@@ -434,14 +434,14 @@ class Circle(object):
             perimeter of the Circle instance with the given step in
             radian
         move: moves the Circle instance with the given changes in the
-            coordinates of its centre
+            coordinates of its center
     """
 
-    def __init__(self, centre: Point, diameter: float) -> None:
+    def __init__(self, center: Point, diameter: float) -> None:
         """Initialize the Circle object
 
         Args:
-            centre (Point): the centre of the circle
+            center (Point): the center of the circle
             diameter (float): the diameter of the circle
 
         Raises:
@@ -449,7 +449,7 @@ class Circle(object):
                 number
         """
 
-        self.centre = centre
+        self.center = center
         self.diameter = diameter
         if self.diameter <= 0:
             raise RuntimeError("the given diameter should be a positive non-zero number")
@@ -492,7 +492,7 @@ class Circle(object):
         """
 
         r = (self.diameter) / 2
-        x0, y0 = self.centre.x, self.centre.y
+        x0, y0 = self.center.x, self.center.y
         x = x0 + (r) * (np.cos(angle))
         y = y0 + (r) * (np.sin(angle))
         return Point(x, y)
@@ -552,7 +552,7 @@ class Circle(object):
                 Circle instance
         """
 
-        self.centre.move(delta_x, delta_y)
+        self.center.move(delta_x, delta_y)
 
     def __eq__(self, other: Any) -> bool:
         """Defining the equality condition of the Circle instance
@@ -568,7 +568,7 @@ class Circle(object):
 
         if (
             isinstance(other, Circle)
-            and self.centre == other.centre
+            and self.center == other.center
             and self.diameter == other.diameter
         ):
             return True
@@ -882,9 +882,9 @@ class LineSegment(object):
             a Circle object having the LineSegment instance as its diameter
         """
 
-        centre = self.midpoint(0.5)
+        center = self.midpoint(0.5)
         diameter = self.length
-        return Circle(centre, diameter)
+        return Circle(center, diameter)
 
     @property
     def inclination(self) -> float:
@@ -1111,6 +1111,13 @@ class Arc(object):
 class LineInterval(object):
     """construct an interval object which is a collection of line
     segments on a same direction
+    
+    Methods:
+        add: adds the given entity to the interval
+        remove: removes the given entity from the interval
+    
+    also these methods where overridden:
+        __repr__, __add__, __sub__, __eq__
     """
     
     def __init__(
@@ -1403,20 +1410,279 @@ class LineInterval(object):
 
 
 class ArcInterval(object):
-    def __init__(self, base):
+    """construct an interval object which is a collection of arcs on a
+    same base circle
+    
+    Methods:
+        add: adds the given entity to the interval
+        remove: removes the given entity from the interval
+    
+    also these methods where overridden:
+        __repr__, __add__, __sub__, __eq__
+    """
+    
+    def __init__(
+        self,
+        base: Type[Circle]
+        ) -> None:
+        """initialize the Interval instance with the given base entity
+
+        Args:
+            base (Type[Circle]): the base on which to construct the
+                interval object
+        """
+        
         self.base = base
         self.entities = []
-    def add(self, *entities):
-        pass
-    def remove(self, *entities):
-        pass
-    def _find_prev(self, entity):
-        pass
-    def __eq__(self, other: Any):
-        pass
-    def __add__(self, other):
-        pass
-    def __sub__(self, other):
-        pass
-    def __repr__(self):
-        pass
+    
+    def add(self, *entities: Type[Arc]) -> None:
+        """adding the given Arc to the intervals in the the current
+        ArcInterval instance; the entities are ordered according to
+        their angle on the base circle
+        
+        Raises:
+            RuntimeError: when the given entity is not located
+                completely on the base circle
+        """
+        
+        for entity in entities:
+            cond1 = bool(operations.intersection(entity.end1, self.base))
+            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if not cond1 or not cond2:
+                raise RuntimeError('the given entity is not located on the base line')
+            if len(self.entities) == 0:
+                self.entities.append(entity)
+                continue
+            prev = self._find_prev(entity)
+            nex  = self._find_next(entity)
+            if nex > len(self.entities) - 1:
+                self.entities = self.entities[:prev + 1]
+            else:
+                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+            if len(self.entities) == 0:
+                self.entities.append(entity)
+                continue
+            if prev == -1:
+                nex = prev + 1
+                if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                    line1 = entity
+                    line2 = self.entities.pop(nex)
+                else:
+                    line1 = entity
+                    line2 = entity
+                prev += 1
+            else:
+                if prev < len(self.entities) - 1:
+                    nex = prev + 1
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                            line1 = self.entities.pop(prev)
+                            line2 = self.entities.pop(prev)
+                        else:
+                            line1 = self.entities.pop(prev)
+                            line2 = entity
+                    else:
+                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                            line1 = entity
+                            line2 = self.entities.pop(nex)
+                        else:
+                            line1 = entity
+                            line2 = entity
+                        prev += 1
+                else:
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                        line1 = self.entities.pop(prev)
+                        line2 = entity
+                    else:
+                        line1 = entity
+                        line2 = entity
+                        prev += 1
+            new = LineSegment(line1.end1, line2.end2)
+            self.entities.insert(prev, new)
+    
+    def remove(self, *entities: Type[LineSegment]) -> None:
+        """removing the the coordinates that overlap with the given
+        Arc entity from the current ArcInterval instance's entities
+        array
+        
+        Raises:
+            RuntimeError: when the given entity is not located
+                completely on the base circle
+        """
+
+        for entity in entities:
+            cond1 = bool(operations.intersection(entity.end1, self.base))
+            cond2 = bool(operations.intersection(entity.end2, self.base))
+            if not cond1 or not cond2:
+                raise RuntimeError('the given entity is not located on the base line')
+            if len(self.entities) == 0:
+                return
+            prev = self._find_prev(entity)
+            nex  = self._find_next(entity)
+            if nex > len(self.entities) - 1:
+                self.entities = self.entities[:prev + 1]
+            else:
+                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+            if len(self.entities) == 0:
+                return
+            if prev == -1:
+                nex = prev + 1
+                if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                    line2 = self.entities.pop(nex)
+                    new = LineSegment(entity.end2, line2.end2)
+                    self.entities.insert(0, new)
+                else:
+                    continue
+            else:
+                if prev < len(self.entities) - 1:
+                    nex = prev + 1
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                            line1 = self.entities.pop(prev)
+                            line2 = self.entities.pop(prev)
+                            new1 = LineSegment(line1.end1, entity.end1)
+                            new2 = LineSegment(entity.end2, line2.end2)
+                            self.entities.insert(prev, new1)
+                            self.entities.insert(nex, new2)
+                        else:
+                            line1 = self.entities.pop(prev)
+                            new = LineSegment(line1.end1, entity.end1)
+                            self.entities.insert(prev, new)
+                    else:
+                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                            line2 = self.entities.pop(nex)
+                            new = LineSegment(entity.end2, line2.end2)
+                            self.entities.insert(nex, new)
+                        else:
+                            continue
+                else:
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                        line1 = self.entities.pop(prev)
+                        new = LineSegment(line1.end1, entity.end1)
+                        self.entities.insert(prev, new)
+                    else:
+                        continue
+    
+    def _find_prev(self, entity: Type[Arc]) -> int:
+        """finds the Arc instance in the self.entities array which is
+        the first element to have an angle on the base circle bigger
+        than the one for the given entity
+
+        Args:
+            entity (Type[Arc]): the given Arc instance to find its
+                interceding element in the self.entities array
+
+        Returns:
+            int: the index of the next instance in the self.entities
+                array
+        """
+        
+        if len(self.entities) == 0:
+            return -1
+        left = 0
+        right = len(self.entities) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[mid].end2):
+                right = mid - 1
+            else:
+                left = mid - 1
+        if self.base.get_angle(self.entities[right].end2) > self.base.get_angle(entity.end2):
+            return right 
+        return (right + 1)
+    
+    def find_next(self, entity: Type[Arc]) -> int:
+        """finds the Arc instance in the self.entities array which is
+        the first element to have an angle if its second end on the
+        base circle bigger than the one for the given entity
+
+        Args:
+            entity (Type[Arc]): the given Arc instance to find its
+                interceding element in the self.entities array
+
+        Returns:
+            int: the index of the next instance in the self.entities
+                array
+        """
+        
+        if len(self.entities) == 0:
+            return -1
+        left = 0
+        right = len(self.entities) - 1
+        while left < right:
+            mid = (left + right) // 2
+            if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[mid].end2):
+                right = mid - 1
+            else:
+                left = mid - 1
+        if self.base.get_angle(self.entities[right].end2) > self.base.get_angle(entity.end2):
+            return right 
+        return (right + 1)
+    
+    def __eq__(self, other: Any) -> bool:
+        """checking the equality condition between the current
+        ArcInterval instance and the given object
+
+        Args:
+            other (Any): the given object to check the equality
+                condition with
+
+        Returns:
+            bool: True or False indicating the equality condition
+        """
+        
+        if isinstance(other, ArcInterval):
+            for arc1, arc2 in zip(self.entities, other.entities):
+                if arc1 != arc2:
+                    return False
+            return True
+        return False
+    
+    def __add__(self, other: "ArcInterval") -> "ArcInterval":
+        """adding the given ArcInterval instance to the current one
+
+        Returns:
+            Type[ArcInterval]: the current ArcInterval instance after
+                the given being added to it
+        
+        Raises:
+            RuntimeError: when the given object to be added does not
+                have the same base circlee with the current instance
+        """
+        
+        if other.base != self.base:
+            raise RuntimeError(
+                'the given LineInterval instances do not have the same base lines'
+                )
+        for arc in other.entities:
+            self.add(arc)
+        return self
+    
+    def __sub__(self, other: "ArcInterval") -> "ArcInterval":
+        """removing the given ArcInterval instance from the current one
+
+        Returns:
+            Type[ArcInterval]: the current ArcInterval instance after
+                the given removed from it
+        Raises:
+            RuntimeError: when the given object to be subtracted does not
+                have the same base line with the current instance
+        """
+        
+        if other.base != self.base:
+            raise RuntimeError(
+                'the given LineInterval instances do not have the same base lines'
+                )
+        for arc in other.entities:
+            self.remove(arc)
+        return self
+    
+    def __repr__(self) -> str:
+        """the string representation of the ArcInterval object
+
+        Returns:
+            str: the string representation of the current instance
+        """
+        
+        res = [(self.base.get_angle(arc.end1), self.base.get_angle(arc.end2)) for arc in self.entities]
+        return res.__str__
