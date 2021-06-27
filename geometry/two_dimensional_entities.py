@@ -1229,8 +1229,12 @@ class LineInterval(object):
                 raise RuntimeError('the given entity is not located on the base line')
             if isinstance(self.base, LineSegment):
                 if entity.end1.x < self.base.end1.x:
+                    if entity.end2.x < self.base.end1.x:
+                        continue
                     entity.end1 = self.base.end1
                 if entity.end2.x > self.base.end2.x:
+                    if entity.end1.x > self.base.end2.x:
+                        continue
                     entity.end2 = self.base.end2
             if len(self.entities) == 0:
                 return
