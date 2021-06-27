@@ -496,7 +496,21 @@ class Circle(object):
         x = x0 + (r) * (np.cos(angle))
         y = y0 + (r) * (np.sin(angle))
         return Point(x, y)
+    
+    def get_angle(self, point: Type[Point]) -> float:
+        """calculate the angle of the given point on the perimeter of
+        the circle instance in respect to the horizental diameter
 
+        Args:
+            point (Type[Point]): the given Point istance
+
+        Returns:
+            float: the angle of the point on circle between 0 and
+                2*np.math.pi radians
+        """
+        
+        return (Line.from_points(self.center, point).inclination) % (2*np.math.pi)
+    
     def navigator(self, start: float, step: float, rounds: int) -> Type[Point]:
         """a generator that generates Point objects located on the
         Circle instance with the given starting angle, step to take to
