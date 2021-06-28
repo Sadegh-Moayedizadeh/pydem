@@ -2775,38 +2775,182 @@ def projection(
 
 
 @overload(shapes.Rectangle, shapes.Point)
-def projection(entity1, entity2):
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the projection of the given rectangle on the given point
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        Type[shapes.Point]: the projection of the first entity on
+            the second one
+    """
+    
     return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Rectangle, shapes.Polygon)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.LineSegment]]:
+    """finds the projection of the given rectangle on the given polygon
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.LineSegment]]: the projection of the first
+            entity on the second one
+    """
+    
+    res = []
+    for line in entity2.edges:
+        interval = shapes.LineInterval(line)
+        for line2 in entity1.edges:
+            cross1 = shapes.LineSegment(line2.end1, entity2.center)
+            cross2 = shapes.LineSegment(line2.end2, entity2.center)
+            point1 = intersection(cross1, line.infinite)
+            point2 = intersection(cross2, line.infinite)
+            if point1 and point2:
+                interval.add(shapes.LineSegment(point1, point2))
+        if interval.entities:
+            res.append(interval.entities[0])
+    return tuple(res)
 
 
 @overload(shapes.Rectangle, shapes.Rectangle)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.LineSegment]]:
+    """finds the projection of the first given rectangle on the second
+    given rectangle
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the first given 
+            shapes.Rectangle instance
+        entity2 (Type[shapes.Rectangle]): the second given 
+            shapes.rectangle instance
+
+    Returns:
+        Tuple[Type[shapes.LineSegment]]: the projection of the first
+            entity on the second one
+    """
+    
+    res = []
+    for line in entity2.edges:
+        interval = shapes.LineInterval(line)
+        for line2 in entity1.edges:
+            cross1 = shapes.LineSegment(line2.end1, entity2.center)
+            cross2 = shapes.LineSegment(line2.end2, entity2.center)
+            point1 = intersection(cross1, line.infinite)
+            point2 = intersection(cross2, line.infinite)
+            if point1 and point2:
+                interval.add(shapes.LineSegment(point1, point2))
+        if interval.entities:
+            res.append(interval.entities[0])
+    return tuple(res)
 
 
 @overload(shapes.Rectangle, shapes.Circle)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Circle]
+    ) -> Type[shapes.Arc]:
+    """finds the projection of the given rectangle on the given circle
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        Type[shapes.Arc]: the projection of the first entity on the
+            second one
+    """
+    
+    interval = shapes.ArcInterval(entity2)
+    for line in entity1.edges:
+        interval.add(projection(line, entity2))
+    return interval.entities[0]
 
 
 @overload(shapes.Rectangle, shapes.Line)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.Line]
+    ) -> Type[shapes.LineSegment]:
+    """finds the projection of the given rectangle on the given line
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Type[shapes.LineSegment]: the projection of the first entity on
+            the second one
+    """
+    
+    interval = shapes.LineInterval(entity2)
+    for line in entity1.edges:
+        interval.add(projection(line, entity2))
+    return interval.entities[0]
 
 
 @overload(shapes.Rectangle, shapes.LineSegment)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Rectangle],
+    entity2: Type[shapes.LineSegment]
+    ) -> Type[shapes.LineSegment]:
+    """finds the projection of the given rectangle on the given line
+    segment
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+        entity2 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+
+    Returns:
+        Type[shapes.LineSegment]: the projection of the first entity on
+            the second one
+    """
+    
+    interval = shapes.LineInterval(entity2)
+    for line in entity1.edges:
+        interval.add(projection(line, entity2))
+    if interval.entities:
+        return interval.entities[0]
+    return None
 
 
 @overload(shapes.Circle, shapes.Point)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.Circle],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the projection of the given circle on the given point
+
+    Args:
+        entity1 (Type[shapes.Circle]): the given shapes.Circle instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        Type[shapes.LineSegment]: the projection of the first entity on
+            the second one
+    """
+    
+    return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.Circle, shapes.Polygon)
