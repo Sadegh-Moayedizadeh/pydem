@@ -3230,30 +3230,186 @@ def projection(
 
 
 @overload(shapes.LineSegment, shapes.Point)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Point]
+    ) -> Type[shapes.Point]:
+    """finds the projection of the given line segment on the given
+    point
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Point]): the given shapes.Point instance
+
+    Returns:
+        Type[shapes.Point]: the projection of the first entity on the
+            second one
+    """
+    
+    return shapes.Point(entity2.x, entity2.y)
 
 
 @overload(shapes.LineSegment, shapes.Polygon)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Polygon]
+    ) -> Tuple[Type[shapes.LineSegment]]:
+    """finds the projection of the given line segment on the given
+    polygon
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Polygon]): the given shapes.Polygon
+            instance
+
+    Returns:
+        Tuple[Type[shapes.LineSegment]]: the projection of the first entity on the
+            second one
+    """
+    
+    line1 = shapes.LineSegment(entity1.end1, entity2.center)
+    line2 = shapes.LineSegment(entity1.end2, entity2.center)
+    lines = []
+    for line in entity2.edges:
+        inter1 = intersection(line, line1)
+        inter2 = intersection(line, line2)
+        if inter1:
+            lines.append(shapes.LineSegment(line.end1, inter1))
+            lines.append(shapes.LineSegment(inter1, line.end2))
+        elif inter2:
+            lines.append(shapes.LineSegment(line.end1, inter2))
+            lines.append(shapes.LineSegment(inter2, line.end2))
+        else:
+            lines.append(line)
+    res = []
+    pol = shapes.Polygon(entity1.end1, entity1.end2, entity2.center)
+    for line in lines:
+        if is_inside(line.end1, pol) or is_inside(line.end2, pol):
+            res.eppend(line)
+    return tuple(res)
 
 
 @overload(shapes.LineSegment, shapes.Rectangle)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Rectangle]
+    ) -> Tuple[Type[shapes.LineSegment]]:
+    """finds the projection of the given line segment on the given
+    rectangle
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Rectangle]): the given shapes.Rectangle
+            instance
+
+    Returns:
+        Tuple[Type[shapes.LineSegment]]: the projection of the first entity on the
+            second one
+    """
+    
+    line1 = shapes.LineSegment(entity1.end1, entity2.center)
+    line2 = shapes.LineSegment(entity1.end2, entity2.center)
+    lines = []
+    for line in entity2.edges:
+        inter1 = intersection(line, line1)
+        inter2 = intersection(line, line2)
+        if inter1:
+            lines.append(shapes.LineSegment(line.end1, inter1))
+            lines.append(shapes.LineSegment(inter1, line.end2))
+        elif inter2:
+            lines.append(shapes.LineSegment(line.end1, inter2))
+            lines.append(shapes.LineSegment(inter2, line.end2))
+        else:
+            lines.append(line)
+    res = []
+    pol = shapes.Polygon(entity1.end1, entity1.end2, entity2.center)
+    for line in lines:
+        if is_inside(line.end1, pol) or is_inside(line.end2, pol):
+            res.eppend(line)
+    return tuple(res)
 
 
 @overload(shapes.LineSegment, shapes.Circle)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Circle]
+    ) -> Type[shapes.Arc]:
+    """finds the projection of the given line segment on the given
+    circlee
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Circle]): the given shapes.Circle instance
+
+    Returns:
+        Type[shapes.Arc]: the projection of the first entity on the
+            second one
+    """
+    
+    line1 = shapes.LineSegment(entity1.end1, entity2.center)
+    line2 = shapes.LineSegment(entity1.end2, entity2.center)
+    point1 = intersection(line1, entity2)
+    point2 = intersection(line2, entity2)
+    return shapes.Arc(entity2, point1, point2)
 
 
 @overload(shapes.LineSegment, shapes.Line)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.Line]
+    ) -> Type[shapes.LineSegment]:
+    """finds the projection of the given line segment on the given
+    line
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given shapes.LineSegment
+            instance
+        entity2 (Type[shapes.Line]): the given shapes.Line instance
+
+    Returns:
+        Type[shapes.LineSegment]: the projection of the first entity on the
+            second one
+    """
+    
+    point1 = projection(entity1.end1, entity2)
+    point2 = projection(entity1.end2, entity2)
+    return shapes.LineSegment(point1, point2)
 
 
 @overload(shapes.LineSegment, shapes.LineSegment)
-def projection(entity1, entity2):
-    pass
+def projection(
+    entity1: Type[shapes.LineSegment],
+    entity2: Type[shapes.LineSegment]
+    ) -> Type[shapes.Linesegment]:
+    """finds the projection of the first given line segment on the
+    second given line segment
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the first given
+            shapes.LineSegment instance
+        entity2 (Type[shapes.LineSegment]): the second given 
+            shapes.Rectangle instance
+
+    Returns:
+        Type[shapes.LineSegment]: the projection of the first entity on the
+            second one
+    """
+    
+    line = projection(entity1, entity2.infinite)
+    inter1 = intersection(line.end1, entity2)
+    inter2 = intersection(line.end2, entity2)
+    if inter1 and inter2:
+        return line
+    if inter1:
+        if intersection(entity2.end1, line):
+            return shapes.LineSegment(inter1, entity2.end1)
+        return shapes.LineSegment(inter1, entity2.end2)
+    if inter2:
+        if intersection(entity2.end1, line):
+            return shapes.LineSegment(inter2, entity2.end1)
+        return shapes.LineSegment(inter2, entity2.end2)
+    return None
