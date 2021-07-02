@@ -1,5 +1,5 @@
 """module containing all the operations applicable on two
-dimentional geometric shapes
+dimentional geometrical entities
 """
 
 import numpy as np

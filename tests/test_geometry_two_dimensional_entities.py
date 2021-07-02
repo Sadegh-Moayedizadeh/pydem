@@ -3,7 +3,6 @@ two_dimensional_entities module from geometry sub-package
 """
 
 import unittest
-from ..generation.exceptions import BadEntries
 from geometry import two_dimensional_entities as td
 import numpy as np
 
