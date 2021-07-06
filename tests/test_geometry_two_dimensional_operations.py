@@ -1008,198 +1008,185 @@ class TestIntersection(unittest.TestCase):
         circle = shapes.Circle(shapes.Point(0, 0), 0.5)
         self.assertEqual(operations.intersection(rec, circle), None)
     
-    def test_for_polygon_and_circle2(self):
-        """the second test for intersection between a polygon and a
-        circle with them the given circle touching the given polygon
+    def test_for_rectangle_and_circle2(self):
+        """the second test for intersection between a rectangle and a
+        circle with them the given circle touching the given rectangle
         on its vertex
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        circle = shapes.Circle(shapes.Point(0, -2), 1)
-        self.assertEqual(operations.intersection(pol, circle), v1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(3, 3), 1)
+        self.assertEqual(operations.intersection(rec, circle), v3)
     
-    def test_for_polygon_and_circle3(self):
-        """the third test for intersection between a polygon and a
+    def test_for_rectangle_and_circle3(self):
+        """the third test for intersection between a rectangle and a
         circle with them touching each other in two points on different
         edges
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        circle = shapes.Circle(shapes.Point(1, 1), 0.5)
-        res = (shapes.Point(1, 0.5), shapes.Point(0.5, 1))
-        self.assertEqual(operations.intersection(pol, circle), res)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(3, 3), 3)
+        res = (shapes.Point(3, 0), shapes.Point(0, 3))
+        self.assertEqual(operations.intersection(rec, circle), res)
     
-    def test_for_polygon_and_line1(self):
-        """the first test for intersection between a polygon and an
+    def test_for_rectangle_and_line1(self):
+        """the first test for intersection between a rectangle and an
         infinite line with them not intersecting each other
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        line = shapes.Line(1, 2)
-        self.assertEqual(operations.intersection(pol, line), None)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        line = shapes.Line(1, 6)
+        self.assertEqual(operations.intersection(rec, line), None)
     
-    def test_for_polygon_and_line2(self):
-        """the second test for intersection between a polygon and an
+    def test_for_rectangle_and_line2(self):
+        """the second test for intersection between a rectangle and an
         infinite line with them intersecting in two points and the
         given line being horizental
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         line = shapes.Line(0, 0)
-        res = (v1, shapes.Point(1, 0))
-        self.assertEqual(operations.intersection(pol, line), res)
+        res = (shapes.Point(2, 0), shapes.Point(-2, 0))
+        self.assertEqual(operations.intersection(rec, line), res)
     
-    def test_for_polygon_and_lin32(self):
-        """the third test for intersection between a polygon and an
+    def test_for_rectangle_and_line2(self):
+        """the third test for intersection between a rectangle and an
         infinite line with them intersecting in two points and the
         given line being vertical
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         line = shapes.Line.from_points(shapes.Point(0, 0), shapes.Point(0, 1))
-        res = (shapes.Point(0, 1), shapes.Point(0, -1))
-        self.assertEqual(operations.intersection(pol, line), res)
+        res = (shapes.Point(0, 2), shapes.Point(0, -2))
+        self.assertEqual(operations.intersection(rec, line), res)
     
-    def test_for_polygon_and_line4(self):
-        """the fourth test for intersection between a polygon and an
+    def test_for_rectangle_and_line4(self):
+        """the fourth test for intersection between a rectangle and an
         infinite line with them intersecting in two points and the
         given line having an arbitrary slope
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         line = shapes.Line(0, 1)
-        res = (v4, shapes.Point(-0.5, -0.5))
-        self.assertEqual(operations.intersection(pol, line), res)
+        res = (v1, v3)
+        self.assertEqual(operations.intersection(rec, line), res)
     
-    def test_for_polygon_and_line5(self):
-        """the fifth test for intersection between a polygon and an
+    def test_for_rectangle_and_line5(self):
+        """the fifth test for intersection between a rectangle and an
         infinite line with the given line overlapping with one the
-        edges of the given polygon
+        edges of the given rectangle
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        line = shapes.Line(1, 0)
-        res = shapes.LineSegment(v5, v4)
-        self.assertEqual(operations.intersection(pol, line), res)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        line = shapes.Line(2, 0)
+        res = shapes.LineSegment(v2, v3)
+        self.assertEqual(operations.intersection(rec, line), res)
     
-    def test_for_polygon_and_linesegment1(self):
-        """the first test for intersection between a polygon and a line
-        segment with the line segment being inside the given polygon
+    def test_for_rectangle_and_linesegment1(self):
+        """the first test for intersection between a rectangle and a line
+        segment with the line segment being inside the given rectangle
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0.5, 0.5)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.intersection(pol, line), None)
+        self.assertEqual(operations.intersection(rec, line), None)
     
-    def test_for_polygon_and_linesegment2(self):
-        """the second test for intersection between a polygon and a
+    def test_for_rectangle_and_linesegment2(self):
+        """the second test for intersection between a rectangle and a
         line segment with one end of the line segment touching an edge
-        of the given polygon
+        of the given rectangle
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        end1 = shapes.Point(1, 0)
-        end2 = shapes.Point(2, 0.5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(2, 0)
+        end2 = shapes.Point(2.5, 0.5)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.intersection(pol, line), end1)
+        self.assertEqual(operations.intersection(rec, line), end1)
     
-    def test_for_polygon_and_linesegment3(self):
-        """the third test for intersection between a polygon and a line
+    def test_for_rectangle_and_linesegment3(self):
+        """the third test for intersection between a rectangle and a line
         segment with one end of the given line segment being touching a
-        vertex of the given polygon
+        vertex of the given rectangle
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         end1 = v4
         end2 = shapes.Point(0.5, 0.5)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.intersection(pol, line), v4)
+        self.assertEqual(operations.intersection(rec, line), v4)
     
-    def test_for_polygon_and_linesegment4(self):
-        """the fourth test for intersection between a polygon and a
+    def test_for_rectangle_and_linesegment4(self):
+        """the fourth test for intersection between a rectangle and a
         line segment with the given line segment overlapping an edge of
-        the given polygon
+        the given rectangle
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        end1 = shapes.Point(0.5, 1)
-        end2 = shapes.Point(2, 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(2, 0)
+        end2 = shapes.Point(2, 4)
         line = shapes.LineSegment(end1, end2)
-        res = shapes.LineSegment(end1, v4)
-        self.assertEqual(operations.intersection(pol, line), res)
+        res = shapes.LineSegment(end1, v3)
+        self.assertEqual(operations.intersection(rec, line), res)
     
-    def test_for_polygon_and_linesegment5(self):
-        """the fifth test for intersection between a polygon and a line
+    def test_for_rectangle_and_linesegment5(self):
+        """the fifth test for intersection between a rectangle and a line
         segment with the given line segment intersecting the given
-        polygon in two points
+        rectangle in two points
         """
         
-        v1 = shapes.Point(-1, 0)
-        v2 = shapes.Point(0, -1)
-        v3 = shapes.Point(1, -1)
-        v4 = shapes.Point(1, 1)
-        v5 = shapes.Point(0, 1)
-        pol = shapes.Polygon(v1, v2, v3, v4, v5)
-        end1 = shapes.Point(0.5, 2)
-        end2 = shapes.Point(0.5, -2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(-4, 0)
+        end2 = shapes.Point(4, 0)
         line = shapes.LineSegment(end1, end2)
-        res = (shapes.Point(0.5, 1), shapes.Point(0.5, -1))
-        self.assertEqual(operations.intersection(pol, line), res)
-    
+        res = (shapes.Point(-2, 0), shapes.Point(2, 0))
+        self.assertEqual(operations.intersection(rec, line), res)
