@@ -1190,3 +1190,303 @@ class TestIntersection(unittest.TestCase):
         line = shapes.LineSegment(end1, end2)
         res = (shapes.Point(-2, 0), shapes.Point(2, 0))
         self.assertEqual(operations.intersection(rec, line), res)
+    
+    def test_for_circle_and_point1(self):
+        """the first first test for intersection between a point and a
+        circle with the given point being located inside the given
+        circle
+        """
+        
+        point = shapes.Point(0, 0.5)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection(circle, point), None)
+    
+    def test_for_circle_and_point2(self):
+        """the second test for intersection between a point and a
+        circle with the given point being located on the given circle's
+        perimeter
+        """
+        
+        point = shapes.Point(0, 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection(circle, point), point)
+    
+    def test_for_circle_and_point3(self):
+        """the third test for intersection between a point and a circle
+        with the given point being located outside the given circle
+        """
+        
+        point = shapes.Point(0, 5)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection(circle, point), None)
+    
+    def test_for_circle_and_polygon1(self):
+        """the first test for intersection between a polygon and a
+        circle with the given circle being inside the given polygon
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 1)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        circle = shapes.Circle(shapes.Point(0, 0), 0.5)
+        self.assertEqual(operations.intersection(circle, pol), None)
+    
+    def test_for_circle_and_polygon2(self):
+        """the second test for intersection between a polygon and a
+        circle with them the given circle touching the given polygon
+        on its vertex
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 1)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        circle = shapes.Circle(shapes.Point(0, -2), 1)
+        self.assertEqual(operations.intersection(circle, pol), v1)
+    
+    def test_for_circle_and_polygon3(self):
+        """the third test for intersection between a polygon and a
+        circle with them touching each other in two points on different
+        edges
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 1)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        circle = shapes.Circle(shapes.Point(1, 1), 0.5)
+        res = (shapes.Point(1, 0.5), shapes.Point(0.5, 1))
+        self.assertEqual(operations.intersection(circle, pol), res)
+    
+    def test_for_circle_and_rectangle1(self):
+        """the first test for intersection between a rectangle and a
+        circle with the given circle being inside the given rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 0.5)
+        self.assertEqual(operations.intersection(rec, circle), None)
+    
+    def test_for_circle_and_rectangle2(self):
+        """the second test for intersection between a rectangle and a
+        circle with them the given circle touching the given rectangle
+        on its vertex
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(3, 3), 1)
+        self.assertEqual(operations.intersection(rec, circle), v3)
+    
+    def test_for_circle_and_rectangle3(self):
+        """the third test for intersection between a rectangle and a
+        circle with them touching each other in two points on different
+        edges
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(-2, 2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(2, -2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(3, 3), 3)
+        res = (shapes.Point(3, 0), shapes.Point(0, 3))
+        self.assertEqual(operations.intersection(rec, circle), res)
+    
+    def test_for_circle_and_circle1(self):
+        """the first test for intersection between two circles with one
+        of them being inside another
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle2 = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection(circle1, circle2), None)
+    
+    def test_for_circle_and_circle2(self):
+        """the second test for intersection between two circles with
+        them touching each other in one point
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle2 = shapes.Circle(shapes.Point(3, 0), 1)
+        point = shapes.Point(2, 0)
+        self.assertEqual(operations.intersection(circle1, circle2), point)
+    
+    def test_for_circle_and_circle3(self):
+        """the third test for intersection between two circles with
+        them intersecting each other in two points
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle2 = shapes.Circle(shapes.Point(2, 2), 2)
+        res = (shapes.Point(2, 0), shapes.Point(0, 2))
+        self.assertEqual(operations.intersection(circle1, circle2), res)
+    
+    def test_for_circle_and_circle4(self):
+        """the fourth test for intersection between two circles with
+        them being totally apart
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle2 = shapes.Circle(shapes.Point(4, 4), 1)
+        self.assertEqual(operations.intersection(circle1, circle2), None)
+    
+    def test_for_circle_and_line1(self):
+        """the first test for intersection between a circle and an
+        infinite line with them intersecting in one point and the line
+        being horizental
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(0, 1)
+        point = shapes.Point(0, 1)
+        self.assertEqual(operations.intersection(circle, line), point)
+    
+    def test_for_circle_and_line2(self):
+        """the second test for intersection between a circle and an
+        infinite line with them intersecting in one point and the line
+        being vertical
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line.from_points(shapes.Point(1, -1), shapes.Point(1, 1))
+        point = shapes.Point(1, 0)
+        self.assertEqual(operations.intersection(circle, line), point)
+    
+    def test_for_circle_and_line3(self):
+        """the third test for intersection between a circle and an
+        infinite line with them intersecting in one point and the line
+        having an arbitrary slope
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(1, -1*np.sqrt(2))
+        point = shapes.Point(np.sqrt(2)/2, -1*np.sqrt(2)/2)
+        self.assertEqual(operations.intersection(circle, line), point)
+    
+    def test_for_circle_and_line4(self):
+        """the fourth test for intersection between a circle and an
+        infinite line with them intersecting in two points and the line
+        being horizental
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(0, 0)
+        res = (shapes.Point(-1, 0), shapes(1, 0))
+        self.assertEqual(operations.intersection(circle, line), res)
+    
+    def test_for_circle_and_line5(self):
+        """the fifth test for intersection between a circle and an
+        infinite line with them intersecting in two points and the line
+        being vertical
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line.from_points(shapes.Point(0, 0), shapes.Point(0, 10))
+        res = (shapes.Point(-1, 0), shapes.Point(1, 0))
+        self.assertEqual(operations.intersection(circle, line), res)
+    
+    def test_for_circle_and_line6(self):
+        """the sixth test for intersection between a circle and an
+        infinite line with them intersecting in two points and the line
+        having an arbitrary slope
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(1, 0)
+        res = (shapes.Point(np.sqrt(2)/2, np.sqrt(2)/2), shapes.Point(-1*np.sqrt(2)/2, -1*np.sqrt(2)/2))
+        self.assertEqual(operations.intersection(circle, line), res)
+    
+    def test_for_circle_and_line7(self):
+        """the seventh test for intersection between a circle and an
+        infinite line with them being apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(1, 10)
+        self.assertEqual(operations.intersection(circle, line), None)
+    
+    def test_for_circle_and_linesegment1(self):  
+        """the first test for intersection between a circle and a line
+        segment with the line segment being located fully inside the
+        circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        end1 = shapes.Point(-1, -1)
+        end2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.intersection(circle, line), None)
+    
+    def test_for_circle_and_linesegment2(self):
+        """the second test for intersection between a circle and a line
+        segment with them intersecting in one point
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(1, 0)
+        self.assertEqual(operations.intersection(circle, line), point)
+    
+    def test_for_circle_and_linesegment3(self):
+        """the third test for intersection between a circle and a line
+        segment with them intersecting in two points
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 10)
+        end2 = shapes.Point(0, -3)
+        line = shapes.LineSegment(end1, end2)
+        res = (shapes.Point(0, 1), shapes.Point(0, -1))
+        self.assertEqual(operations.intersection(circle, line), res)
+    
+    def test_for_circle_and_linesegment4(self):
+        """the fourth test for intersection between a circle and a line
+        segment with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(5, 5)
+        end2 = shapes.Point(6, 6)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.intersection(circle, line), None)
+    
+    def test_for_circle_and_linesegment5(self):
+        """the fifth test for intersection between a circle and a line
+        segment with one of the line's ends touching the perimeter of
+        the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(1, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.intersection(circle, line), shapes.Point(1, 0))
+    
+    def test_for_circle_and_linesegment6(self):
+        """the sixth test for intersection between a circle and a line
+        segment with them touching in one point on the line's body
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(1, -1)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(1, 0)
+        self.assertEqual(operations.intersection(circle, line), point)
