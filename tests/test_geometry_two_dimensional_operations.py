@@ -2630,13 +2630,13 @@ class TestIsInside(unittest.TestCase):
         v7 = shapes.Point(10, -10)
         v8 = shapes.Point(10, 10)
         v9 = shapes.Point(-10, 10)
-        rec = shapes.Polygon(v6, v7, v8, v9)
+        rec = shapes.Rectangle(v6, v7, v8, v9)
         self.assertTrue(operations.is_inside(pol, rec))
     
-    def test_for_polygon_and_polygon2(self):
+    def test_for_polygon_and_rectangle2(self):
         """the second test to check if a given polygon is located
-        inside another given polygon, with the second one being loceted
-        inside the first one
+        inside the given rectangle, with the rectangle being loceted
+        inside the polygon
         """
         
         v1 = shapes.Point(-1, 0)
@@ -2644,17 +2644,18 @@ class TestIsInside(unittest.TestCase):
         v3 = shapes.Point(1, -1)
         v4 = shapes.Point(1, 0)
         v5 = shapes.Point(0, 1)
-        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
-        v6 = shapes.Point(-0.5, 0)
-        v7 = shapes.Point(0.5, 0)
-        v8 = shapes.Point(0, 0.5)
-        pol2 = shapes.Polygon(v6, v7, v8)
-        self.assertFalse(operations.is_inside(pol1, pol2))
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.1, -0.1)
+        v7 = shapes.Point(0.1, -0.1)
+        v8 = shapes.Point(0.1, 0.1)
+        v9 = shapes.Point(-0.1, 0.1)
+        rec = shapes.Rectangle(v6, v7, v8, v9)
+        self.assertFalse(operations.is_inside(pol, rec))
     
-    def test_for_polygon_and_polygon3(self):
+    def test_for_polygon_and_rectangle3(self):
         """the third test for checking if a given polygon is located
-        inside another given polygon with the first one being inside
-        the second one but touching it in one vertex
+        inside a given rectanle with the polygon being inside
+        the rectangle but touching it in one vertex
         """
         
         v1 = shapes.Point(-1, 0)
@@ -2662,16 +2663,17 @@ class TestIsInside(unittest.TestCase):
         v3 = shapes.Point(1, -1)
         v4 = shapes.Point(1, 0)
         v5 = shapes.Point(0, 1)
-        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
-        v6 = shapes.Point(-0.5, 0)
-        v7 = shapes.Point(0.5, 0)
-        v8 = shapes.Point(0, 1)
-        pol2 = shapes.Polygon(v6, v7, v8)
-        self.assertFalse(operations.is_inside(pol2, pol1))
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-1, 2)
+        v7 = shapes.Point(-1, -2)
+        v8 = shapes.Point(4, -2)
+        v9 = shapes.Point(4, 2)
+        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        self.assertFalse(operations.is_inside(pol, rec))
     
-    def test_for_polygon_and_polygon4(self):
+    def test_for_polygon_and_rectangle4(self):
         """the fourth test for checking if a given polygon is located
-        inside another polygon with their edges intersecting each other
+        inside a given rectangle with their edges intersecting each other
         """
         
         v1 = shapes.Point(-1, 0)
@@ -2679,16 +2681,17 @@ class TestIsInside(unittest.TestCase):
         v3 = shapes.Point(1, -1)
         v4 = shapes.Point(1, 0)
         v5 = shapes.Point(0, 1)
-        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
-        v6 = shapes.Point(-0.5, -3)
-        v7 = shapes.Point(-0.5, 3)
-        v8 = shapes.Point(-5, 0)
-        pol2 = shapes.Polygon(v6, v7, v8)
-        self.assertFalse(operations.is_inside(pol2, pol1))
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 2)
+        v7 = shapes.Point(-0.5, -2)
+        v8 = shapes.Point(4, -2)
+        v9 = shapes.Point(4, 2)
+        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        self.assertFalse(operations.is_inside(pol, rec))
     
-    def test_for_polygon_and_polygon5(self):
+    def test_for_polygon_and_rectangle5(self):
         """the fifth test for checking if a given polygon is located
-        inside another polygon with them being fully apart
+        inside a given rectangle with them being fully apart
         """
         
         v1 = shapes.Point(-1, 0)
@@ -2696,9 +2699,10 @@ class TestIsInside(unittest.TestCase):
         v3 = shapes.Point(1, -1)
         v4 = shapes.Point(1, 0)
         v5 = shapes.Point(0, 1)
-        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
-        v6 = shapes.Point(-5, 5)
-        v7 = shapes.Point(-5, 6)
-        v8 = shapes.Point(-4, 5.5)
-        pol2 = shapes.Polygon(v6, v7, v8)
-        self.assertFalse(operations.is_inside(pol2, pol1))
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(3.5, 2)
+        v7 = shapes.Point(3.5, -2)
+        v8 = shapes.Point(4, -2)
+        v9 = shapes.Point(4, 2)
+        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        self.assertFalse(operations.is_inside(pol, rec))
