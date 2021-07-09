@@ -2335,3 +2335,370 @@ class TestIntersection(unittest.TestCase):
         line2 = shapes.LineSegment(end3, end4)
         point = shapes.Point(0, 0)
         self.assertEqual(operations.intersection(line1, line2), point)
+
+
+class TestIsInside(unittest.TestCase):
+    """test cases for 'is_inside()" function
+    """
+    
+    def test_for_point_and_point(self):
+        """testing if a point is located inside another point with the
+        same coordinates
+        """
+        
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 0)
+        self.assertFalse(operations.is_inside(point1, point2))
+    
+    def test_for_point_and_polygon1(self):
+        """the first test for checking if a given point is inside a
+        given polygon, with the point being located inside the polygon
+        """
+        
+        point = shapes.Point(0, 0)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertTrue(operations.is_inside(point, pol))
+    
+    def test_for_point_and_polygon2(self):
+        """the second test for checking if a given point is inside a
+        given polygon, with the point being located on the perimeter of
+        the polygon
+        """
+        
+        point = shapes.Point(0.5, -1)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertFalse(operations.is_inside(point, pol))
+    
+    def test_for_point_and_polygon3(self):
+        """the third test for checking if a given point is inside a
+        given polygon, with the point being located outside the polygon
+        """
+        
+        point = shapes.Point(5, 5)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertFalse(operations.is_inside(point, pol))
+    
+    def test_for_point_and_rectangle1(self):
+        """the first test for checking if a given point is inside a
+        given rectangle, with the point being located inside the
+        rectangle
+        """
+        
+        point = shapes.Point(0, 0)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertTrue(operations.is_inside(point, rec))
+    
+    def test_for_point_and_rectangle2(self):
+        """the second test for checking if a given point is inside a
+        given rectangle, with the point being located on the perimeter of
+        the rectangle
+        """
+        
+        point = shapes.Point(0.5, -1)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(point, rec))
+    
+    def test_for_point_and_rectangle3(self):
+        """the third test for checking if a given point is inside a
+        given rectangle with the point being located outside the
+        rectangle
+        """
+        
+        point = shapes.Point(5, 5)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(point, rec))
+    
+    def test_for_point_and_circle1(self):
+        """the first test for checking if a given point is inside a
+        given circle, with the point being located inside the circle
+        """
+        
+        point = shapes.Point(0, 0)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertTrue(operations.is_inside(point, circle))
+    
+    def test_for_point_and_circle2(self):
+        """the second test for checking if a given point is inside a
+        given circle, with the point being located on the perimeter of
+        the circle
+        """
+        
+        point = shapes.Point(0, -1)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(point, circle))
+    
+    def test_for_point_and_circle3(self):
+        """the third test for checking if a given point is inside a
+        given circle with the point being located outside the circle
+        """
+        
+        point = shapes.Point(5, 5)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(point, circle))
+    
+    def test_for_point_and_line(self):
+        """testing if a given point is located inside a given infinite
+        line
+        """
+        
+        point = shapes.Point(0, 0)
+        line = shapes.Line(0, 0)
+        self.assertFalse(operations.is_inside(point, line))
+    
+    def test_for_point_and_linesegment(self):
+        """testing if a given point is located inside a given line
+        segment
+        """
+        
+        point = shapes.Point(0, 0)
+        end1 = shapes.Point(0, 1)
+        end2 = shapes.Point(0, -1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertFalse(operations.is_inside(point, line))
+    
+    def test_for_polygon_and_point1(self):
+        """the first test for checking if a given polygon is inside a
+        given point, with the point being located inside the polygon
+        """
+        
+        point = shapes.Point(0, 0)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertFalse(operations.is_inside(pol, point))
+    
+    def test_for_polygon_and_point2(self):
+        """the second test for checking if a given polygon is inside a
+        given point, with the point being located on the perimeter of
+        the polygon
+        """
+        
+        point = shapes.Point(0.5, -1)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertFalse(operations.is_inside(pol, point))
+    
+    def test_for_polygon_and_point3(self):
+        """the third test for checking if a given polygon is inside a
+        given point, with the point being located outside the polygon
+        """
+        
+        point = shapes.Point(5, 5)
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        self.assertFalse(operations.is_inside(pol, point))
+    
+    def test_for_polygon_and_polygon1(self):
+        """the first test to check if a polygon is located inside
+        another polygon, with the first one being fully inside the
+        second one
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 0)
+        v7 = shapes.Point(0.5, 0)
+        v8 = shapes.Point(0, 0.5)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertTrue(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_polygon2(self):
+        """the second test to check if a given polygon is located
+        inside another given polygon, with the second one being loceted
+        inside the first one
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 0)
+        v7 = shapes.Point(0.5, 0)
+        v8 = shapes.Point(0, 0.5)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol1, pol2))
+    
+    def test_for_polygon_and_polygon3(self):
+        """the third test for checking if a given polygon is located
+        inside another given polygon with the first one being inside
+        the second one but touching it in one vertex
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 0)
+        v7 = shapes.Point(0.5, 0)
+        v8 = shapes.Point(0, 1)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_polygon4(self):
+        """the fourth test for checking if a given polygon is located
+        inside another polygon with their edges intersecting each other
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, -3)
+        v7 = shapes.Point(-0.5, 3)
+        v8 = shapes.Point(-5, 0)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_polygon5(self):
+        """the fifth test for checking if a given polygon is located
+        inside another polygon with them being fully apart
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-5, 5)
+        v7 = shapes.Point(-5, 6)
+        v8 = shapes.Point(-4, 5.5)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_rectangle1(self):
+        """the first test to check if a polygon is located inside
+        a given rectangle, with the polygon being fully inside the
+        rectangle
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-10, -10)
+        v7 = shapes.Point(10, -10)
+        v8 = shapes.Point(10, 10)
+        v9 = shapes.Point(-10, 10)
+        rec = shapes.Polygon(v6, v7, v8, v9)
+        self.assertTrue(operations.is_inside(pol, rec))
+    
+    def test_for_polygon_and_polygon2(self):
+        """the second test to check if a given polygon is located
+        inside another given polygon, with the second one being loceted
+        inside the first one
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 0)
+        v7 = shapes.Point(0.5, 0)
+        v8 = shapes.Point(0, 0.5)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol1, pol2))
+    
+    def test_for_polygon_and_polygon3(self):
+        """the third test for checking if a given polygon is located
+        inside another given polygon with the first one being inside
+        the second one but touching it in one vertex
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, 0)
+        v7 = shapes.Point(0.5, 0)
+        v8 = shapes.Point(0, 1)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_polygon4(self):
+        """the fourth test for checking if a given polygon is located
+        inside another polygon with their edges intersecting each other
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-0.5, -3)
+        v7 = shapes.Point(-0.5, 3)
+        v8 = shapes.Point(-5, 0)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
+    
+    def test_for_polygon_and_polygon5(self):
+        """the fifth test for checking if a given polygon is located
+        inside another polygon with them being fully apart
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(0, -1)
+        v3 = shapes.Point(1, -1)
+        v4 = shapes.Point(1, 0)
+        v5 = shapes.Point(0, 1)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
+        v6 = shapes.Point(-5, 5)
+        v7 = shapes.Point(-5, 6)
+        v8 = shapes.Point(-4, 5.5)
+        pol2 = shapes.Polygon(v6, v7, v8)
+        self.assertFalse(operations.is_inside(pol2, pol1))
