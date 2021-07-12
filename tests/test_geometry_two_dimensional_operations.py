@@ -3124,3 +3124,196 @@ class TestIsInside(unittest.TestCase):
         end2 = shapes.LineSegment(1, 1)
         line = shapes.LineSegment(end1, end2)
         self.assertFalse(operations.is_inside(rec, line))
+    
+    def test_for_circle_and_point(self):
+        """testing if a given circle is located inside a given point
+        which should always return False
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 0)
+        self.assertFalse(operations.is_inside(circle, point))
+    
+    def test_for_circle_and_polygon1(self):
+        """the first test for checking if a given circle is located
+        inside a given polygon with the circle being fully inside the
+        polygon
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertTrue(operations.is_inside(circle, polygon))
+    
+    def test_for_circle_and_polygon2(self):
+        """the second test for checking if a given circle is located
+        inside a given polygon with the circle being inside the polygon
+        but touching one of its edges
+        """
+        
+        circle = shapes.Circle(shapes.Point(-1, 0), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(circle, polygon))
+    
+    def test_for_circle_and_polygon3(self):
+        """the third test for checking if a given circle is located
+        inside a given polygon with the circle intersecting the polygon
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, -3), 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(circle, polygon))
+    
+    def test_for_circle_and_polygon4(self):
+        """the fourth test for checking if a given circle is located
+        inside a given polygon with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(10, 10), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(circle, polygon))
+    
+    def test_for_circle_and_rectangle1(self):
+        """the first test for checking if a given circle is located
+        inside a given rectangle with the circle being fully inside
+        the rectangle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertTrue(operations.is_inside(circle, rec))
+    
+    def test_for_circle_and_rectangle2(self):
+        """the second test for checking if a given circle is located
+        inside a given rectangle with the circle being inside the
+        rectangle but touching one of its edges
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, -1), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(circle, rec))
+    
+    def test_for_circle_and_rectangle3(self):
+        """the third test for checking if a given circle is located
+        inside a given rectangle with the circle intersecting the 
+        rectangle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, -3), 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(circle, rec))
+    
+    def test_for_circle_and_rectangle4(self):
+        """the fourth test for checking if a given circle is located
+        inside a given rectangle with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(10, 10), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(circle, rec))
+    
+    def test_for_circle_and_circle1(self):
+        """the first test for checking if a given circle is located
+        inside anoter given circle with the first one being inside the
+        second one
+        """
+        
+        cirlce1 = shapes.Circle(shapes.Point(0, 0 ), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 0), 2)
+        self.assertTrue(operations.is_inside(circle1, circle2))
+    
+    def test_for_circle_and_circle2(self):
+        """the second test for checking if a given circle is located
+        inside another given circle with them fully overlap each other
+        """
+        
+        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(circle1, circle2))
+    
+    def test_for_circle_and_circle3(self):
+        """the third test for checking if a given circle is located
+        inside another given circle with the second one being inside
+        the first one
+        """
+        
+        cirlce1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle2 = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(circle1, circle2))
+    
+    def test_for_circle_and_circle4(self):
+        """the fourth test for checking if a given circle is located
+        inside another given circle with them intersecting
+        """
+        
+        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 0.5), 1)
+        self.assertFalse(operations.is_inside(circle1, circle2))
+    
+    def test_for_circle_and_circle5(self):
+        """the fifth test for checking if a given circle is located
+        inside another given circle with them intersecting
+        """
+        
+        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(10, 0), 1)
+        self.assertFalse(operations.is_inside(circle1, circle2))
+    
+    def test_for_circle_and_line(self):
+        """testing if a given circle is located inside a given
+        inifinite line which should always return False
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(1, 0)
+        self.assertFalse(operations.is_inside(circle, line))
+    
+    def test_for_circle_and_linesegment(self):
+        """testing if a given circle is located inside a given line
+        segment which should always return False
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertFalse(operations.is_inside(circle, line))
