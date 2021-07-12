@@ -3148,7 +3148,7 @@ class TestIsInside(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertTrue(operations.is_inside(circle, polygon))
+        self.assertTrue(operations.is_inside(circle, pol))
     
     def test_for_circle_and_polygon2(self):
         """the second test for checking if a given circle is located
@@ -3164,7 +3164,7 @@ class TestIsInside(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertFalse(operations.is_inside(circle, polygon))
+        self.assertFalse(operations.is_inside(circle, pol))
     
     def test_for_circle_and_polygon3(self):
         """the third test for checking if a given circle is located
@@ -3179,7 +3179,7 @@ class TestIsInside(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertFalse(operations.is_inside(circle, polygon))
+        self.assertFalse(operations.is_inside(circle, pol))
     
     def test_for_circle_and_polygon4(self):
         """the fourth test for checking if a given circle is located
@@ -3194,7 +3194,7 @@ class TestIsInside(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertFalse(operations.is_inside(circle, polygon))
+        self.assertFalse(operations.is_inside(circle, pol))
     
     def test_for_circle_and_rectangle1(self):
         """the first test for checking if a given circle is located
@@ -3257,7 +3257,7 @@ class TestIsInside(unittest.TestCase):
         second one
         """
         
-        cirlce1 = shapes.Circle(shapes.Point(0, 0 ), 1)
+        circle1 = shapes.Circle(shapes.Point(0, 0 ), 1)
         circle2 = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertTrue(operations.is_inside(circle1, circle2))
     
@@ -3266,7 +3266,7 @@ class TestIsInside(unittest.TestCase):
         inside another given circle with them fully overlap each other
         """
         
-        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
         circle2 = shapes.Circle(shapes.Point(0, 0), 1)
         self.assertFalse(operations.is_inside(circle1, circle2))
     
@@ -3276,7 +3276,7 @@ class TestIsInside(unittest.TestCase):
         the first one
         """
         
-        cirlce1 = shapes.Circle(shapes.Point(0, 0), 2)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
         circle2 = shapes.Circle(shapes.Point(0, 0), 1)
         self.assertFalse(operations.is_inside(circle1, circle2))
     
@@ -3285,7 +3285,7 @@ class TestIsInside(unittest.TestCase):
         inside another given circle with them intersecting
         """
         
-        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
         circle2 = shapes.Circle(shapes.Point(0, 0.5), 1)
         self.assertFalse(operations.is_inside(circle1, circle2))
     
@@ -3294,7 +3294,7 @@ class TestIsInside(unittest.TestCase):
         inside another given circle with them intersecting
         """
         
-        cirlce1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
         circle2 = shapes.Circle(shapes.Point(10, 0), 1)
         self.assertFalse(operations.is_inside(circle1, circle2))
     
@@ -3317,3 +3317,284 @@ class TestIsInside(unittest.TestCase):
         end2 = shapes.Point(1, 1)
         line = shapes.LineSegment(end1, end2)
         self.assertFalse(operations.is_inside(circle, line))
+    
+    def test_for_line_and_point(self):
+        """testing if a given infinite line is located inside a given
+        point which should always return False
+        """
+        
+        line = shapes.Line(1, 0)
+        point = shapes.Point(0, 0)
+        self.assertFalse(operations.is_inside(line, point))
+    
+    def test_for_line_and_polygon(self):
+        """testing if a given infinite line is located inside a given
+        polygon which should always return False
+        """
+        
+        line = shapes.Line(1, 0)
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(0, 1)
+        v3 = shapes.Point(1, 1)
+        pol = shapes.Polygon(v1, v2, v3)
+        self.assertFalse(operations.is_inside(line, pol))
+    
+    def test_for_line_and_rectangle(self):
+        """testing if a given infinite line is located inside a given
+        rectangle which should always return False
+        """
+        
+        line = shapes.Line(1, 0)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(line, rec))
+    
+    def test_for_line_and_circle(self):
+        """testing if a given infinite line is located inside a given
+        circle which should always return False
+        """
+        
+        line = shapes.Line(1, 0)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(line, circle))
+    
+    def test_for_line_and_line(self):
+        """testing if a given infinite line is located inisde another
+        given infinite line which should always return False
+        """
+        
+        line1 = shapes.Line(1, 0)
+        line2 = shapes.Line(1, 1)
+        self.assertFalse(operations.is_inside(line1, line2))
+    
+    def test_for_line_and_linesegment(self):
+        """testing if a given infinite line is located inside a given
+        line segment which should always return False
+        """
+        
+        line1 = shapes.Line(1, 0)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line2 = shapes.LineSegment(end1, end2)
+        self.assertFalse(operations.is_inside(line1, line2))
+    
+    def test_for_linesegment_and_point(self):
+        """testing if a given line segment is located inside a given
+        point which should always return False
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(0, 0)
+        self.assertFalse(operations.is_inside(line, point))
+    
+    def test_for_linesegment_and_polygon1(self):
+        """the first test for checking if a given line segment is
+        located inside a given polygon with the line segment being
+        fully inside the polygon
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertTrue(operations.is_inside(line, pol))
+    
+    def test_for_linesegment_and_polygon2(self):
+        """the second test for checking if a given line segment is
+        located inside a given polygon with the line segment being
+        inside the polygon but with one of its ends touching the
+        polygon's perimeter
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 2)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(line, pol))
+    
+    def test_for_linesegment_and_polygon3(self):
+        """the third test for checking if a given line segment is
+        located inside a given polygon with the line segment
+        intersecting the polygon
+        """
+        
+        end1 = shapes.Point(0, 1)
+        end2 = shapes.Point(3, 2)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(line, pol))
+    
+    def test_for_linesegment_and_polygon4(self):
+        """the fourth test for checking if a given line segment is
+        located inside a given polygon with them being fully apart
+        """
+        
+        end1 = shapes.Point(10, 10)
+        end2 = shapes.Point(11, 11)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertFalse(operations.is_inside(line, pol))
+    
+    def test_for_linesegment_and_rectangle1(self):
+        """the first test for checking if a given line segment is
+        located inside a given rectangle with the line segment being
+        fully inside the rectangle
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0.5, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertTrue(operations.is_inside(line, rec))
+    
+    def test_for_linesegment_and_rectangle2(self):
+        """the second test for checking if a given line segment is
+        located inside a given rectangle with the line segment being
+        inside the rectangle but with one of its ends touching the
+        rectangle's perimeter
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(line, rec))
+    
+    def test_for_linesegment_and_rectangle3(self):
+        """the third test for checking if a given line segment is
+        located inside a given rectangle with them intersecting each
+        other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(2, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(line, rec))
+    
+    def test_for_linesegment_and_rectangle4(self):
+        """the fourth test for checking if a given line segment is
+        located inside a given rectangle with them being fully apart
+        """
+        
+        end1 = shapes.Point(10, 10)
+        end2 = shapes.Point(11, 11)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertFalse(operations.is_inside(line, rec))
+    
+    def test_for_linesegment_and_circle1(self):
+        """the first test for checking if a given line segment is
+        located inside a given circle with the line segment being
+        fully inside the circle
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0.5, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertTrue(operations.is_inside(line, circle))
+    
+    def test_for_linesegment_and_circle2(self):
+        """the second test for checking if a given line segment is
+        located inisde a given circle with the line segment being
+        inside the circle but with one of its ends touching the
+        circle's perimeter
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(line, circle))
+    
+    def test_for_linesegment_and_circle3(self):
+        """the third test for checking if a given line segment is
+        located inside a given circle with them intersecting each other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(3, 3)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(line, circle))
+    
+    def test_for_linesegment_and_circle4(self):
+        """the fourth test for checking if a given line segment is
+        located inside a given circle with them being fully apart
+        """
+        
+        end1 = shapes.Point(10, 10)
+        end2 = shapes.Point(11, 11)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertFalse(operations.is_inside(line, circle))
+    
+    def test_for_linesegment_and_linesegment(self):
+        """testing if a given line segment is located inside another
+        given line segment which should always return False
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(1, 0)
+        end4 = shapes.Point(2, 1)
+        line2 = shapes.LineSegment(end3, end4)
+        self.assertFalse(operations.is_inside(line1, line2))
+    
+    def test_for_linesegment_and_line(self):
+        """testing if a given line segment is located inside a given
+        infinite line which should always return False
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(1, 0)
+        self.assertFalse(operations.is_inside(line1, line2))
