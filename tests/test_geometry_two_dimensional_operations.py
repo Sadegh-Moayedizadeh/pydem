@@ -3839,3 +3839,71 @@ class TestDistance(unittest.TestCase):
         end2 = shapes.Point(1, 0)
         line = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.distance(point, line), 1)
+    
+    def test_for_polygon_and_point1(self):
+        """the first test for distance between a point and a polygon
+        with the point being located inside the polygon
+        """
+        
+        point = shapes.Point(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol, point), -2)
+    
+    def test_for_polygon_and_point2(self):
+        """the second test for distance between a given point and a
+        given polygon with the point being located on the perimeter
+        of the polygon
+        """
+        
+        point = shapes.Point(0, 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol, point), 0)
+    
+    def test_for_polygon_and_point3(self):
+        """the third test for distance between a given point and a
+        given polygon with the point being located outside of the
+        polygon
+        """
+        
+        point = shapes.Point(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol, point), 1)
+    
+    def test_for_polygon_and_polygon1(self):
+        """the first test for distance between two polygons with the
+        first one being inside the second one
+        """
+
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-3, -3)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(3, -3)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol1, pol2), -1)
