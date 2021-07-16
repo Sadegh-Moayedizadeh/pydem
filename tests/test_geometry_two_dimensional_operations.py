@@ -3853,7 +3853,7 @@ class TestDistance(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertEqual(operations.distance(pol, point), -2)
+        self.assertEqual(operations.distance(pol, point), 0)
     
     def test_for_polygon_and_point2(self):
         """the second test for distance between a given point and a
@@ -3907,3 +3907,860 @@ class TestDistance(unittest.TestCase):
         v12 = shapes.Point(-3, 3)
         pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
         self.assertEqual(operations.distance(pol1, pol2), -1)
+    
+    def test_for_polygon_polygon2(self):
+        """the second test for distance between two given polygons with
+        them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-1, -1)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(1, -1)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol1, pol2), 0)
+    
+    def test_for_polygon_and_polygon3(self):
+        """the third test for distance between two given polygons with
+        them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(7, -3)
+        v8 = shapes.Point(10, -5)
+        v9 = shapes.Point(13, -3)
+        v10 = shapes.Point(13, 3)
+        v11 = shapes.Point(10, 5)
+        v12 = shapes.Point(7, 3)
+        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol1, pol2), 5)
+    
+    def test_for_polygon_and_polygon4(self):
+        """the first test for distance between two polygons with the
+        second one being inside the first one
+        """
+
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol1 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-3, -3)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(3, -3)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(pol2, pol1), 0)
+    
+    def test_for_polygon_and_rectangle1(self):
+        """the first test for distance between a given polygon and a
+        given rectangle with the polygon being inside the rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-5, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-5, 5)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(pol, rec), -1)
+    
+    def test_for_polygon_and_rectangle2(self):
+        """the second test for distance between a given polygon and a
+        given rectangle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-1, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-1, 5)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(pol, rec), 0)
+    
+    def test_for_polygon_and_rectangle3(self):
+        """the third test for distance between a given polygon and a
+        given rectangle with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(3, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(3, 5)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(pol, rec), 1)
+    
+    def test_for_polygon_and_rectangle4(self):
+        """the first test for distance between a given polygon and a
+        given rectangle with the rectangle being inside the polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-1, -1)
+        v8 = shapes.Point(1, -1)
+        v9 = shapes.Point(1, 1)
+        v10 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(pol, rec), 0)
+    
+    def test_for_polygon_and_circle1(self):
+        """the first test for distance between a given polygon and a
+        given circle with the polygon being inside the circle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        self.assertEqual(operations.distance(pol, circle), -1)
+    
+    def test_for_polygon_and_circle2(self):
+        """the second test for distance between a given polygon and a
+        given circle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(0, 0), 3)
+        self.assertEqual(operations.distance(pol, circle), 0)
+    
+    def test_for_polygon_and_circle3(self):
+        """the third test for distance between a given polygon and a
+        given circle with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(4, 0), 1)
+        self.assertEqual(operations.distance(pol, circle), 1)
+    
+    def test_for_polygon_and_circle4(self):
+        """the first test for distance between a given polygon and a
+        given circle with the circle being inside the polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(pol, circle), 0)
+    
+    def test_for_polygon_and_line1(self):
+        """the first test for distance between a given polygon and a
+        given infinite line with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        line = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(pol, line), 0)
+    
+    def test_for_polygon_and_line2(self):
+        """the second test for distance between a given polygon and a
+        given infinite line with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        line = shapes.Line(0, 5)
+        self.assertEqual(operations.distance(pol, line), 1)
+    
+    def test_for_polygon_and_linesegment1(self):
+        """the first test for distance between a given polygon and a
+        given line segment with the line segment being inside the
+        polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(pol, line), 0)
+    
+    def test_for_polygon_and_linesegment2(self):
+        """the second test for distance between a given polygon and a
+        given line segment with the line segment being inside the
+        polygon but with one of its ends touching the polygon's
+        perimeter
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(pol, line), 0)
+    
+    def test_for_polygon_and_linesegment3(self):
+        """the third test for distance between a given polygon and a
+        given line segment with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(3, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(pol, line), 0)
+    
+    def test_for_polygon_and_linesegment4(self):
+        """the fourth test for distance between a given polygon and a
+        line segment with the line segment being located outside the
+        polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Poin(3, 0)
+        end2 = shapes.Point(4, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(pol, line), 1)
+    
+    def test_for_rectangle_and_point1(self):
+        """the first test for distance between a point and a rectangle
+        with the point being located inside the rectangle
+        """
+        
+        point = shapes.Point(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertEqual(operations.distance(rec, point), 0)
+    
+    def test_for_rectangle_and_point2(self):
+        """the second test for distance between a given point and a
+        given rectangle with the point being located on the perimeter
+        of the rectangle
+        """
+        
+        point = shapes.Point(0, 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertEqual(operations.distance(rec, point), 0)
+    
+    def test_for_rectangle_and_point3(self):
+        """the third test for distance between a given point and a
+        given rectangle with the point being located outside of the
+        rectangle
+        """
+        
+        point = shapes.Point(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        self.assertEqual(operations.distance(pol, point), 1)
+    
+    def test_for_rectangle_and_polygon1(self):
+        """the first test for distance between a given rectangle and a
+        given polygon with the rectangle being inside the polygon
+        """
+
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-3, -3)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(3, -3)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(rec, pol), -1)
+    
+    def test_for_rectangle_polygon2(self):
+        """the second test for distance between a given rectangle and a
+        given polygon them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-1, -1)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(1, -1)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(rec, pol), 0)
+    
+    def test_for_rectangle_and_polygon3(self):
+        """the third test for distance between a given rectangle and a
+        given polygon with them being apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(7, -3)
+        v8 = shapes.Point(10, -5)
+        v9 = shapes.Point(13, -3)
+        v10 = shapes.Point(13, 3)
+        v11 = shapes.Point(10, 5)
+        v12 = shapes.Point(7, 3)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(rec, pol), 5)
+    
+    def test_for_rectangle_and_polygon4(self):
+        """the first test for distance between a given rectangle and a
+        given polygon with the polygon being inside the rectangle
+        """
+
+        v1 = shapes.Point(-6, -6)
+        v2 = shapes.Point(6, -6)
+        v3 = shapes.Point(6, 6)
+        v4 = shapes.Point(-6, 6)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-3, -3)
+        v8 = shapes.Point(0, -5)
+        v9 = shapes.Point(3, -3)
+        v10 = shapes.Point(3, 3)
+        v11 = shapes.Point(0, 5)
+        v12 = shapes.Point(-3, 3)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(rec, pol), 0)
+    
+    def test_for_rectangle_and_rectangle1(self):
+        """the first test for distance between two given rectangles
+        with the first one being inside the second one
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-5, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-5, 5)
+        rec2 = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(rec1, rec2), -3)
+    
+    def test_for_rectangle_and_rectangle2(self):
+        """the second test for distance between two given rectangles
+        with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-1, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-1, 5)
+        rec2 = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(rec1, rec2), 0)
+    
+    def test_for_rectangle_and_rectangle3(self):
+        """the third test for distance between two given rectangles
+        with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(3, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(3, 5)
+        rec2 = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(rec1, rec2), 1)
+    
+    def test_for_rectangle_and_rectangle1(self):
+        """the first test for distance between two given rectangles
+        with the second one being inside the first one
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Polygon(v1, v2, v3, v4)
+        v7 = shapes.Point(-5, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-5, 5)
+        rec2 = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.distance(rec2, rec1), 0)
+    
+    def test_for_recgtangle_and_circle1(self):
+        """the first test for distance between a given rectangle and a
+        given circle with the rectangle being inside the circle
+        """
+        
+        v1 = shapes.Point(-2, 0)
+        v2 = shapes.Point(0, -2)
+        v3 = shapes.Point(2, 0)
+        v4 = shapes.Point(0, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        self.assertEqual(operations.distance(rec, circle), -3)
+    
+    def test_for_rectangle_and_circle2(self):
+        """the second test for distance between a given rectangle and a
+        given circle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 2.5)
+        self.assertEqual(operations.distance(rec, circle), 0)
+    
+    def test_for_rectangle_and_circle3(self):
+        """the third test for distance between a given rectangle and a
+        given circle with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(4, 0), 1)
+        self.assertEqual(operations.distance(rec, circle), 1)
+    
+    def test_for_recgtangle_and_circle1(self):
+        """the first test for distance between a given rectangle and a
+        given circle with the circle being inside the rectangle
+        """
+        
+        v1 = shapes.Point(-2, 0)
+        v2 = shapes.Point(0, -2)
+        v3 = shapes.Point(2, 0)
+        v4 = shapes.Point(0, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(rec, circle), 0)
+    
+    def test_for_rectangle_and_line1(self):
+        """the first test for distance between a given rectangle and a
+        given infinite line with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        line = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(rec, line), 0)
+    
+    def test_for_rectangle_and_line2(self):
+        """the second test for distance between a given rectangle and a
+        given infinite line with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        line = shapes.Line(0, 3)
+        self.assertEqual(operations.distance(rec, line), 1)
+    
+    def test_for_rectangle_and_linesegment1(self):
+        """the first test for distance between a given rectangle and a
+        given line segment with the line segment being inside the
+        rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(rec, line), 0)
+    
+    def test_for_rectangle_and_linesegment2(self):
+        """the second test for distance between a given rectangle and a
+        given line segment with the line segment being inside the
+        rectangle but with one of its ends touching the rectangle's
+        perimeter
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(rec, line), 0)
+    
+    def test_for_rectangle_and_linesegment3(self):
+        """the third test for distance between a given rectangle and a
+        given line segment with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        end1 = shapes.Poin(0, 0)
+        end2 = shapes.Point(3, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(rec, line), 0)
+    
+    def test_for_rectangle_and_linesegment4(self):
+        """the fourth test for distance between a given rectangle and a
+        line segment with the line segment being located outside the
+        rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Polygon(v1, v2, v3, v4)
+        end1 = shapes.Poin(3, 0)
+        end2 = shapes.Point(4, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(rec, line), 1)
+    
+    def test_for_circle_and_point1(self):
+        """the first test for distance between a given circle and a
+        given point with the point being located on the circle's
+        perimeter
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 1)
+        self.assertEqual(operations.distance(circle, point), 0)
+    
+    def test_for_circle_and_point2(self):
+        """the second test for distance between a given circle and a
+        given point with the point being inside the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.distance(circle, point), 0)
+    
+    def test_for_circle_and_point3(self):
+        """the third test for distance between a given circle and a
+        given point with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 2)
+        self.assertEqual(operations.distance(circle, point), 1)
+    
+    def test_for_circle_and_polygon1(self):
+        """the first test for distance between a given circle and a
+        given polygon with the polygon being located inside the circle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        self.assertEqual(operations.distance(circle, pol), 0)
+    
+    def test_for_circle_and_polygon2(self):
+        """the second test for distance between a given circle and a
+        given polygon with the circle being inside the polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(circle, pol), -1)
+    
+    def test_for_circle_and_polygon3(self):
+        """the third test for distance between a given circle and a
+        given polygon with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(2, 0), 3)
+        self.assertEqual(operations.distance(circle, pol), 0)
+    
+    def test_for_circle_and_polygon4(self):
+        """the fourth test for distance between a given circle and a
+        given polygon with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        circle = shapes.Circle(shapes.Point(4, 0), 1)
+        self.assertEqual(operations.distance(circle, pol), 1)
+    
+    def test_for_circle_and_rectangle1(self):
+        """the first test for distance between a given circle and a
+        given rectangle with the rectangle being located inside the
+        circle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        self.assertEqual(operations.distance(circle, rec), 0)
+    
+    def test_for_circle_and_polygon2(self):
+        """the second test for distance between a given circle and a
+        given rectangle with the circle being inside the rectang;e
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(circle, rec), -1)
+    
+    def test_for_circle_and_rectangle3(self):
+        """the third test for distance between a given circle and a
+        given rectangle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(2, 0), 3)
+        self.assertEqual(operations.distance(circle, rec), 0)
+    
+    def test_for_circle_and_rectangle4(self):
+        """the fourth test for distance between a given circle and a
+        given rectangle with them being fully apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(4, 0), 1)
+        self.assertEqual(operations.distance(circle, rec), 1)
+    
+    def test_for_circle_and_circle1(self):
+        """the first test for distance between two given circles with
+        the first one being inside the second one
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 0), 2)
+        self.assertEqual(operations.distance(circle1, circle2), -1)
+    
+    def test_for_circle_and_circle2(self):
+        """the second test for distance between two given circles with
+        the second one being inside the first one
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Cirlce(shapes.Poin(0, 0), 0.5)
+        self.assertEqual(operations.distance(circle1, circle2), 0)
+    
+    def test_for_circle_and_circle3(self):
+        """the third test for distance between two given circles with
+        them intersecting each other
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 0.5), 1)
+        self.assertEqual(operations.distance(circle1, circle2), 0)
+    
+    def test_for_circle_and_circle4(self):
+        """the fourth test for distance between two given circles with
+        them being fully apart
+        """
+        
+        circle1 = shapes.Circle(shapes.Point(0, 0), 1)
+        circle2 = shapes.Circle(shapes.Point(0, 3), 1)
+        self.assertEqual(operations.distance(circle1, circle2), 1)
+    
+    def test_for_circle_and_line1(self):
+        """the first test for distance between a given circle and a
+        given infinite line with them intersecting each other
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(circle, line), 0)
+    
+    def test_for_circle_and_line2(self):
+        """the second test for distance between a given circle and a
+        given infinite line with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(0, 2)
+        self.assertEqual(operations.distance(circle, line), 1)
+    
+    def test_for_circle_and_linesegment1(self):
+        """the first test for distance between a given circle and a
+        given line segment with the line segment being located inside
+        the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(circle, line), 0)
+    
+    def test_for_circle_and_linesegment2(self):
+        """the second test for distance between a given circle and a
+        given line segment with them intersecting each other
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 2)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(circle, line), 0)
+    
+    def test_for_circle_and_linesegment3(self):
+        """the third test for distance between a given circle and a
+        given line segment with them being fully apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(2, 0)
+        end2 = shapes.Point(3, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(circle, line), 1)
