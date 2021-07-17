@@ -4638,7 +4638,7 @@ class TestDistance(unittest.TestCase):
         circle = shapes.Circle(shapes.Point(0, 0), 5)
         self.assertEqual(operations.distance(circle, rec), 0)
     
-    def test_for_circle_and_polygon2(self):
+    def test_for_circle_and_rectangle2(self):
         """the second test for distance between a given circle and a
         given rectangle with the circle being inside the rectang;e
         """
@@ -4764,3 +4764,411 @@ class TestDistance(unittest.TestCase):
         end2 = shapes.Point(3, 0)
         line = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.distance(circle, line), 1)
+    
+    def test_for_linesegment_and_point1(self):
+        """the first test for distance between a given line segment and
+        a given point with the point being located on the line
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.distance(line, point), 0)
+    
+    def test_for_linesegment_and_point2(self):
+        """the second test for distance between a given line segment
+        and a given point with the point being located above the line
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(0.5, 0.5)
+        self.assertEqual(operations.distance(line, point), 0.5)
+    
+    def test_for_linesegment_and_point3(self):
+        """the third test for distance between a given line segment and
+        a given point with the point being located on the side of the
+        line segment
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(0, 2)
+        self.assertEqual(operations.distance(line, point), 1)
+    
+    def test_for_linesegment_and_polygon1(self):
+        """the first test for distance between a given line segment and
+        a given polygon with the line segment being inside the polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, pol), -1)
+    
+    def test_for_linesegment_and_polygon2(self):
+        """the second test for distance between a given line segment
+        and a given polygon with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, pol), 0)
+    
+    def test_for_linesegment_and_polygon3(self):
+        """the third test for distance between a given line segment and
+        a given polygon with the line segment being outside the polygon
+        and being vertical
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end1 = shapes.Point(3, 0)
+        end2 = shapes.Point(3, 1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, pol), 1)
+    
+    def test_for_linesegmnet_and_rectangle1(self):
+        """the first test for distance between a given line segment and
+        a given rectangle with the line segment being inside the
+        rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 1)
+    
+    def test_for_linesegment_and_rectangle2(self):
+        """the second test for distance between a given line segment
+        and a given rectangle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 0)
+    
+    def test_for_linesegment_and_rectangle3(self):
+        """the third test for distance between a given line segment and
+        a given rectangle with the line segment being outside the
+        rectangle and being vertical
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end1 = shapes.Point(3, 0)
+        end2 = shapes.Point(3, 1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 1)
+    
+    def test_for_linesegment_and_circle1(self):
+        """the first test for distance between a given line segment and
+        a given circle with the line segment being located inside the
+        circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 1)
+    
+    def test_for_linesegment_and_circle2(self):
+        """the second test for distance between a given line segment
+        and a given circle with them intersecting each other
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(2, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 0)
+    
+    def test_for_linesegment_and_circle3(self):
+        """the third test for distance between a given line segment and
+        a given circle with the line segment being outside the circle
+        and being vertical
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        end1 = shapes.Point(3, -1)
+        end2 = shapes.Point(3, 1)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.distance(line, rec), 1)
+    
+    def test_for_linesegment_and_linesegment1(self):
+        """the first test for distance between two given line segments
+        with them intersecting each other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(0, 0)
+        end4 = shapes.Point(1, 1)
+        line2 = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.distance(line1, line2), 0)
+    
+    def test_for_linesegment_and_linesegment2(self):
+        """the second test for distance between two given line segments
+        with them being located parallel to each other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(0, 1)
+        end4 = shapes.Point(1, 1)
+        line2 = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.distance(line1, line2), 1)
+    
+    def test_for_linesegment_and_linesegment3(self):
+        """the third test for distance between two given line segments
+        with them being located at an alignment
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 0)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(2, 0)
+        end4 = shapes.Point(3, 0)
+        line2 = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.distance(line1, line2), 1)
+    
+    def test_for_linesegment_and_line1(self):
+        """the first test for distance between a given line segment and
+        a given infinite line with them intersecting each other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line1, line2), 0)
+    
+    def test_for_linesegment_and_line2(self):
+        """the second test for distance between a given line segmnet
+        and a given infinite line with them being parallel to each
+        other
+        """
+        
+        end1 = shapes.Point(0, 1)
+        end2 = shapes.Point(1, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line1, line2), 1)
+    
+    def test_for_linesegment_and_line3(self):
+        """the third test for distance between a line segment and a
+        given infinite line with them not being parallel to each other
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(2, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line1, line2), 1)
+    
+    def test_for_line_and_point1(self):
+        """the first test for distance between a given line and a given
+        point with the point being located on the line
+        """
+        
+        line = shapes.Line(0, 0)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.distance(line, point), 0)
+    
+    def test_for_line_and_point2(self):
+        """the second test for distance between a given infinite line
+        and a given point with them being apart
+        """
+        
+        line = shapes.Line(0, 0)
+        point = shapes.Point(0, 1)
+        self.assertEqual(operations.distance(line, point), 1)
+    
+    def test_for_line_and_polygon1(self):
+        """the first test for distance between a given infinite line
+        and a given polygon with them intersecting each other
+        """
+        
+        line = shapes.Line(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(line, pol), 0)
+    
+    def test_for_line_and_polygon2(self):
+        """the second test for distance between a given infinite line
+        and a given polygon with them being fully apart
+        """
+        
+        line = shapes.Line(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.distance(line, pol), 1)
+    
+    def test_for_line_and_rectangle1(self):
+        """the first test for distance between a given infinite line
+        and a given rectangle with them intersecting each other
+        """
+        
+        line = shapes.Line(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.distance(line, rec), 0)
+    
+    def test_for_line_and_rectangle2(self):
+        """the second test for distance between a given infinite line
+        and a given rectangle with them being fully apart
+        """
+        
+        line = shapes.Line(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.distance(line, rec), 1)
+    
+    def test_for_line_and_circle1(self):
+        """the first test for distance between a given infinite line
+        and a given circle with them intersecting each other
+        """
+        
+        line = shapes.Line(0, 0)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(line, circle), 0)
+    
+    def test_for_line_and_circle2(self):
+        """the second test for distance between a given infinite line
+        and a given circle with them being fully apart
+        """
+        
+        line = shapes.Line(0, 2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.distance(line, circle), 1)
+    
+    def test_for_line_and_linesegment1(self):
+        """the first test for distance between a given infinite line
+        and a given line segment with them intersecting each other
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line2, line1), 0)
+    
+    def test_for_line_and_linesegment2(self):
+        """the second test for distance between a given infinite line 
+        and a given line segment with them being parallel to each other
+        """
+        
+        end1 = shapes.Point(0, 1)
+        end2 = shapes.Point(1, 1)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line2, line1), 1)
+    
+    def test_for_line_and_linesegment3(self):
+        """the third test for distance between a given infinite line
+        and agiven line segment with them not being parallel to each
+        other
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(2, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        self.assertEqual(operations.distance(line2, line1), 1)
+    
+    def test_for_line_and_line1(self):
+        """the first test for distance between two given infinite lines
+        with them intersecting each other
+        """
+        
+        line1 = shapes.Line(0, 0)
+        line2 = shapes.Line(1, 1)
+        self.assertEqual(opetations.distance(line1, line2), 0)
+    
+    def test_for_line_and_line2(self):
+        """the second test for distance between two given infinite
+        lines with them being parallel to each other and being
+        horizental
+        """
+        
+        line1 = shapes.Line(0, 0)
+        line2 = shapes.Line(0, 1)
+        self.assertEqual(opetations.distance(line1, line2), 1)
+    
+    def test_for_line_and_line3(self):
+        """the third test for distance between two given infinite lines
+        with them being parallel and vertical
+        """
+        
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.point(0, 1)
+        point3 = shapes.Point(1, 0)
+        point4 = shapes.point(1, 1)
+        line1 = shapes.Line.from_points(point1, point2)
+        line1 = shapes.Line.from_points(point3, point4)
+        self.assertEqual(operations.distance(line1, line2), 1)
+    
+    def test_for_line_and_line4(self):
+        """the fourth test for distance between two given infinite
+        lines with them being parallel and with an arbitrary slope
+        """
+        
+        line1 = shapes.Line(1, 0)
+        line2 = shapes.Line(1, 1)
+        self.assertEqual(opetations.distance(line1, line2), np.sqrt(2)/2)
