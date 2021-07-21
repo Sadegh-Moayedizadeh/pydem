@@ -7,7 +7,6 @@ from geometry import two_dimensional_entities as shapes
 import numpy as np
 
 
-
 class TestDistance(unittest.TestCase):
     """test cases for the 'distance' function"""
 
