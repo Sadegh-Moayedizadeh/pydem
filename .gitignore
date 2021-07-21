@@ -1,0 +1,3 @@
+# the virtual environment folder needs to be ignored
+# if you want to know the dependencies of the project, look at requirements.txt
+venv/
