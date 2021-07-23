@@ -587,3 +587,125 @@ class TestProjection(unittest.TestCase):
         end2 = shapes.Point(5, 5)
         line = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.projection(pol, line), None)
+    
+    def test_for_rectangle_and_point(self):
+        """the first test for projection of a given rectangle on a
+        given point with the point being inside the rectangle
+        """
+        
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.projection(rec, point), point)
+    
+    def test_for_rectangle_and_point2(self):
+        """the second test for projection of a given rectangle on a
+        given point with the point being located on the perimeter of
+        the rectangle
+        """
+        
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        point = shapes.Point(1, 0)
+        self.assertEqual(operations.projection(rec, point), point)
+    
+    def test_for_rectangle_and_point3(self):
+        """the third test for projection of a given rectangle on a
+        given point with the point being outside the rectangle
+        """
+        
+        v1 = shapes.Point(-1, -1)
+        v2 = shapes.Point(1, -1)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        point = shapes.Point(2, 0)
+        self.assertEqual(operations.projection(rec, point), point)
+    
+    def test_for_rectangle_and_polygon1(self):
+        """the first test for projection of a given rectangle on a
+        given polygon with the polygon being inside the rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-5, -5)
+        v8 = shapes.Point(5, -5)
+        v9 = shapes.Point(5, 5)
+        v10 = shapes.Point(-5, 5)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.projection(rec, pol), pol)
+    
+    def test_for_rectangle_and_polygon2(self):
+        """the second test for projection of a given rectangle on a
+        given polygon with the rectangle being inside the polygon
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(-1, -1)
+        v8 = shapes.Point(1, -1)
+        v9 = shapes.Point(1, 1)
+        v10 = shapes.Point(-1, 1)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        self.assertEqual(operations.projection(rec, pol), None)
+    
+    def test_for_rectangle_and_polygon3(self):
+        """the third test for projection of a given rectangle on a
+        given polygon with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(1, -1)
+        v8 = shapes.Point(4, -1)
+        v9 = shapes.Point(4, 1)
+        v10 = shapes.Point(1, 1)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        end1 = shapes.Point(2, -1)
+        end2 = shapes.Point(2, 1)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(rec, pol), res)
+    
+    def test_for_rectangle_and_polygon4(self):
+        """the fourth test for projection of a given rectangle on a
+        given polygon with them being apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        v7 = shapes.Point(4, -2)
+        v8 = shapes.Point(8, -2)
+        v9 = shapes.Point(8, 2)
+        v10 = shapes.Point(4, 2)
+        rec = shapes.Rectangle(v7, v8, v9, v10)
+        end1 = shapes.Point(2, -1)
+        end2 = shapes.Point(2, 1)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(rec, pol), res)
