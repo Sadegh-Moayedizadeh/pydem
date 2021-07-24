@@ -709,3 +709,117 @@ class TestProjection(unittest.TestCase):
         end2 = shapes.Point(2, 1)
         res = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.projection(rec, pol), res)
+    
+    def test_for_rectangle_and_rectangle1(self):
+        """the first test for projection of a given rectangle on
+        another given rectangle with the first one being inside the
+        second one
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(-1, -1)
+        v6 = shapes.Point(1, -1)
+        v7 = shapes.Point(1, 1)
+        v8 = shapes.Point(-1, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.projection(rec2, rec1), None)
+    
+    def test_for_rectangle_and_rectangle2(self):
+        """the second test for projection of a given rectangle on
+        another given rectangle with the second one being inside the
+        first one
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(-1, -1)
+        v6 = shapes.Point(1, -1)
+        v7 = shapes.Point(1, 1)
+        v8 = shapes.Point(-1, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.projection(rec1, rec2), rec2)
+    
+    def test_for_rectangle_and_rectangle3(self):
+        """the third test for projection of a given rectangle on
+        another given rectangle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(-1, -1)
+        v6 = shapes.Point(3, -1)
+        v7 = shapes.Point(3, 1)
+        v8 = shapes.Point(-1, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        end1 = shapes.Point(2, 1)
+        end2 = shapes.Point(2, -1)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(rec2, rec1), res)
+    
+    def test_for_rectangle_and_rectangle4(self):
+        """the fourth test for projection of a given rectangle on
+        another given rectangle with them being apart
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, -3)
+        v6 = shapes.Point(6, -3)
+        v7 = shapes.Point(6, 3)
+        v8 = shapes.Point(3, 3)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        res = shapes.LineSegment(v2, v3)
+        self.assertEqual(operations.projection(rec2, rec1), None)
+    
+    def test_for_rectangle_and_circle1(self):
+        """the first test for projection of a given rectangle on a
+        given circle with the circle being inside the rectangle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.projection(rec, circle), circle)
+    
+    def test_for_rectangle_and_circle2(self):
+        """the second test for projection of a given rectangle on a
+        given circle with the rectangle being inside the circle
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 0), 4)
+        self.assertEqual(operations.projection(rec, circle), None)
+    
+    def test_for_rectangle_and_circle3(self):
+        """the third test for projection of a given rectangle on a
+        given circle with them intersecting each other
+        """
+        
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        circle = shapes.Circle(shapes.Point(0, 2), 2)
+        res = shapes.Arc(circle, v2, v3)
+        self.assertEqual(operations.projection(rec, circle), res)
