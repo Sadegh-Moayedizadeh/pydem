@@ -823,3 +823,60 @@ class TestProjection(unittest.TestCase):
         circle = shapes.Circle(shapes.Point(0, 2), 2)
         res = shapes.Arc(circle, v2, v3)
         self.assertEqual(operations.projection(rec, circle), res)
+    
+    def test_for_circle_and_point1(self):
+        """the first test for projection of a given circle on a given
+        point with the point being inside the circel
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.projection(circle, point), point)
+    
+    def test_for_circle_and_point2(self):
+        """the second test for projection of a given circle on a given
+        point with the point being located on the circle's perimeter
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 1)
+        self.assertEqual(operations.projection(circle, point), point)
+    
+    def test_for_circle_and_point3(self):
+        """the third test for projection of a given circle on a given
+        point with the point being located outside the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        point = shapes.Point(0, 2)
+        self.assertEqual(operations.projection(circle, point), point)
+    
+    def test_for_circle_and_polygon1(self):
+        """the first test for projection of a given circle on a given
+        polygon with the circle being located inside the polygon
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.projection(circle, pol), None)
+    
+    def test_for_circle_and_polygon2(self):
+        """the second test for projection of a given circle on a given
+        polygon with the polygon being located inside the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 6)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.projection(circle, pol), pol)
