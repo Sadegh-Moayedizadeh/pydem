@@ -1303,3 +1303,99 @@ class TestProjection(unittest.TestCase):
         end4 = shapes.Point(2, -1)
         res = shapes.LineSegment(end3, end4)
         self.assertEqual(operations.projection(line, rec), res)
+    
+    def test_for_linesegment_and_circle1(self):
+        """the first test for projection of a given line segment on a
+        given circle with the line segment being located inside the
+        circle
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(end1, 1)
+        self.assertEqual(operations.projection(line, circle), None)
+    
+    def test_for_linesegment_and_circle2(self):
+        """the second test for projection of a given line segment on a
+        given circle with the line segment's ends being located at the
+        same alignment as the center of the circle
+        """
+        
+        end1 = shapes.Point(3, 0)
+        end2 = shapes.Point(4, 0)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        res = shapes.Point(1, 0)
+        self.assertEqual(operations.projection(line, circle), res)
+    
+    def test_for_linesegment_and_line1(self):
+        """the first test for projection of a given line segment on a
+        given infinite line with them having orthogonal slopes
+        """
+        
+        end1 = shapes.Point(0, 1)
+        end2 = shapes.Point(0, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        res = shapes.Point(0, 0)
+        self.assertEqual(operations.projection(line1, line2), res)
+    
+    def test_for_linesegment_and_line2(self):
+        """the second test for projection of a given line segment on a
+        given infinite line with them having arbitrary slopes
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(3, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        line2 = shapes.Line(0, 0)
+        end3 = shapes.Point(1, 0)
+        end4 = shapes.Point(3, 0)
+        res = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.projection(line1, line2), res)
+    
+    def test_for_linesegment_and_linesegment1(self):
+        """the first test for projection of a given line segment on
+        another given line segment with them not being in front of each
+        other
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(3, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(10, 0)
+        end4 = shapes.Point(11, 0)
+        line2 = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.projection(line1, line2), None)
+    
+    def test_for_linesegment_and_linesegment2(self):
+        """the second test for projection of a given line segment on
+        another given line segment with them being located in front of
+        each other
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(3, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(0, 0)
+        end4 = shapes.Point(2, 0)
+        line2 = shapes.LineSegment(end3, end4)
+        end5 = shapes.Point(1, 0)
+        res = shapes.LineSegment(end5, end4)
+        self.assertEqual(operations.projection(line1, line2), res)
+    
+    def test_for_linesegment_and_linesegment3(self):
+        """the third test for projection of a given line segment on
+        another given line segment with them intersecting each other
+        """
+        
+        end1 = shapes.Point(1, 1)
+        end2 = shapes.Point(3, 3)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(0, 2)
+        end4 = shapes.Point(4, 2)
+        line2 = shapes.LineSegment(end3, end4)
+        end5 = shapes.Point(1, 2)
+        end6 = shapes.Point(3, 2)
+        self.assertEqual(operations.projection(line1, line2), res)
