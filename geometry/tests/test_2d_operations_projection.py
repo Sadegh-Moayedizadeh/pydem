@@ -1045,3 +1045,142 @@ class TestProjection(unittest.TestCase):
         end3 = shapes.Point(1, 3)
         res = shapes.LineSegment(end1, end3)
         self.assertEqual(operations.projection(circle, line), res)
+    
+    def test_for_line_and_point(self):
+        """testing the projection of a given infinite line on a given
+        point
+        """
+        
+        line = shapes.Line(0, 0)
+        point = shapes.Point(0, 0)
+        self.assertEqual(operations.projection(line, point), point)
+    
+    def test_for_line_and_polygon1(self):
+        """the first test for projection of a given infinite line on a
+        given polygon with the line intersecting the polygon
+        """
+        
+        line = shapes.Line(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.projection(line, pol), None)
+    
+    def test_for_line_and_polygon2(self):
+        """the second test for projection of a given infinite line on a
+        given polygon with them intersecting each other but in a way
+        that the projection wouldn't be None
+        """
+        
+        line = shapes.Line(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        p1 = shapes.Point(-2, 2)
+        p2 = shapes.Point(-1, 3)
+        p3 = shapes.Point(1, 3)
+        p4 = shapes.Point(2, 2)
+        line1 = shapes.LineSegment(p1, p2)
+        line2 = shapes.LineSegment(p3, p4)
+        line3 = shapes.LineSegment(v3, v4)
+        line4 = shapes.LineSegment(v6, v1)
+        res = (line1, line2, line3, line4)
+        self.assertEqual(operations.projection(line, pol), res)
+    
+    def test_for_line_and_polygon3(self):
+        """the third test for projection of a given infinite line on a
+        given polygon with them being apart
+        """
+        
+        p1 = shapes.Point(3, 0)
+        p2 = shapes.Point(3, 1)
+        line = shapes.Line.from_points(p1, p2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        line1 = shapes.LineSegment(v5, v4)
+        line2 = shapes.LineSegment(v2, v3)
+        line3 = shapes.LineSegment(v3, v4)
+        res = (line1, line2, line3)
+        self.assertEqual(operations.projection(line, pol), res)
+    
+    def test_for_line_and_rectangle1(self):
+        """the first test for projection of a given infinite line on a
+        given rectangle with them intersecting each other
+        """
+        
+        line = shapes.Line(0, 0)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.projection(line, rec), None)
+    
+    def test_for_line_and_rectangle2(self):
+        """the second test_for projection of a given infinite line on a
+        given rectangle with them being apart
+        """
+        
+        line = shapes.Line(0, 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        line1 = shapes.LineSegment(v4, v3)
+        line2 = shapes.LineSegment(v4, v1)
+        line3 = shapes.LineSegment(v3, v2)
+        res = (line1, line2, line3)
+        self.assertEqual(operations.projection(line, rec), res)
+    
+    def test_for_line_and_circle1(self):
+        """the first test for projection of a given infinite line on a
+        given circle with the line intersecting the circle
+        """
+        
+        line = shapes.Line(0, 0)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.projection(line, circle), None)
+    
+    def test_for_line_and_circle2(self):
+        """the second test for projection of a given infinite line on a
+        given circle with them being apart
+        """
+        
+        line = shapes.Line(0, 3)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        arc = shapes.Arc(circle, shapes.Point(-1, 0), shapes.Point(1, 0))
+        self.assertEqual(operations.projection(line, circle), arc)
+    
+    def test_for_line_and_line(self):
+        """testing the projection of a given infinite line on another
+        given infinite line
+        """
+        
+        line1 = shapes.Line(0, 0)
+        line2 = shapes.Line(1, 0)
+        self.assertEqual(operations.projection(line1, line2), line2)
+    
+    def test_for_line_and_linesegment(self):
+        """testing the prjection of a given infinite line on a given
+        line segment
+        """
+        
+        line1 = shapes.Line(0, 0)
+        end1 = shapes.Point(0, 3)
+        end2 = shapes.Point(3, 3)
+        line2 = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(line1, line2), line2)
