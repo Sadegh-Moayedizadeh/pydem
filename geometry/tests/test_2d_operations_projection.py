@@ -1184,3 +1184,122 @@ class TestProjection(unittest.TestCase):
         end2 = shapes.Point(3, 3)
         line2 = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.projection(line1, line2), line2)
+    
+    def test_for_linesegment_and_point(self):
+        """testing the projection of a given line segment on a given
+        point
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        point = shapes.Point(1, 1)
+        self.assertEqual(operations.projection(line, point), point)
+    
+    def test_for_linesegment_and_polygon1(self):
+        """the first test for projection of a given line segment on a
+        given polygon with the line segment being located inside the
+        polygon
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        self.assertEqual(operations.projection(line, pol), None)
+    
+    def test_for_linesegment_and_polygon2(self):
+        """the second test for projection of a given line segment on a
+        given polygon with the line segment's ends being located at the
+        same alignment as the polygon's center
+        """
+        
+        end1 = shapes.Point(3, 0)
+        end2 = shapes.Point(5, 0)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        res = shapes.Point(2, 0)
+        self.assertEqual(operations.projection(line, pol), res)
+    
+    def test_for_linesegment_and_polygon3(self):
+        """the third test for projection of a given line segment on a
+        a given polygon with them being apart
+        """
+        
+        end1 = shapes.Point(4, 2)
+        end2 = shapes.Point(4, -2)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        end3 = shapes.Point(2, 1)
+        end4 = shapes.Point(2, -1)
+        res = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.projection(line, pol), res)
+    
+    def test_for_linesegment_and_rectangle1(self):
+        """the first test for projectio of a given line segment on a
+        given rectangle with the line segment being located inside the
+        rectangle
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.projection(line, rec), None)
+    
+    def test_for_linesegment_and_rectangle2(self):
+        """the second test for projection of a given line segment on a
+        given rectangle with the line segment's ends located at the
+        same alignment with the rectangle's center
+        """
+        
+        end1 = shapes.Point(3, 0)
+        end2 = shapes.Point(5, 0)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        res = shapes.Point(2, 0)
+        self.assertEqual(operations.projection(line, rec), res)
+    
+    def test_for_linesegment_and_rectangle3(self):
+        """the third test for projection of a given line segment on a 
+        given rectangle with them being appart
+        """
+        
+        end1 = shapes.Point(4, 2)
+        end2 = shapes.Point(4, -2)
+        line = shapes.LineSegment(end1, end2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        end3 = shapes.Point(2, 1)
+        end4 = shapes.Point(2, -1)
+        res = shapes.LineSegment(end3, end4)
+        self.assertEqual(operations.projection(line, rec), res)
