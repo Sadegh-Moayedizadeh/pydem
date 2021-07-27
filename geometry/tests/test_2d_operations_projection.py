@@ -880,3 +880,168 @@ class TestProjection(unittest.TestCase):
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
         self.assertEqual(operations.projection(circle, pol), pol)
+    
+    def test_for_circle_and_polygon3(self):
+        """the third test for projection of a given circle on a given
+        polygon with them intersecting each other
+        """
+        
+        circle = shapes.Circle(shapes.Point(2, 0), 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        res = shapes.LineSegment(v3, v4)
+        self.assertEqual(operations.projection(circle, pol), res)
+    
+    def test_for_circle_and_polygon4(self):
+        """the fourth test for projection of a given circle on a given
+        polygon with them intersecting each other but with the center
+        of the circle being located outside of the polygon
+        """
+        
+        circle = shapes.Circle(shapes.Point(3, 0), 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(0, -4)
+        v3 = shapes.Point(2, -2)
+        v4 = shapes.Point(2, 2)
+        v5 = shapes.Point(0, 4)
+        v6 = shapes.Point(-2, 2)
+        pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        res = shapes.LineSegment(v3, v4)
+        self.assertEqual(operations.projection(circle, pol), res)
+    
+    def test_for_circle_and_rectangle1(self):
+        """the first test for projection of a given circle on a given
+        rectangle with the circle being located inside the rectangle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.projection(circle, rec), None)
+    
+    def test_for_circle_and_rectangle2(self):
+        """the second test for projection of a given circle on a given
+        rectangle with the rectangle being located inside the circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(operations.projection(circle, rec), rec)
+    
+    def test_for_circle_and_rectangle3(self):
+        """the third test for projection of a given circle on a given
+        rectangle with them intersecting each other and the center of
+        the circle being located on the perimeter of the rectangle
+        """
+        
+        circle = shapes.Circle(shapes.Point(2, 0), 2)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        res = shapes.LineSegment(v2, v3)
+        self.assertEqual(operations.projection(circle, rec), res)
+    
+    def test_for_circle_and_rectangle4(self):
+        """the fourth test for projection of a given circle on a given
+        rectangle with them intersecting each other but the center of
+        the circle being located outside the rectangle
+        """
+        
+        circle = shapes.Circle(shapes.Point(3, 0), 3)
+        v1 = shapes.Point(-2, -2)
+        v2 = shapes.Point(2, -2)
+        v3 = shapes.Point(2, 2)
+        v4 = shapes.Point(-2, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        res = shapes.LineSegment(v2, v3)
+        self.assertEqual(operations.projection(circle, rec), res)
+    
+    def test_for_circle_and_line1(self):
+        """the first test for projection of a given circle on a given
+        infinite line with them intersecting each other and the center
+        of the circle being located on the line
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        line = shapes.Line(0, 0)
+        end1 = shapes.Point(-1, 0)
+        end2 = shapes.Point(1, 0)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(circle, line), res)
+    
+    def test_for_circle_and_line2(self):
+        """the second test for projection of a given circle on a given
+        infinite line with them intersecting each other but the center
+        of the circle not being located on the line
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0.5), 1)
+        line = shapes.Line(0, 0)
+        end1 = shapes.Point(-1, 0)
+        end2 = shapes.Point(1, 0)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(circle, line), res)
+    
+    def test_for_circle_and_line3(self):
+        """the third test for projection of a given circle on a given
+        infinite line with them being apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 2), 1)
+        line = shapes.Line(0, 0)
+        end1 = shapes.Point(-1, 0)
+        end2 = shapes.Point(1, 0)
+        res = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(circle, line), res)
+    
+    def test_for_circle_and_linesegment1(self):
+        """the first test for projection of a given circle on a given
+        line segment with the line segment being located inside the
+        circle
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(-0.5, 0)
+        end2 = shapes.Point(0.5, 0)
+        line = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.projection(circle, line), line)
+    
+    def test_for_circle_and_linesegment2(self):
+        """the second test for projection of a given circle on a given
+        line segment with them intersecting each other
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(3, 0)
+        line = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(1, 0)
+        res = shapes.LineSegment(end1, end3)
+        self.assertEqual(operations.projection(circle, line), res)
+    
+    def test_for_circle_and_linesegment3(self):
+        """the third test for projection of a given circle on a given
+        line segment with them being apart
+        """
+        
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        end1 = shapes.Point(0, 3)
+        end2 = shapes.Point(3, 3)
+        line = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(1, 3)
+        res = shapes.LineSegment(end1, end3)
+        self.assertEqual(operations.projection(circle, line), res)
