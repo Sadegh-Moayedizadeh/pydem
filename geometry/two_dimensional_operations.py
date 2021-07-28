@@ -74,6 +74,103 @@ def opposite_sides(
     return (sign1 != sign2)
 
 
+def bisector(
+    line1: Union[Typt[shapes.Line], Type[shapes.LineSegment]],
+    line2: Union[Typt[shapes.Line], Type[shapes.LineSegment]]
+    ) -> Type[shapes.Line]:
+    """finding the bisector of two lines
+
+    Args:
+        entity1 (Union[Typt[shapes.Line], Type[shapes.LineSegment]]):
+            the first given line
+        entity2 (Union[Typt[shapes.Line], Type[shapes.LineSegment]]):
+            the second given line
+
+    Returns:
+        Type[shapes.Line]: the bisector of the given two lines
+    """
+    
+    if isinstance(line1, shapes.LineSegment):
+        line1 = line1.infinite
+    if isinstance(line2, shapes.LineSegment):
+        line2 = line2.infinite
+    if line1.slope == line2.slope:
+        width = (line1.width + line2.width) / 2
+        return shapes.Line(line1.slope, width)
+    point = intersection(line1, line2)
+    slope = (line1.slope + line2.slope) / 2
+    inclination = np.arctan(slope)
+    return shapes.Line.from_point_and_inclination(point, inclination)
+
+
+def normal(
+    point: Type[shapes.Point],
+    line: Union[Type[shapes.Line], Type[shapes.LineSegment]]
+    ) -> Type[shapes.Line]:
+    """finding the line orthogonal to the given line from the given
+    point
+
+    Args:
+        entity1 (Type[shapes.Point]): the given point
+        entity2 (Union[Typt[shapes.Line], Type[shapes.LineSegment]]):
+            the given line
+
+    Returns:
+        Type[shapes.Line]: an infinite line orthogonal to the given
+            line passing the given point
+    """
+    
+    if isinstance(line, shapes.LineSegment):
+        line = line.infinite
+    if line.slope == 0:
+        slope = np.tan(np.math.pi/2)
+    else:
+        slope = -1 * (1 / line.slope)
+    inclination = np.arctan(slope)
+    return shapes.Line.from_point_and_inclination(point, inclination)
+
+
+def intersection_length(
+    line: Type[shapes.LineSegment],
+    entity: Any
+    ) -> float:
+    """finding how deep the intersection between a line and another
+    entity is
+
+    Args:
+        entity1 (Type[shapes.LineSegment]): the given line
+        entity2 (Any): the other given entity
+
+    Returns:
+        float: the length of that part of the given line that has
+            intersection with the given entity
+    """
+    
+    inter = intersection(line, entity)
+    if isinstance(inter, shapes.LineSegment):
+        return inter.length
+    if isinstance(inter, shapes.Point):
+        line1 = shapes.LineSegment(line.end1, inter)
+        line2 = shapes.LineSegment(inter, line.end2)
+        if is_inside(line.end1, entity):
+            return line1.length
+        if is_inside(line.end2, entity):
+            return line2.length
+        if line1.length < line2.length:
+            return line1.length
+        return line2.length
+    if isinstance(inter, tuple):
+        return shapes.LineSegment(inter[0], inter[1])
+    return 0
+
+
+def intersection_area(
+    circle1: Type[shapes.Circle],
+    circle2: Type[shapes.Circle]
+    ) -> float:
+    pass
+
+
 @overload(shapes.Point, shapes.Point)
 def intersection(
     entity1: Type[shapes.Point],
