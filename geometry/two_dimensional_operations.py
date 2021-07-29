@@ -164,11 +164,88 @@ def intersection_length(
     return 0
 
 
+def angle_in_between(
+    line1: Union[Type[shapes.Line], Type[shapes.LineSegment]],
+    line2: Union[Type[shapes.Line], Type[shapes.LineSegment]]
+    ) -> float:
+    """finds the smallest angle between two given lines
+
+    Args:
+        entity1 (Union[Type[shapes.Line], Type[shapes.LineSegment]]):
+            the first given line
+        entity2 (Union[Type[shapes.Line], Type[shapes.LineSegment]]):
+            the second given line
+
+    Returns:
+        float: the smallest angle between the given lines
+    """
+    
+    if isinstance(line1, shapes.LineSegment):
+        line1 = line1.infinite
+    if isinstance(line2, shapes.LineSegment):
+        line2 = line2.infinite
+    inc1 = standardized_inclination(line1.inclination)
+    inc2 = standardized_inclination(line2.inclination)
+    return standardized_inclination(abs(inc1 - inc2))
+
+
+def standardized_inclination(inc: float) -> float:
+    """standardized the given inclination in a way that it's between
+    zero and pi radians
+    
+    Args:
+        inc(float): the given inclination to be standardized
+        
+    Returns"
+        float: the standardized inclination
+    """
+    
+    inc = inc % (2 * (np.math.pi))
+    if inc < 0:
+        inc = (2 * (np.math.pi)) + inc
+    if inc > (np.math.pi):
+        inc = inc - (np.math.pi)
+    return inc
+    
+
 def intersection_area(
     circle1: Type[shapes.Circle],
     circle2: Type[shapes.Circle]
     ) -> float:
-    pass
+    """finding the area of intersection between two Circle instances
+
+    Args:
+        entity1 (Type[shapes.Circle]): the first given circle
+        entity2 (Type[shapes.Circle]): the second given circle
+
+    Returns:
+        float: the common area between two intersecting circles
+    """
+    
+    inter = intersection(circle1, circle2)
+    if not isinstance(inter, tuple):
+        return 0
+    point1 = inter[0]
+    point2 = inter[1]
+    
+    def triangle_area(angle, chord_length):
+        x = chord_length * np.cos(angle)
+        y = chord_length * np.sin(angle)
+        return (0.5 * x * y)
+    
+    angle1 = angle_in_between(
+        shapes.LineSegment(circle1.center, point1),
+        shapes.LineSegment(circle1.center, point2)
+        )
+    angle2 = angle_in_between(
+        shapes.LineSegment(circle2.center, point1),
+        shapes.LineSegment(circle2.center, point2)
+        )
+    t_area1 = 2 * triangle_area((angle1 * 0.5), circle1.radius)
+    t_area2 = 2 * triangle_area((angle2 * 0.5), circle2.radius)
+    s_area1 = circle1.area * (angle1 / (2 * (np.math.pi)))
+    s_area2 = circle2.area * (angle2 / (2 * (np.math.pi)))
+    return (s_area1 + s_area2) - (t_area1 + t_area2)
 
 
 @overload(shapes.Point, shapes.Point)
