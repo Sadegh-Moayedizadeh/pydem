@@ -282,7 +282,7 @@ class TestIntersectionLength(unittest.TestCase):
         v3 = shapes.Point(2, 2)
         v4 = shapes.Point(-2, 2)
         rec = shapes.Rectangle(v1, v2, v3, v4)
-        self.assertEqual(operations.intersection_length(line, rec), 0)
+        self.assertEqual(operations.intersection_length(line, rec), 1)
     
     def test_for_line_and_rectangle2(self):
         """the second test for intersection length of a line segment and
@@ -298,7 +298,7 @@ class TestIntersectionLength(unittest.TestCase):
         v3 = shapes.Point(2, 2)
         v4 = shapes.Point(-2, 2)
         rec = shapes.Rectangle(v1, v2, v3, v4)
-        self.assertEqual(operations.intersection_length(line, rec), 0)
+        self.assertEqual(operations.intersection_length(line, rec), 2)
     
     def test_for_line_and_rectangle3(self):
         """the third test for intersection length of a line segment and
@@ -347,6 +347,202 @@ class TestIntersectionLength(unittest.TestCase):
         v4 = shapes.Point(-2, 2)
         rec = shapes.Rectangle(v1, v2, v3, v4)
         self.assertEqual(operations.intersection_length(line, rec), 2)
+
+    def test_for_line_and_circle1(self):
+        """the first test for intersection length of a given line and a
+        given circle with the line being located inside the circle
+        """
+
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 0.5)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 0.5)
+    
+    def test_for_line_and_circle2(self):
+        """the second test for intersection length of a given line and
+        a given circle with the line segment being located inside the
+        circle but with one of its ends touching the circle's perimeter
+        """
+
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 1)
+    
+    def test_for_line_and_circle3(self):
+        """the third test for intersection length of a given line and a
+        given circle with the line passing through the circle
+        """
+
+        end1 = shapes.Point(0, -2)
+        end2 = shapes.Point(0, 2)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 2)
+    
+    def test_for_line_and_circle4(self):
+        """the fourth test for intersection length of a given line and
+        a given circle with the line simply intersecting the circle and
+        with the larger part being located inside the circle
+        """
+        
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 1.5)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 1)
+    
+    def test_for_line_and_circle5(self):
+        """the fifth test for intersection length of a given line and a
+        given circle with them simply intersecting each other and the
+        larger part of the line being outside the circle
+        """
+
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(0, 4)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 1)
+    
+    def test_for_line_and_circle6(self):
+        """the sixth test for intersection length of a line andd a
+        circle with one of line's ends simply touching the circle's
+        perimeter
+        """
+
+        end1 = shapes.Point(0, 2)
+        end2 = shapes.Point(0, 1)
+        line = shapes.LineSegment(end1, end2)
+        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        self.assertEqual(operations.intersection_length(line, circle), 0)
+    
+
+class TestAngleInBetween(unittest.TestCase):
+    """test cases for the 'angle_in_between' function in the
+    'two_dimensional_operations' module
+    """
+
+    def test_for_parallel_lines1(self):
+        """the first test for angle in between two parallel lines with
+        them being horizental
+        """
+
+        line1 = shapes.Line(0, 0)
+        line2 = shapes.Line(0, 1)
+        self.assertEqual(operations.angle_in_between(line1, line2), 0)
+    
+    def test_for_parallel_lines2(self):
+        """the second test for angle in between two parallel lines with
+        them being bertical
+        """
+
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 1)
+        line1 = shapes.Line.from_points(point1, point2)
+        point3 = shapes.Point(1, 0)
+        point4 = shapes.Point(1, 1)
+        line2 = shapes.Line.from_points(point3, point4)
+        self.assertEqual(operations.angle_in_between(line1, line2), 0)
+    
+    def test_for_orthogonal_lines1(self):
+        """the first test for two orthogonal lines which are located
+        both within the first quarter of the trigonomic circle
+        """
+
+        line1 = shapes.Line(0, 0)
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 1)
+        line2 = shapes.Line.from_points(point1, point2)
+        res = (np.math.pi / 2)
+        self.assertEqual(operations.angle_in_between(line1, line2), res)
+    
+    def test_for_orthogonal_lines2(self):
+        """the second test for two orthogonal lines in a way that their
+        bisector is a vertical line
+        """
+
+        line1 = shapes.Line(1, 0)
+        line2 = shapes.Line(-1, 0)
+        res = (np.math.pi / 2)
+        self.assertEqual(operations.angle_in_between(line1, line2), res)
+    
+    def test_for_arbitrary_slopes1(self):
+        """the first test for finding the angle in between two line segments
+        with arbitrary slopes both located in the second quarter of the
+        trigonometric circle
+        """
+
+        end1 = shapes.Point(-2, 1)
+        end2 = shapes.Point(-4, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(-1, 2)
+        end4 = shapes.Point(-2, 4)
+        line2 = shapes.LineSegment(end3, end4)
+        res = (np.math.pi / 6)
+        self.assertEqual(operations.angle_in_between(line1, line2), res)
+
+    def test_for_arbitrary_slopes2(self):
+        """the second test for two line segments that one of them is
+        located at the first quarter and the other at the second quarter
+        of the trigonomical circle
+        """
+        
+        end1 = shapes.Point(-2, 1)
+        end2 = shapes.Point(-4, 2)
+        line1 = shapes.LineSegment(end1, end2)
+        end3 = shapes.Point(2, 1)
+        end4 = shapes.Point(4, 2)
+        line2 = shapes.LineSegment(end3, end4)
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 1)
+        res = (np.math.pi / 3)
+        self.assertEqual(operations.angle_in_between(line1, line2), res)
+
+
+class TestStandardizedInclination(unittest.TestCase):
+    """test cases for the 'standardized_inclination' function from the
+    'two_dimensional_operations' module
+    """
+
+    def test_for_a_standard_angle(self):
+        """testing for an angle that is between 0 and pi radians
+        """
+
+        inc = np.math.pi/2
+        self.assertEqual(operations.standardized_inclination(inc), inc)
+    
+    def test_for_angle_equal_to_pi(self):
+        """testing for an angle equal to pi radians
+        """
+
+        inc = np.math.pi
+        self.assertEqual(operations.standardized_inclination(inc), 0)
+    
+    def test_for_angle_between_pi_and_2pi(self):
+        """testing for an angle between pi and 2*pi radians
+        """
+
+        inc = 3 * np.math.pi / 2
+        res = np.math.pi / 2
+        self.assertEqual(operations.standardized_inclination(inc), res)
+    
+    def test_for_angle_equal_to_2pi(self):
+        """testing for an angle equal to 2*pi radians
+        """
+
+        inc = 2* np.math.pi
+        res = 0
+        self.assertEqual(operations.standardized_inclination(inc), res)
+    
+    def test_for_angle_more_than_2pi(self):
+        """testing for an angle more than 2*pi radians
+        """
+
+        inc = 5 * np.math.pi / 2
+        res = np.math.pi / 2
+        self.assertEqual(operations.standardized_inclination(inc), res)
 
 
 if __name__ == '__main__':
