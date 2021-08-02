@@ -3,13 +3,15 @@ the elements used in the model
 
 Classes
     Particle: the base class for all the soil particles to inherit from 
-    Sand: the base class fot sand particles
+    Sand: the base class for sand particles
     Clay: the base class for clay particles
     Kaolinite: the class to create kaolinite particles
     Montmorillonite: the class to create montmorillonite particles
     Quartz: the class to create quartz particles
     Illite: the class to create illite particles
     Wall: the class to creat walls as boundaries to the model
+    Container: the class to create container objects which hold all the
+        stuff to run simulations upon
 """
 
 import multiprocessing
@@ -586,12 +588,14 @@ class Container(object):
         'illite' : Illite,
         'quartz' : Quartz,
         }
+    valid_simulation_types = ['TT', 'DS', 'SS']
     
     def __init__(
         self,
         length: float,
         width: float,
         particles_info: list(dict),
+        simulation_type: 'str',
         ) -> None:
         """initialize the Container instance
 
@@ -603,6 +607,11 @@ class Container(object):
                 in which every element is a dictionary in which the
                 keys "type, size_upper_bound, size_lower_bound,
                 quantity" have to be present;
+            simulation_type (str): the type of simulation to be run on
+                the container; it should be either of these options:
+                    TT: for triaxial test
+                    DS: for direct shear test
+                    SS: for simple shear test
         
         Other Attributes:
             number_of_groups (int): the number of categories of
@@ -634,6 +643,9 @@ class Container(object):
             RuntimeError: when the given particles_info array is invalid
         """
         
+        if not simulation_type.upper() in self.valid_simulation_types:
+            raise RuntimeError('invalid input for the simulation type')
+        self.simulation_type = simulation_type
         self.length = length
         self.width = width
         if not self._validate_info(particles_info):
@@ -1002,3 +1014,43 @@ class Container(object):
                 res.append(particle.nb - self.nc[index] + 1)
 
         return res
+    
+    def setup(self):
+        """sets up the container; actions takes here are generating
+        particles according the given info, generating the walls and
+        setting up the boundary conditions and performing a relaxation
+        phase
+        """
+        
+        pass
+
+    @property
+    def overal_stress(self):
+        """calculates the overal stress between the particles in the
+        container
+        """
+        
+        pass
+
+    @property
+    def overal_strain(self):
+        """calculated the overal strain in the container
+        """
+        
+        if self.simulation_type == 'TT':
+            return (self.width - self.moving_wall.y) / (self.width)
+        # do this also for other simulation types
+        return 0
+
+    def update(self, strain_rate):
+        """updates the boundary conditions and perform a relaxation
+        phase
+        """
+        
+        pass
+    
+    def calculate_forces(self):
+        """calculates forces acting on each particle
+        """
+        
+        pass
