@@ -50,7 +50,7 @@ class Particle(object):
         x: float,
         y: float,
         inclination: float,
-        hierarchy: int,
+        hierarchy: int = -1,
         velocity: Tuple[float, float, float] = (0, 0, 0),
         force: Tuple[float, float, float] = (0, 0, 0),
         num: int = 0,
@@ -548,11 +548,50 @@ class Wall(Particle):
             num (int): number of the particle
             is_fixed (bool): specifying if the wall is fixed or is able
                 to relocate
+            length (float): the length of the wall
         """
         
         self.is_fixed = kwargs.pop('is_fixed')
+        self.length = kwargs.pop('length')
+        self.shape = shapes.LineSegment.from_point_and_inclination(
+            point = shapes.Point(kwargs['x'], kwargs['y']),
+            inclination = kwargs['inclination'],
+            length = self.length
+        )
         super().__init__(*args, **kwargs)
+    
+    @classmethod
+    def from_ends(
+        x1: float,
+        y1: float,
+        x2: float,
+        y2: float,
+        is_fixed: bool,
+    ) -> 'Wall':
+        """alternative constructor to create a Wall instance from end
+        points
         
+        Args:
+            x1 (float): the x coordinate of the wall's first end
+            y1 (float): the y coordinate of the wall's first end
+            x2 (float): the x coordinate of the wall's second end
+            y2 (float): the y coordinate of the wall's second end
+            is_fixed (bool): whether or not the wall is going to be
+                motionless in the model
+        
+        Returns:
+            Type[Wall]: the Wall instance
+        """
+        
+        length = np.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+        x =  (x1 + x2) / 2
+        y = (y1 + y2) / 2
+        if x1 == x2:
+            inclination = np.math.pi / 2
+        else:
+            inclination = np.arctan((y2 - y1) / (x2 - x1))
+        return Wall(x = x, y = y, inclination = inclination, length = length, is_fixed = is_fixed)
+
 
 class Container(object):
     """create the container in which the simulation for different tests
@@ -594,15 +633,15 @@ class Container(object):
         self,
         length: float,
         width: float,
-        particles_info: list(dict),
-        simulation_type: 'str',
+        particles_info: List[Dict],
+        simulation_type: str,
         ) -> None:
         """initialize the Container instance
 
         Args:
             length (float): the length of the container instance
             width (float): the width of the container instance
-            particles_info (list): the information assiciated to the
+            particles_info (List[Dict]): the information associated to the
                 particles to be generated in the container in and array
                 in which every element is a dictionary in which the
                 keys "type, size_upper_bound, size_lower_bound,
@@ -644,13 +683,23 @@ class Container(object):
         """
         
         if not simulation_type.upper() in self.valid_simulation_types:
-            raise RuntimeError('invalid input for the simulation type')
+            raise RuntimeError(
+                'invalid input for the simulation type; should be either of "TT", "DS", or "SS"'
+                )
         self.simulation_type = simulation_type
+        if length <= 0 or width <= 0:
+            raise RuntimeError(
+                'the given length and width of the container should be a positive number'
+                )
         self.length = length
         self.width = width
         if not self._validate_info(particles_info):
-            raise RuntimeError('invalid input as particles_info')
-        particles_info = sorted(particles_info, key = lambda x: x['size_upper_bound'], reverse = True)
+            raise RuntimeError(
+                'invalid input for particles_info'
+                )
+        particles_info = sorted(
+            particles_info, key = lambda x: x['size_upper_bound'], reverse = True
+            )
         self.particles_info = particles_info
         self.number_of_groups: int = len(particles_info)
         self.contacts: Type[defaultdict] = defaultdict(set)
@@ -659,6 +708,7 @@ class Container(object):
         self.box_width, self.box_length = self._make_boxes()
         self.nr: List = [self.width // w for w in self.box_width]
         self.nc: List = [self.length // l for l in self.box_length]
+        self.walls: List[Type[Wall]] = self.setup_walls()
     
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -690,6 +740,28 @@ class Container(object):
             if d['size_lower_bound'] < 0 or d['size_upper_bound'] < 0 or d['quantity'] < 0:
                 return False
         return True
+    
+    def setup_walls(self) -> List[Type[Wall]]:
+        """sets up the boundaries of the container as the Wall instances
+        
+        Returns:
+            List[Type[Wall]]: Wall instances as the boundaries of the container
+        """
+        
+        if self.simulation_type == 'TT':
+            wall1 = Wall.from_ends(
+                x1 = 0, y1 = 0, x2 = 0, y2 = self.width, is_fixed = True
+                )
+            wall2 = Wall.from_ends(
+                x1 = 0, y1 = self.width, x2 = self.length, y2 = self.width, is_fixed = False
+                )
+            wall3 = Wall.from_ends(
+                x1 = self.length, y1 = self.width, x2 = self.length, y2 = 0, is_fixed = True
+                )
+            wall4 = Wall.from_ends(
+                x1 = self.length, y1 = 0, x2 = 0, y2 = 0, is_fixed = True
+                )
+            return [wall1, wall2, wall3, wall4]
     
     def _make_boxes(self) -> Tuple[List, List]:
         """calculate the width and length for the boxes corresponding
@@ -765,12 +837,56 @@ class Container(object):
             if self._single_particle_contact_check(new_particle):
                 del new_particle
                 trials += 1
+            elif self._particle_wall_contact_check(new_particle, hierarchy = index):
+                del new_particle
+                trials += 1
             else:
                 self.particles.append(new_particle)
                 for index in range(new_particle.hierarchy, self.number_of_groups):
                     for box in self.touching_boxes(new_particle, index):
                         self.boxes[index][box].append(new_particle)
                 return
+    
+    def _particle_wall_contact_check(
+        self,
+        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
+        hierarchy: int,
+        ) -> bool:
+        """checks if the given particle is in contact with any of the
+        boundaries
+        
+        Args:
+            particle (Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]]):
+                the given particle
+            hierarchy (int): the hierarchy of the given particle according
+                to its size
+        
+        Returns:
+            bool: True or False indicating the contacting situation between
+                the given particle and any of the boundaries
+        """
+        
+        nb = particle.box_num(self.nc[hierarchy], self.length, self.width)
+        row = nb // self.nc[hierarchy]
+        column = nb % self.nr[hierarchy]
+        res = []
+        if row == 0:
+            for wall in self.walls:
+                if wall.y == 0 and wall.inclination == 0:
+                    res.append(operations.intersection(particle.shape, wall.shape))
+        if row == (self.nr[hierarchy] - 1):
+            for wall in self.walls:
+                if wall.y != 0 and wall.inclination == 0:
+                    res.append(operations.intersection(particle.shape, wall.shape))
+        if column == 0:
+            for wall in self.walls:
+                if wall.x == 0 and wall.inclination == np.math.pi / 2:
+                    res.append(operations.intersection(particle.shape, wall.shape))
+        if column == row < (self.nc[hierarchy] - 1):
+            for wall in self.walls:
+                if wall.x != 0 and wall.inclination == np.math.pi / 2:
+                    res.append(operations.intersection(particle.shape, wall.shape))
+        return res if res else None
     
     def _single_particle_contact_check(
         self,
@@ -805,7 +921,7 @@ class Container(object):
             return
         return False
         
-    def update_contact_list(self) -> None:
+    def update_mechanical_contact_list(self) -> None:
         """recreating the self.contacts dictionary
         """
         
@@ -814,6 +930,9 @@ class Container(object):
         self.particles = sorted(self.particles, key = lambda x: x.hierarchy)
         for particle in self.particles:
             self._single_particle_contact_check(particle, generation_phase = False)
+    
+    def update_aor_contact_list(self):
+        pass
     
     def touching_boxes(
         self,
@@ -834,8 +953,9 @@ class Container(object):
         """
         
         res = []
-        row = particle.nb // self.nc[index]
-        column = particle.nb % self.nr[index]
+        nb = particle.box_num(self.nc[index], self.length, self.width)
+        row = nb // self.nc[index]
+        column = nb % self.nr[index]
         
         # lower box
         if row > 0:
