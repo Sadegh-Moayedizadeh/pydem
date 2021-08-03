@@ -53,7 +53,6 @@ class Particle(object):
         hierarchy: int = -1,
         velocity: Tuple[float, float, float] = (0, 0, 0),
         force: Tuple[float, float, float] = (0, 0, 0),
-        num: int = 0,
         ) -> None:
         """initializing the Particle instance
 
@@ -203,6 +202,7 @@ class Clay(Particle):
             self.midline, self.thickness
             )
         self.segments: List = self.segmentalize()
+        kwargs['inclination'] = operations.standardized_inclination(kwargs['inclination'])
         super().__init__(*args, *kwargs)
     
     def segmentalize(self) -> List:
@@ -250,17 +250,17 @@ class Sand(Particle):
                 is outside the bounds specified as the class private
                 attributes
         """
-
-        super().__init__(*args, *kwargs)        
-        if kwargs['length'] < self.diameter_bounds[0]:
+       
+        if kwargs['diameter'] < self.diameter_bounds[0]:
             raise SizeOutOfBound('the given diameter is lower than expected')
-        elif kwargs['length'] > self.diameter_bounds[1]:
+        elif kwargs['diameter'] > self.diameter_bounds[1]:
             raise SizeOutOfBound('the given diameter is higher than expected')
         
         self.diameter = kwargs.pop('length')
         x, y = kwargs['x'], kwargs['y']
         self.shape = shapes.Circle(x, y, self.diameter)
-# shift the super up everywhere
+        super().__init__(*args, *kwargs)
+
 
 class Kaolinite(Clay):
     """Class to create montmorillonite particels
@@ -443,7 +443,6 @@ class Montmorillonite(Clay):
                 class private attributes
         """
         
-        kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
 
     def __repr__(self) -> str:
