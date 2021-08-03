@@ -702,7 +702,8 @@ class Container(object):
             )
         self.particles_info = particles_info
         self.number_of_groups: int = len(particles_info)
-        self.contacts: Type[defaultdict] = defaultdict(set)
+        self.mechanical_contacts: Type[defaultdict] = defaultdict(set)
+        self.ddl_contacts: Type[defaultdict] = defaultdict(set)
         self.particles: List = []
         self.boxes: Dict = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.box_width, self.box_length = self._make_boxes()
@@ -843,7 +844,7 @@ class Container(object):
             else:
                 self.particles.append(new_particle)
                 for index in range(new_particle.hierarchy, self.number_of_groups):
-                    for box in self.touching_boxes(new_particle, index):
+                    for box in self.touching_boxes(new_particle.shape, index):
                         self.boxes[index][box].append(new_particle)
                 return
     
@@ -907,14 +908,14 @@ class Container(object):
                 the given particle
         """
 
-        for box in self.touching_boxes(particle, particle.hierarchy):
+        for box in self.touching_boxes(particle.shape, particle.hierarchy):
             for particle2 in self.boxes[particle.hierarchy][box]:
                 contact = operations.intersection(particle.shape, particle2.shape)
                 if contact:
                     if particle.num != particle2.num:
                         if not generation_phase:
-                            self.contacts[particle].add[(particle2, contact)]
-                            self.contacts[particle2].add[(particle, contact)]
+                            self.mechanical_contacts[particle].add[(particle2, contact)]
+                            self.mechanical_contacts[particle2].add[(particle, contact)]
                         else:
                             return True
         if not generation_phase:
@@ -922,21 +923,24 @@ class Container(object):
         return False
         
     def update_mechanical_contact_list(self) -> None:
-        """recreating the self.contacts dictionary
+        """recreating the self.mechanical_contacts dictionary
         """
         
         self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
-        self.contacts = defaultdict(set)
+        self.mechanical_contacts = defaultdict(set)
         self.particles = sorted(self.particles, key = lambda x: x.hierarchy)
         for particle in self.particles:
             self._single_particle_contact_check(particle, generation_phase = False)
     
-    def update_aor_contact_list(self):
+    def update_aor_contact_list(self) -> None:
+        """recreates the self.ddl_contacts dictionary
+        """
+        
         pass
     
     def touching_boxes(
         self,
-        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
+        particle_shape: Type[Union[shapes.LineSegment, shapes.Rectangle, shapes.Circle]],
         index: int
         ) -> List:
         """finds the boxes in touch with the given particle in the
@@ -976,8 +980,8 @@ class Container(object):
                 ((row - 1) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb - self.nc[index])
+            if operations.intersection(particle_shape, box):
+                res.append(nb - self.nc[index])
 
         # upper box
         if row < (self.nr[index] - 1):
@@ -998,8 +1002,8 @@ class Container(object):
                 ((row + 2) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb + self.nc[index])
+            if operations.intersection(particle_shape, box):
+                res.append(nb + self.nc[index])
 
         # left box
         if column > 0:
@@ -1020,8 +1024,8 @@ class Container(object):
                 ((row + 1) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb - 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb - 1)
 
         # right box
         if column < (self.nc[index] - 1):
@@ -1042,8 +1046,8 @@ class Container(object):
                 ((row + 1) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb + 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb + 1)
 
         # upper left box
         if row < (self.nr[index] - 1) and column > 0:
@@ -1064,8 +1068,8 @@ class Container(object):
                 ((row + 2) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb + self.nc[index] - 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb + self.nc[index] - 1)
 
         # upper right box
         if row < (self.nr[index] - 1) and column < (self.nc[index] - 1):
@@ -1086,8 +1090,8 @@ class Container(object):
                 ((row + 2) * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb + self.nc[index] + 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb + self.nc[index] + 1)
 
         # lower left box
         if column > 0 and row > 0:
@@ -1108,8 +1112,8 @@ class Container(object):
                 (row * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb - self.nc[index] - 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb - self.nc[index] - 1)
 
         # lower right box
         if row > 0 and column < (self.nc[index] - 1):
@@ -1130,8 +1134,8 @@ class Container(object):
                 (row * self.box_width[index])
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
-            if operations.intersection(particle.shape, box):
-                res.append(particle.nb - self.nc[index] + 1)
+            if operations.intersection(particle_shape, box):
+                res.append(nb - self.nc[index] + 1)
 
         return res
     
@@ -1169,8 +1173,21 @@ class Container(object):
         
         pass
     
-    def calculate_forces(self):
-        """calculates forces acting on each particle
+    def calculate_mechanical_forces(self, particle):
+        """calculates machanical forces acting on the given particle
         """
         
+        pass
+    
+    def calculate_ddl_forces(self, particle):
+        """calculates ddl forces acting on the given particle
+        """
+        
+        pass
+
+    def calculate_vv_forces(self, partice):
+        """calculates the van der valse forces acting on the given
+        particle
+        """
+
         pass
