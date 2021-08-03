@@ -551,6 +551,10 @@ class Wall(Particle):
         """
         
         self.is_fixed = kwargs.pop('is_fixed')
+        if kwargs['length'] <= 0:
+            raise RuntimeError(
+                'the given length for the wall should be a positive number'
+                )
         self.length = kwargs.pop('length')
         self.shape = shapes.LineSegment.from_point_and_inclination(
             point = shapes.Point(kwargs['x'], kwargs['y']),

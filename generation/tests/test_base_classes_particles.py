@@ -422,3 +422,87 @@ class TestMontmorillonite(unittest.TestCase):
         """
 
         pass
+
+
+class TestWall(unittest.TestCase):
+    """test cases for Wall class from 'base_classes' module; some of
+    the stuff that it inherits from its parent class 'Particle' will
+    also be tested again in here to see if it inherits them correctly
+    """
+
+    def test_ascending_particle_number(self):
+        """testing if the particle number thing works in this class too
+        in the ascending manner; it should be correctly inherited from
+        the parent class 'Particle'
+        """
+        
+        pass
+
+    def test_descending_particle_number(self):
+        """testing if the particle number thing works in this class too
+        in the descending manner; it should be correctly inherited from
+        the parent class 'Particle'
+        """
+        
+        pass
+    
+    def test_hashable(self):
+        """testing if the particle being hashable works here too; it is
+        inherited from the parent class 'Particle'
+        """
+
+        pass
+
+    def test_equality_condition(self):
+        """testing if the equality condition works here to; it is
+        inherited from the parent class 'Particle'
+        """
+
+        pass
+    
+    def test_move(self):
+        """testing if the Wall instance moves correctly with the given
+        derivatives; this is inherited from the parent class 'Particle'
+        """
+
+        pass
+
+    def test_mass(self):
+        """testing if the Wall instance returns a correct mass; this is
+        inherited from the parent class 'Particle'
+        """
+        
+        pass
+    
+    def test_moment_of_inertia(self):
+        """testing if the Wall instance returns a correct moment of
+        inertia; this is inherited from the parent class 'Particle'
+        """
+
+        pass
+    
+    def test_length_validation(self):
+        """testing if it raises an error with a non-positive given
+        length 
+        """
+
+        pass
+
+    def test_shape(self):
+        """testing if the 'shape' attribute is assigned correctly
+        """
+
+        pass
+
+    def test_attribute_assigning(self):
+        """testing if all the attributes are assigned correctly; this
+        includes those of the parent class 'Particle'
+        """
+
+        pass
+
+    def test_frorm_ends(self):
+        """testing the classmethod 'from_ends'
+        """
+
+        pass
