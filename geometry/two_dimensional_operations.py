@@ -48,9 +48,9 @@ def overload(*types: type):
 
 
 def opposite_sides(
-    line: Type[shapes.Line],
-    point1: Type[shapes.Point],
-    point2: Type[shapes.Point]
+    line: 'Type[shapes.Line]',
+    point1: 'Type[shapes.Point]',
+    point2: 'Type[shapes.Point]'
     ) -> bool:
     """checks if the given points are located on the opposite sides of
     the given line
@@ -75,9 +75,9 @@ def opposite_sides(
 
 
 def bisector(
-    line1: Union[Typt[shapes.Line], Type[shapes.LineSegment]],
-    line2: Union[Typt[shapes.Line], Type[shapes.LineSegment]]
-    ) -> Type[shapes.Line]:
+    line1: 'Union[Type[shapes.Line], Type[shapes.LineSegment]]',
+    line2:' Union[Typt[shapes.Line], Type[shapes.LineSegment]]'
+    ) ->' Type[shapes.Line]':
     """finding the bisector of two lines
 
     Args:
@@ -104,9 +104,9 @@ def bisector(
 
 
 def normal(
-    point: Type[shapes.Point],
-    line: Union[Type[shapes.Line], Type[shapes.LineSegment]]
-    ) -> Type[shapes.Line]:
+    point: 'Type[shapes.Point]',
+    line:' Union[Type[shapes.Line], Type[shapes.LineSegment]]'
+    ) -> 'Type[shapes.Line]':
     """finding the line orthogonal to the given line from the given
     point
 
@@ -131,7 +131,7 @@ def normal(
 
 
 def intersection_length(
-    line: Type[shapes.LineSegment],
+    line: 'Type[shapes.LineSegment]',
     entity: Any
     ) -> float:
     """finding how deep the intersection between a line and another
@@ -165,8 +165,8 @@ def intersection_length(
 
 
 def angle_in_between(
-    line1: Union[Type[shapes.Line], Type[shapes.LineSegment]],
-    line2: Union[Type[shapes.Line], Type[shapes.LineSegment]]
+    line1: 'Union[Type[shapes.Line], Type[shapes.LineSegment]]',
+    line2: 'Union[Type[shapes.Line], Type[shapes.LineSegment]]'
     ) -> float:
     """finds the smallest angle between two given lines
 
@@ -209,8 +209,8 @@ def standardized_inclination(inc: float) -> float:
     
 
 def intersection_area(
-    circle1: Type[shapes.Circle],
-    circle2: Type[shapes.Circle]
+    circle1: 'Type[shapes.Circle]',
+    circle2: 'Type[shapes.Circle]'
     ) -> float:
     """finding the area of intersection between two Circle instances
 
@@ -248,11 +248,11 @@ def intersection_area(
     return (s_area1 + s_area2) - (t_area1 + t_area2)
 
 
-@overload(shapes.Point, shapes.Point)
+@overload('shapes.Point', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finding the intersection between two points which basically
     happens when they have the same coordinates
 
@@ -273,11 +273,11 @@ def intersection(
         return shapes.Point(x1, y1)
 
 
-@overload(shapes.Point, shapes.Polygon)
+@overload('shapes.Point', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Polygon]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Type[shapes.Point]':
     """finding intersection between a point and a polygon which
     basically happens when the popint is located on the perimeter of
     the polygon
@@ -299,11 +299,11 @@ def intersection(
             return inter 
 
 
-@overload(shapes.Point, shapes.Rectangle)
+@overload('shapes.Point', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Rectangle]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Type[shapes.Point]':
     """finding intersection between a point and a rectangle which
     basically happens when the popint is located on the perimeter of
     the rectangle
@@ -325,11 +325,11 @@ def intersection(
             return inter
 
 
-@overload(shapes.Point, shapes.Line)
+@overload('shapes.Point','shapes.Line')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between the given point and line
 
     Args:
@@ -347,11 +347,11 @@ def intersection(
         return shapes.Point(entity1.x, entity1.y)
 
 
-@overload(shapes.Point, shapes.LineSegment)
+@overload('shapes.Point', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between the given poin and line segment
 
     Args:
@@ -371,11 +371,11 @@ def intersection(
         return inter
 
 
-@overload(shapes.Point, shapes.Circle)
+@overload('shapes.Point', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.Point]':
     """find the intersection between the given point and circle
 
     Args:
@@ -393,11 +393,11 @@ def intersection(
         return shapes.Point(entity1.x, entity1.y)
 
 
-@overload(shapes.Polygon, shapes.Point)
+@overload('shapes.Polygon', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds intersection between a point and a polygon which
     basically happens when the popint is located on the perimeter of
     the polygon
@@ -416,11 +416,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Polygon, shapes.Polygon)
+@overload('shapes.Polygon', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygons
 
     Args:
@@ -444,11 +444,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.Rectangle)
+@overload('shapes.Polygon', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and rectangle
 
     Args:
@@ -472,11 +472,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.Circle)
+@overload('shapes.Polygon', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Circle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and circle
 
     Args:
@@ -497,11 +497,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.Line)
+@overload('shapes.Polygon', 'shapes.Line')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Line]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and line
     instance
 
@@ -523,11 +523,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.LineSegment)
+@overload('shapes.Polygon', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.LineSegment]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and line
     segment entity
 
@@ -550,11 +550,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.Point)
+@overload('shapes.Rectangle', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between the given rectangle and point
     entity
 
@@ -573,11 +573,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Rectangle, shapes.Polygon)
+@overload('shapes.Rectangle', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and rectangle
 
     Args:
@@ -595,11 +595,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Rectangle, shapes.Rectangle)
+@overload('shapes.Rectangle', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given two rectangle entities
 
     Args:
@@ -623,11 +623,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.Circle)
+@overload('shapes.Rectangle', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Circle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and circle
     instance
 
@@ -649,11 +649,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.Line)
+@overload('shapes.Rectangle', 'shapes.Line')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Line]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and line
     instance
 
@@ -675,11 +675,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.LineSegment)
+@overload('shapes.Rectangle', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.LineSegment]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and line segment
     instance
 
@@ -702,11 +702,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Circle, shapes.Point)
+@overload('shapes.Circle', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """find the intersection between the given point and circle
 
     Args:
@@ -723,11 +723,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Polygon)
+@overload('shapes.Circle', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and circle
 
     Args:
@@ -743,11 +743,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Rectangle)
+@overload('shapes.Circle', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and circle
     instance
 
@@ -764,11 +764,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Circle)
+@overload('shapes.Circle', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Circle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given two circles, could be
     None if there isn't any intersection, which happens when two circles
     are far apart or one is completelpy inside another; could be a
@@ -810,11 +810,11 @@ def intersection(
     return (shapes.Point(x1, y1), shapes.Point(x2, y2))
 
 
-@overload(shapes.Circle, shapes.Line)
+@overload('shapes.Circle', 'shapes.Line')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Line]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds intersection between an infinite line an a circle; could
     be None, a single point, or two points
 
@@ -855,11 +855,11 @@ def intersection(
     return (shapes.Point(x1, y1), shapes.Point(x2, y2))
 
 
-@overload(shapes.Circle, shapes.LineSegment)
+@overload('shapes.Circle', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.LineSegment]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between a line segment and a circle
 
     Args:
@@ -882,11 +882,11 @@ def intersection(
     return tuple(res)
 
 
-@overload(shapes.Line, shapes.Point)
+@overload('shapes.Line', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between the given point and line
 
     Args:
@@ -903,11 +903,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Polygon)
+@overload('shapes.Line', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and line
     instance
 
@@ -924,11 +924,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Rectangle)
+@overload('shapes.Line', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and line
     instance
 
@@ -945,11 +945,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Circle)
+@overload('shapes.Line', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Circle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds intersection between an infinite line an a circle; could
     be None, a single point, or two points
 
@@ -965,11 +965,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Line)
+@overload('shapes.Line', 'shapes.Line')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between two lines
 
     Args:
@@ -989,11 +989,11 @@ def intersection(
     return shapes.Point(x, y)
 
 
-@overload(shapes.Line, shapes.LineSegment)
+@overload('shapes.Line', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between an infinite line and a finite
     line segment
 
@@ -1010,11 +1010,11 @@ def intersection(
         return inter
 
 
-@overload(shapes.LineSegment, shapes.Point)
+@overload('shapes.LineSegment', 'shapes.Point')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between the given poin and line segment
 
     Args:
@@ -1032,11 +1032,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Polygon)
+@overload('shapes.LineSegment', 'shapes.Polygon')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given polygon and line
     segment entity
 
@@ -1054,11 +1054,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Rectangle)
+@overload('shapes.LineSegment', 'shapes.Rectangle')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between the given rectangle and line segment
     instance
 
@@ -1076,11 +1076,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Circle)
+@overload('shapes.LineSegment', 'shapes.Circle')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Circle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the intersection between a line segment and a circle
 
     Args:
@@ -1096,11 +1096,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Line)
+@overload('shapes.LineSegment', 'shapes.Line')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between an infinite line and a finite
     line segment
 
@@ -1116,11 +1116,11 @@ def intersection(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.LineSegment)
+@overload('shapes.LineSegment', 'shapes.LineSegment')
 def intersection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.Point]':
     """finds the intersection between two finite line segments
 
     Args:
@@ -1138,10 +1138,10 @@ def intersection(
         return inter
 
 
-@overload(shapes.Point, shapes.Point)
+@overload('shapes.Point', 'shapes.Point')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Point]'
     ) -> bool:
     """specifies if the first given entity is completely located inside
     of the second given entity
@@ -1160,10 +1160,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Point, shapes.Polygon)
+@overload('shapes.Point', 'shapes.Polygon')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given point is located inside the given polygon
 
@@ -1193,10 +1193,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Point, shapes.Rectangle)
+@overload('shapes.Point', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> bool:
     """checks if the given point is located inside the given rectangle
 
@@ -1226,10 +1226,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Point, shapes.Circle)
+@overload('shapes.Point', 'shapes.Circle')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Circle]'
     ) -> bool:
     """checks if the given point is located inside the given circle
 
@@ -1245,10 +1245,10 @@ def is_inside(
     return True if distance(entity1, entity2.center) < entity2.radius else False
 
 
-@overload(shapes.Point, shapes.Line)
+@overload('shapes.Point', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the given point is located inside the given Line
 
@@ -1264,10 +1264,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Point, shapes.LineSegment)
+@overload('shapes.Point', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the given point is located inside the given line
     segment
@@ -1285,10 +1285,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Polygon, shapes.Point)
+@overload('shapes.Polygon', 'shapes.Point')
 def is_inside(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Point]'
     ) -> bool:
     """checks if the given polygon is located inside the given point
 
@@ -1305,10 +1305,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Polygon, shapes.Polygon)
+@overload('shapes.Polygon', 'shapes.Polygon')
 def is_inside(
-    entity1:  Type[shapes.Polygon],
-    entity2: Type[shapes.Polygon]
+    entity1:  'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given polygon is located inside the other given
     polygon
@@ -1330,10 +1330,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Polygon, shapes.Rectangle)
+@overload('shapes.Polygon', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> bool:
     """checks if the given polygon is located inside the given rectangle
 
@@ -1354,10 +1354,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Polygon, shapes.Circle)
+@overload('shapes.Polygon', 'shapes.Circle')
 def is_inside(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Circle]'
     ) -> bool:
     """checks if the given polygon is located inside the given circle
 
@@ -1377,10 +1377,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Polygon, shapes.Line)
+@overload('shapes.Polygon', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the given polygon is located inside the given line
 
@@ -1397,10 +1397,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Polygon, shapes.LineSegment)
+@overload('shapes.Polygon', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the given polygon is located inside the given line
     segment
@@ -1419,10 +1419,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Rectangle, shapes.Point)
+@overload('shapes.Rectangle', 'shapes.Point')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Point]'
     ) -> bool:
     """checks if the given rectangle is located inside the given point
 
@@ -1439,10 +1439,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Rectangle, shapes.Polygon)
+@overload('shapes.Rectangle', 'shapes.Polygon')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given rectangle is located inside the given polygon
 
@@ -1463,10 +1463,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Rectangle, shapes.Rectangle)
+@overload('shapes.Rectangle', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> bool:
     """checks if the first given rectangle is located inside the second
     given rectangle
@@ -1488,10 +1488,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Rectangle, shapes.Circle)
+@overload('shapes.Rectangle', 'shapes.Circle')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Circle]'
     ) -> bool:
     """checks if the given rectangle is located inside the given circle
 
@@ -1511,10 +1511,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Rectangle, shapes.Line)
+@overload('shapes.Rectangle', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the given rectangle is located inside the given line
 
@@ -1531,10 +1531,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Rectangle, shapes.LineSegment)
+@overload('shapes.Rectangle', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the given rectangle is located inside the given line
     segment
@@ -1553,10 +1553,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Circle, shapes.Point)
+@overload('shapes.Circle', 'shapes.Point')
 def is_inside(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Point]'
     ) -> bool:
     """checks if the given circle is located inside the given point
 
@@ -1572,10 +1572,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Circle, shapes.Polygon)
+@overload('shapes.Circle', 'shapes.Polygon')
 def is_inside(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given circle is located inside the given polygon
 
@@ -1596,10 +1596,10 @@ def is_inside(
     return True
 
 
-@overload(shapes.Circle, shapes.Rectangle)
+@overload('shapes.Circle', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> bool:
     """checks if the given circle is located inside the given Rectangle
 
@@ -1620,7 +1620,7 @@ def is_inside(
     return True
 
 
-@overload(shapes.Circle, shapes.Circle)
+@overload('shapes.Circle', 'shapes.Circle')
 def is_inside(entity1, entity2):
     """checks if the first given circle is located inside the scond
     given Rectangle
@@ -1641,10 +1641,10 @@ def is_inside(entity1, entity2):
     return False
 
 
-@overload(shapes.Circle, shapes.Line)
+@overload('shapes.Circle', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the given circle is located inside the given Rline
 
@@ -1660,10 +1660,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Circle, shapes.LineSegment)
+@overload('shapes.Circle', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the given circle is located inside the given line
     segment
@@ -1681,15 +1681,15 @@ def is_inside(
     return False
 
 
-@overload(shapes.Line, shapes.Point)
+@overload('shapes.Line', 'shapes.Point')
 def is_inside(entity1, entity2):
     pass
 
 
-@overload(shapes.Line, shapes.Polygon)
+@overload('shapes.Line', 'shapes.Polygon')
 def is_inside(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given line is located inside the given polygon
 
@@ -1706,10 +1706,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Line, shapes.Rectangle)
+@overload('shapes.Line', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> bool:
     """checks if the given line is located inside the given Rectangle
 
@@ -1726,10 +1726,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Line, shapes.Circle)
+@overload('shapes.Line', 'shapes.Circle')
 def is_inside(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Circle]'
     ) -> bool:
     """checks if the given line is located inside the given circle
 
@@ -1745,10 +1745,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Line, shapes.Line)
+@overload('shapes.Line', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the first given line is located inside the second
     given line
@@ -1767,10 +1767,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Line, shapes.LineSegment)
+@overload('shapes.Line', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the given line is located inside the given line
     segment
@@ -1788,10 +1788,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.Point)
+@overload('shapes.LineSegment', 'shapes.Point')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Point]'
     ) -> bool:
     """checks if the given line segment is located inside the given
         point
@@ -1809,10 +1809,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.Polygon)
+@overload('shapes.LineSegment', 'shapes.Polygon')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> bool:
     """checks if the given line segment is located inside the given
         polygon
@@ -1833,10 +1833,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.Rectangle)
+@overload('shapes.LineSegment', 'shapes.Rectangle')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Rectangle]'
     ):
     """checks if the given line segment is located inside the given
         rectangle
@@ -1857,10 +1857,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.Circle)
+@overload('shapes.LineSegment', 'shapes.Circle')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Circle]'
     ) -> bool:
     """checks if the given line segment is located inside the given
         circle
@@ -1880,10 +1880,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.Line)
+@overload('shapes.LineSegment', 'shapes.Line')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Line]'
     ) -> bool:
     """checks if the given line segment is located inside the given
     line
@@ -1901,10 +1901,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.LineSegment, shapes.LineSegment)
+@overload('shapes.LineSegment', 'shapes.LineSegment')
 def is_inside(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> bool:
     """checks if the first given line segment is located inside the
     second given line segment
@@ -1923,10 +1923,10 @@ def is_inside(
     return False
 
 
-@overload(shapes.Point, shapes.Point)
+@overload('shapes.Point', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Point]'
     ) -> float:
     """calculates the distance between the two given points
 
@@ -1943,10 +1943,10 @@ def distance(
     return np.sqrt((entity1.x - entity2.x)**2 + (entity1.y - entity2.y)**2)
 
 
-@overload(shapes.Point, shapes.Polygon)
+@overload('shapes.Point', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given point and polygon
 
@@ -1965,10 +1965,10 @@ def distance(
     return min([distance(entity1, line) for line in entity2.vertices]) * factor
 
 
-@overload(shapes.Point, shapes.Rectangle)
+@overload('shapes.Point', 'shapes.Rectangle')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """calculates the distance between the given point and rectangle
 
@@ -1987,10 +1987,10 @@ def distance(
     return min([distance(entity1, line) for line in entity2.vertices]) * factor
 
 
-@overload(shapes.Point, shapes.Circle)
+@overload('shapes.Point', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the given point and circle
 
@@ -2006,10 +2006,10 @@ def distance(
     return distance(entity1, entity2.center) - entity2.radius
 
 
-@overload(shapes.Point, shapes.Line)
+@overload('shapes.Point', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the given point and line
 
@@ -2024,10 +2024,10 @@ def distance(
     return distance(entity1, projection(entity1, entity2))
 
 
-@overload(shapes.Point, shapes.LineSegment)
+@overload('shapes.Point', 'shapes.LineSegment')
 def distance(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> float:
     """calculates the distance between the given point and line segment
 
@@ -2046,10 +2046,10 @@ def distance(
     return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
 
 
-@overload(shapes.Polygon, shapes.Point)
+@overload('shapes.Polygon', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Point]'
     ) ->  float:
     """calculates the distance between the given polygon and point
 
@@ -2065,10 +2065,10 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Polygon, shapes.Polygon)
+@overload('shapes.Polygon', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given two polygon
 
@@ -2088,10 +2088,10 @@ def distance(
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload(shapes.Polygon, shapes.Rectangle)
+@overload('shapes.Polygon', 'shapes.Rectangle')
 def distance(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """calculates the distance between the given polygon and rectangle
 
@@ -2111,10 +2111,10 @@ def distance(
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload(shapes.Polygon, shapes.Circle)
+@overload('shapes.Polygon', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the given polygon and circle
 
@@ -2131,10 +2131,10 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload(shapes.Polygon, shapes.Line)
+@overload('shapes.Polygon', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the given polygon and Line
 
@@ -2150,7 +2150,7 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges)
 
 
-@overload(shapes.Polygon, shapes.LineSegment)
+@overload('shapes.Polygon', 'shapes.LineSegment')
 def distance(entity1, entity2):
     """calculates the distance between the given polygon and line
     segment
@@ -2169,10 +2169,10 @@ def distance(entity1, entity2):
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload(shapes.Rectangle, shapes.Point)
+@overload('shapes.Rectangle', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Point]'
     ) -> float:
     """calculates the distance between the given rectangle and point
 
@@ -2188,10 +2188,10 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Rectangle, shapes.Polygon)
+@overload('shapes.Rectangle', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given rectangle and polygon
 
@@ -2208,7 +2208,7 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Rectangle, shapes.Rectangle)
+@overload('shapes.Rectangle', 'shapes.Rectangle')
 def distance(entity1, entity2):
     """calculates the distance between the given two rectangles
 
@@ -2228,10 +2228,10 @@ def distance(entity1, entity2):
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload(shapes.Rectangle, shapes.Circle)
+@overload('shapes.Rectangle', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the given rectangle and circle
 
@@ -2248,10 +2248,10 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload(shapes.Rectangle, shapes.Line)
+@overload('shapes.Rectangle', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the given rectangle and Line
 
@@ -2267,10 +2267,10 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges)
 
 
-@overload(shapes.Rectangle, shapes.LineSegment)
+@overload('shapes.Rectangle', 'shapes.LineSegment')
 def distance(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> float:
     """calculates the distance between the given rectangle and line
     segment
@@ -2289,10 +2289,10 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload(shapes.Circle, shapes.Point)
+@overload('shapes.Circle', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Point]'
     ) -> float:
     """calculates the distance between the given circle and point
 
@@ -2307,10 +2307,10 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Polygon)
+@overload('shapes.Circle', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given circle and polygon
 
@@ -2326,10 +2326,10 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Rectangle)
+@overload('shapes.Circle', 'shapes.Rectangle')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """calculates the distance between the given circle and rectangle
 
@@ -2345,10 +2345,10 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload(shapes.Circle, shapes.Circle)
+@overload('shapes.Circle', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the two given circles
 
@@ -2371,10 +2371,10 @@ def distance(
     return distance(entity1.center, entity2.center) - (entity1.radius + entity2.radius)
 
 
-@overload(shapes.Circle, shapes.Line)
+@overload('shapes.Circle', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the given circle and line
 
@@ -2391,10 +2391,10 @@ def distance(
     return distance(entity1.center, projection(entity1.center, entity2)) - entity1.radius
 
 
-@overload(shapes.Circle, shapes.LineSegment)
+@overload('shapes.Circle', 'shapes.LineSegment')
 def distance(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> float:
     """calculates the distance between the given circle and line
     segment
@@ -2416,10 +2416,10 @@ def distance(
     return min(distance(entity1.center, point2), distance(entity1.center, point2)) - entity1.radius
 
 
-@overload(shapes.Line, shapes.Point)
+@overload('shapes.Line', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Point]'
     ) -> float:
     """calculates the distance between the given line and point
 
@@ -2434,10 +2434,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Polygon)
+@overload('shapes.Line', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given line and polygon
 
@@ -2453,10 +2453,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Rectangle)
+@overload('shapes.Line', 'shapes.Rectangle')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """calculates the distance between the given line and rectangle
 
@@ -2471,10 +2471,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Circle)
+@overload('shapes.Line', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the given line and circle
 
@@ -2489,10 +2489,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.Line, shapes.Line)
+@overload('shapes.Line', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the two given lines
 
@@ -2511,10 +2511,10 @@ def distance(
     return 0
 
 
-@overload(shapes.Line, shapes.LineSegment)
+@overload('shapes.Line', 'shapes.LineSegment')
 def distance(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> float:
     """calculates the distance between the given line and line segment
 
@@ -2532,10 +2532,10 @@ def distance(
     return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
 
 
-@overload(shapes.LineSegment, shapes.Point)
+@overload('shapes.LineSegment', 'shapes.Point')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Point]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Point]'
     ) -> float:
     """calculates the distance between the given line segment and point
 
@@ -2551,10 +2551,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Polygon)
+@overload('shapes.LineSegment', 'shapes.Polygon')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Polygon]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Polygon]'
     ) -> float:
     """calculates the distance between the given line segment and
     polygon
@@ -2572,10 +2572,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Rectangle)
+@overload('shapes.LineSegment', 'shapes.Rectangle')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Rectangle]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """calculates the distance between the given line segment and
     rectangle
@@ -2593,10 +2593,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Circle)
+@overload('shapes.LineSegment', 'shapes.Circle')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Circle]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Circle]'
     ) -> float:
     """calculates the distance between the given line segment and circle
 
@@ -2612,10 +2612,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.Line)
+@overload('shapes.LineSegment', 'shapes.Line')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Line]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Line]'
     ) -> float:
     """calculates the distance between the given line segment and line
 
@@ -2631,10 +2631,10 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload(shapes.LineSegment, shapes.LineSegment)
+@overload('shapes.LineSegment', 'shapes.LineSegment')
 def distance(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.LineSegment]
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.LineSegment]'
     ) -> float:
     """calculates the distance between the two given line segments
 
@@ -2658,11 +2658,11 @@ def distance(
     ])
 
 
-@overload(shapes.Point, shapes.Point)
+@overload('shapes.Point', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the first given point on the second one
 
     Args:
@@ -2679,11 +2679,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.Point, shapes.Polygon)
+@overload('shapes.Point', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the projection of the given point on the given polygon
 
     Args:
@@ -2701,11 +2701,11 @@ def projection(
     return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
-@overload(shapes.Point, shapes.Rectangle)
+@overload('shapes.Point', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.Point]]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.Point]]':
     """finds the projection of the given point on the given rectangle
 
     Args:
@@ -2723,11 +2723,11 @@ def projection(
     return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
-@overload(shapes.Point, shapes.Circle)
+@overload('shapes.Point', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given point on the given circle
 
     Args:
@@ -2745,11 +2745,11 @@ def projection(
     return intersection(line, entity2)
 
 
-@overload(shapes.Point, shapes.Line)
+@overload('shapes.Point', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given point on the given line
 
     Args:
@@ -2765,11 +2765,11 @@ def projection(
     return intersection(line, entity2)
 
 
-@overload(shapes.Point, shapes.LineSegment)
+@overload('shapes.Point', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.Point],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Point]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given point on the given line segment
 
     Args:
@@ -2788,11 +2788,11 @@ def projection(
     return None
 
 
-@overload(shapes.Polygon, shapes.Point)
+@overload('shapes.Polygon', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given polygon on the given point
 
     Args:
@@ -2808,11 +2808,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.Polygon, shapes.Polygon)
+@overload('shapes.Polygon', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the first given polygon on the second
     given polygon
 
@@ -2842,11 +2842,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.Rectangle)
+@overload('shapes.Polygon', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given polygon on the given rectangle
 
     Args:
@@ -2875,11 +2875,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.Polygon, shapes.Circle)
+@overload('shapes.Polygon', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.arc]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.arc]':
     """finds the projection of the given polygon on the given circle
 
     Args:
@@ -2898,11 +2898,11 @@ def projection(
     return interval.entities[0]
 
 
-@overload(shapes.Polygon, shapes.Line)
+@overload('shapes.Polygon', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given polygon on the given line
 
     Args:
@@ -2921,11 +2921,11 @@ def projection(
     return interval.entities[0]
 
 
-@overload(shapes.Polygon, shapes.LineSegment)
+@overload('shapes.Polygon', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.Polygon],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Polygon]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given polygon on the given line
     segment
 
@@ -2948,11 +2948,11 @@ def projection(
     return None
 
 
-@overload(shapes.Rectangle, shapes.Point)
+@overload('shapes.Rectangle', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given rectangle on the given point
 
     Args:
@@ -2968,11 +2968,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.Rectangle, shapes.Polygon)
+@overload('shapes.Rectangle', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given rectangle on the given polygon
 
     Args:
@@ -3001,11 +3001,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.Rectangle)
+@overload('shapes.Rectangle', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the first given rectangle on the second
     given rectangle
 
@@ -3035,11 +3035,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.Rectangle, shapes.Circle)
+@overload('shapes.Rectangle', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.Arc]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.Arc]':
     """finds the projection of the given rectangle on the given circle
 
     Args:
@@ -3058,11 +3058,11 @@ def projection(
     return interval.entities[0]
 
 
-@overload(shapes.Rectangle, shapes.Line)
+@overload('shapes.Rectangle', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given rectangle on the given line
 
     Args:
@@ -3081,11 +3081,11 @@ def projection(
     return interval.entities[0]
 
 
-@overload(shapes.Rectangle, shapes.LineSegment)
+@overload('shapes.Rectangle', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.Rectangle],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given rectangle on the given line
     segment
 
@@ -3108,11 +3108,11 @@ def projection(
     return None
 
 
-@overload(shapes.Circle, shapes.Point)
+@overload('shapes.Circle', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given circle on the given point
 
     Args:
@@ -3127,11 +3127,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.Circle, shapes.Polygon)
+@overload('shapes.Circle', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given circle on the given polygon
 
     Args:
@@ -3151,11 +3151,11 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload(shapes.Circle, shapes.Rectangle)
+@overload('shapes.Circle', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given circle on the given rectangle
 
     Args:
@@ -3175,11 +3175,11 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload(shapes.Circle, shapes.Circle)
+@overload('shapes.Circle', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.Arc]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.Arc]':
     """finds the projection of the first given circle on the second
     given circle
 
@@ -3201,11 +3201,11 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload(shapes.Circle, shapes.Line)
+@overload('shapes.Circle', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given circle on the given line
 
     Args:
@@ -3225,11 +3225,11 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload(shapes.Circle, shapes.LineSegment)
+@overload('shapes.Circle', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.Circle],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Circle]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given circle on the given line
     segment
 
@@ -3253,11 +3253,11 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload(shapes.Line, shapes.Point)
+@overload('shapes.Line', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given line on the given point
 
     Args:
@@ -3272,11 +3272,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.Line, shapes.Polygon)
+@overload('shapes.Line', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given line on the given polygon
 
     Args:
@@ -3305,11 +3305,11 @@ def projection(
     return tuple(res)    
 
 
-@overload(shapes.Line, shapes.Rectangle)
+@overload('shapes.Line', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given line on the given rectangle
 
     Args:
@@ -3338,11 +3338,11 @@ def projection(
     return tuple(res) 
 
 
-@overload(shapes.Line, shapes.Circle)
+@overload('shapes.Line', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Circle]
-    ) -> Union[Type[shapes.Arc], Type[shapes.Circle]]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Union[Type[shapes.Arc], Type[shapes.Circle]]':
     """finds the projection of the given line on the given circle
 
     Args:
@@ -3361,11 +3361,11 @@ def projection(
     return shapes.Arc(entity2, points[0], points[1])
 
 
-@overload(shapes.Line, shapes.Line)
+@overload('shapes.Line', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.Line]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.Line]':
     """finds the projection of the first given line on the second given
     line
 
@@ -3383,11 +3383,11 @@ def projection(
     return shapes.Line(entity2.slope, entity2.width)
 
 
-@overload(shapes.Line, shapes.LineSegment)
+@overload('shapes.Line', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.Line],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.Line]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given line on the given line segment
 
     Args:
@@ -3403,11 +3403,11 @@ def projection(
     return shapes.LineSegment(entity2.end1, entity2.end2)
 
 
-@overload(shapes.LineSegment, shapes.Point)
+@overload('shapes.LineSegment', 'shapes.Point')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Point]
-    ) -> Type[shapes.Point]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Point]'
+    ) -> 'Type[shapes.Point]':
     """finds the projection of the given line segment on the given
     point
 
@@ -3424,11 +3424,11 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload(shapes.LineSegment, shapes.Polygon)
+@overload('shapes.LineSegment', 'shapes.Polygon')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Polygon]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Polygon]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given line segment on the given
     polygon
 
@@ -3465,11 +3465,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.LineSegment, shapes.Rectangle)
+@overload('shapes.LineSegment', 'shapes.Rectangle')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Rectangle]
-    ) -> Tuple[Type[shapes.LineSegment]]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Rectangle]'
+    ) -> 'Tuple[Type[shapes.LineSegment]]':
     """finds the projection of the given line segment on the given
     rectangle
 
@@ -3506,11 +3506,11 @@ def projection(
     return tuple(res)
 
 
-@overload(shapes.LineSegment, shapes.Circle)
+@overload('shapes.LineSegment', 'shapes.Circle')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Circle]
-    ) -> Type[shapes.Arc]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Circle]'
+    ) -> 'Type[shapes.Arc]':
     """finds the projection of the given line segment on the given
     circlee
 
@@ -3531,11 +3531,11 @@ def projection(
     return shapes.Arc(entity2, point1, point2)
 
 
-@overload(shapes.LineSegment, shapes.Line)
+@overload('shapes.LineSegment', 'shapes.Line')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.Line]
-    ) -> Type[shapes.LineSegment]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.Line]'
+    ) -> 'Type[shapes.LineSegment]':
     """finds the projection of the given line segment on the given
     line
 
@@ -3554,11 +3554,11 @@ def projection(
     return shapes.LineSegment(point1, point2)
 
 
-@overload(shapes.LineSegment, shapes.LineSegment)
+@overload('shapes.LineSegment', 'shapes.LineSegment')
 def projection(
-    entity1: Type[shapes.LineSegment],
-    entity2: Type[shapes.LineSegment]
-    ) -> Type[shapes.Linesegment]:
+    entity1: 'Type[shapes.LineSegment]',
+    entity2: 'Type[shapes.LineSegment]'
+    ) -> 'Type[shapes.Linesegment]':
     """finds the projection of the first given line segment on the
     second given line segment
 

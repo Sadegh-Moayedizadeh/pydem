@@ -6,7 +6,7 @@ from typing import Tuple, Any, Optional, Type, Union
 import numpy as np
 from itertools import count
 from collections import defaultdict
-import geometry.two_dimensional_operations as operations
+from geometry import two_dimensional_operations as operations
 
 
 class Point(object):
