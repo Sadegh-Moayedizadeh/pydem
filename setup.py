@@ -3,7 +3,7 @@ software package is being used
 """
 
 import sys
-from geometry import two_dimensional_operations
+# from geometry import two_dimensional_operations
 
 # sys.path.append('./display/')
 # sys.path.append('./display/tests/')
@@ -14,4 +14,12 @@ from geometry import two_dimensional_operations
 # sys.path.append('./simulations/')
 # sys.path.append('./simulations/tests/')
 # sys.path.append('./tests/')
-print(sys.path)
+# print(sys.path)
+
+import os
+
+print(os.getcwd())
+os.chdir('geometry/')
+print(os.getcwd())
+print(os.listdir())
+import two_dimensional_operations
