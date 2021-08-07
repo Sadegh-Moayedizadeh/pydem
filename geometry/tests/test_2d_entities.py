@@ -61,7 +61,7 @@ class TestPolygon(unittest.TestCase):
 
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
-        self.assertRaises(BadEntries, shapes.Polygon.__init__(p1, p2))
+        self.assertRaises(RuntimeError, shapes.Polygon.__init__(p1, p2))
 
     def test_construction2(self):
         """testing the constuction of the object with the same vetex
@@ -70,7 +70,7 @@ class TestPolygon(unittest.TestCase):
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(0, 1)
         p2 = shapes.Point(0, 0)
-        self.assertRaises(BadEntries, shapes.Polygon.__init__(p1, p2, p3))
+        self.assertRaises(RuntimeError, shapes.Polygon.__init__(p1, p2, p3))
 
     def test_construction3(self):
         """testing the construction of the object with vertices given
@@ -80,13 +80,13 @@ class TestPolygon(unittest.TestCase):
         p2 = shapes.Point(1, 0)
         p3 = shapes.Point(1, 1)
         p4 = shapes.Point(0, 1)
-        self.assertRaises(BadEntries, shapes.Polygon(p1, p3, p2, p4))
+        self.assertRaises(RuntimeError, shapes.Polygon(p1, p3, p2, p4))
 
     def test_as_regular(self):
         """testing 'as_regular' method from Polygon class"""
 
         instance = shapes.Polygon.as_regular(
-            centre=shapes.Point(0, 0), diameter=1, number_of_vertices=4
+            center=shapes.Point(0, 0), diameter=1, number_of_vertices=4
         )
         expected_vertices = (
             shapes.Point(1, 0),
@@ -306,7 +306,7 @@ class TestCircle(unittest.TestCase):
 
         c = shapes.Point(0, 0)
         d = -1
-        self.assertRaises(BadEntries, shapes.Circle.__init__(centre=c, diameter=d))
+        self.assertRaises(RuntimeError, shapes.Circle.__init__(center=c, diameter=d))
 
     def test_area(self):
         """testing the 'area' method of Circle class"""
@@ -334,7 +334,7 @@ class TestCircle(unittest.TestCase):
         instance = shapes.Circle(c, d)
         angle = (np.pi) / 4
         expected = shapes.Point(0, 1)
-        test.assertEqual(instance.get_point_on_perimeter(angle), expected)
+        self.assertEqual(instance.get_point_on_perimeter(angle), expected)
 
     def test_equality(self):
         """testing the equality condition of Circle class"""
@@ -376,7 +376,7 @@ class TestCircle(unittest.TestCase):
         c2 = shapes.Point(1, 1)
         d = 1
         instance1 = shapes.Circle(c1, d)
-        instance2 = shapes.circle(c2, d)
+        instance2 = shapes.Circle(c2, d)
         self.assertEqual(instance1.move(1, 1), instance2)
 
 
@@ -392,7 +392,7 @@ class TestLine(unittest.TestCase):
         point2 = shapes.Point(1, 1)
         instance = shapes.Line.from_points(point1, point2)
         self.assertEqual(instance.slope, 1)
-        self.assertEqual(instance.wishapesth, 0)
+        self.assertEqual(instance.width, 0)
 
     def test_from_point_and_inclination(self):
         """testing the construction of the Line object via
@@ -442,7 +442,7 @@ class TestLine(unittest.TestCase):
         object having the slope of zero"""
 
         instance = shapes.Line(0, 1)
-        self.assertRaises(BadEntries, instance.get_x(1))
+        self.assertRaises(RuntimeError, instance.get_x(1))
 
     def test_get_y(self):
         """testing the 'get_y' method of the Line class"""
@@ -475,13 +475,13 @@ class TestLine(unittest.TestCase):
         instance = shapes.Line(1, 0)
         start = shapes.Point(0, 1)
         end = shapes.Point(1, 1)
-        self.assertRaises(BadEntries, instance.navigator(start, end, 0.2))
+        self.assertRaises(RuntimeError, instance.navigator(start, end, 0.2))
 
     def test_move(self):
         """testing the 'move' method of the Line class"""
 
         instance1 = shapes.Line(1, 0)
-        instance2 = shapes.line(1, 1)
+        instance2 = shapes.Line(1, 1)
         self.assertEqual(instance1.move(0, 1), instance2)
 
 
@@ -493,7 +493,7 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 0)
-        self.assertRaises(BadEntries, shapes.LineSegment.__init__(point1, point2))
+        self.assertRaises(RuntimeError, shapes.LineSegment.__init__(point1, point2))
 
     def test_equality(self):
         """testing the equality condition of the LineSegment object"""
@@ -521,7 +521,7 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
-        instance1 = shapes.LineSegment(point1, point2)
+        instance = shapes.LineSegment(point1, point2)
         expected = np.sqrt(2)
         self.assertEqual(instance.length, expected)
 
@@ -558,6 +558,7 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 1)
+        instance = shapes.Linesegment(point1, point2)
         expected = np.tan(np.pi / 2)
         self.assertEqual(instance.slope, expected)
 
@@ -586,7 +587,7 @@ class TestLineSegment(unittest.TestCase):
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(point1, point2)
-        self.assertRaises(BadEntries, instance.get_x(2))
+        self.assertRaises(RuntimeError, instance.get_x(2))
 
     def test_get_y(self):
         """testing the 'get_y' method of the LineSegment class"""
@@ -604,14 +605,14 @@ class TestLineSegment(unittest.TestCase):
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(point1, point2)
-        self.assertRaises(BadEntries, instance.get_y(2))
+        self.assertRaises(RuntimeError, instance.get_y(2))
 
     def test_midpoint(self):
         """testing the 'midpoint' method of the LineSegment class"""
 
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
-        instance = shapes.LineSegment(point1, point2)
+        instance = shapes.LineSegment(p1, p2)
         expected = shapes.Point(0.5, 0.5)
         self.assertEqual(instance.midpoint(0.5), expected)
 
@@ -621,7 +622,7 @@ class TestLineSegment(unittest.TestCase):
 
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
-        instance = shapes.LineSegment(point1, point2)
+        instance = shapes.LineSegment(p1, p2)
         self.assertRaises(BadEntries, instance.midpoint(2))
 
     def test_navigator(self):

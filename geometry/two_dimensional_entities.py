@@ -63,7 +63,7 @@ class Point(object):
         """
 
         r = np.sqrt((self.x) ** 2 + (self.y) ** 2)
-        theta = np.atan((self.y) / (self.x))
+        theta = np.arctan((self.y) / (self.x))
         coordinates = (r, theta)
         return coordinates
 
@@ -710,7 +710,7 @@ class Line(object):
         """
 
         try:
-            res = (y - self.witdth) / (self.slope)
+            res = (y - self.width) / (self.slope)
         except ZeroDivisionError:
             raise RuntimeError(
                 "the line instance has the slope of zero, asking for an 'x' coordinate is invalid in this case"
@@ -924,7 +924,7 @@ class LineSegment(object):
             a Line object built upon the current LineSegment instance
         """
 
-        return Line.from_point(self.end1, self.end2)
+        return Line.from_points(self.end1, self.end2)
 
     def get_x(self, y: float) -> float:
         """calculating the 'x' coordinate of a point on the LineSegment
