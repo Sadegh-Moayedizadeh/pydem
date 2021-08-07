@@ -1663,7 +1663,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Circle', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def is_inside(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Point]'
@@ -1682,7 +1684,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Circle', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def is_inside(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Polygon]'
@@ -1706,7 +1710,9 @@ def is_inside(
     return True
 
 
-@overload('shapes.Circle', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def is_inside(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Rectangle]'
@@ -1730,7 +1736,9 @@ def is_inside(
     return True
 
 
-@overload('shapes.Circle', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def is_inside(entity1, entity2):
     """checks if the first given circle is located inside the scond
     given Rectangle
@@ -1751,7 +1759,9 @@ def is_inside(entity1, entity2):
     return False
 
 
-@overload('shapes.Circle', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def is_inside(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Line]'
@@ -1770,7 +1780,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Circle', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def is_inside(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.LineSegment]'
@@ -1791,12 +1803,16 @@ def is_inside(
     return False
 
 
-@overload('shapes.Line', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def is_inside(entity1, entity2):
-    pass
+    return False
 
 
-@overload('shapes.Line', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>", 
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def is_inside(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Polygon]'
@@ -1816,7 +1832,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Line', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def is_inside(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Rectangle]'
@@ -1836,7 +1854,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Line', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def is_inside(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Circle]'
@@ -1855,7 +1875,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Line', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def is_inside(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Line]'
@@ -1877,7 +1899,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Line', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def is_inside(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.LineSegment]'
@@ -1898,7 +1922,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Point]'
@@ -1919,7 +1945,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Polygon]'
@@ -1943,7 +1971,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Rectangle]'
@@ -1967,7 +1997,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Circle]'
@@ -1990,7 +2022,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Line]'
@@ -2011,7 +2045,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.LineSegment', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def is_inside(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2033,7 +2069,9 @@ def is_inside(
     return False
 
 
-@overload('shapes.Point', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Point]'
@@ -2053,7 +2091,9 @@ def distance(
     return np.sqrt((entity1.x - entity2.x)**2 + (entity1.y - entity2.y)**2)
 
 
-@overload('shapes.Point', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Polygon]'
@@ -2075,7 +2115,9 @@ def distance(
     return min([distance(entity1, line) for line in entity2.vertices]) * factor
 
 
-@overload('shapes.Point', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2097,7 +2139,9 @@ def distance(
     return min([distance(entity1, line) for line in entity2.vertices]) * factor
 
 
-@overload('shapes.Point', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Circle]'
@@ -2116,7 +2160,9 @@ def distance(
     return distance(entity1, entity2.center) - entity2.radius
 
 
-@overload('shapes.Point', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Line]'
@@ -2134,7 +2180,9 @@ def distance(
     return distance(entity1, projection(entity1, entity2))
 
 
-@overload('shapes.Point', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2156,7 +2204,9 @@ def distance(
     return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
 
 
-@overload('shapes.Polygon', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Point]'
@@ -2175,7 +2225,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Polygon', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Polygon]'
@@ -2198,7 +2250,9 @@ def distance(
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload('shapes.Polygon', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2221,7 +2275,9 @@ def distance(
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload('shapes.Polygon', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Circle]'
@@ -2241,7 +2297,9 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload('shapes.Polygon', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Line]'
@@ -2260,7 +2318,9 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges)
 
 
-@overload('shapes.Polygon', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(entity1, entity2):
     """calculates the distance between the given polygon and line
     segment
@@ -2279,7 +2339,9 @@ def distance(entity1, entity2):
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload('shapes.Rectangle', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Point]'
@@ -2298,7 +2360,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Rectangle', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Polygon]'
@@ -2318,7 +2382,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Rectangle', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(entity1, entity2):
     """calculates the distance between the given two rectangles
 
@@ -2338,7 +2404,9 @@ def distance(entity1, entity2):
     return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
-@overload('shapes.Rectangle', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Circle]'
@@ -2358,7 +2426,9 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload('shapes.Rectangle', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Line]'
@@ -2377,7 +2447,9 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges)
 
 
-@overload('shapes.Rectangle', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2399,7 +2471,9 @@ def distance(
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
 
-@overload('shapes.Circle', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Point]'
@@ -2417,7 +2491,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Circle', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Polygon]'
@@ -2436,7 +2512,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Circle', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2455,7 +2533,9 @@ def distance(
     return distance(entity2, entity1)
 
 
-@overload('shapes.Circle', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Circle]'
@@ -2481,7 +2561,9 @@ def distance(
     return distance(entity1.center, entity2.center) - (entity1.radius + entity2.radius)
 
 
-@overload('shapes.Circle', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Line]'
@@ -2501,7 +2583,9 @@ def distance(
     return distance(entity1.center, projection(entity1.center, entity2)) - entity1.radius
 
 
-@overload('shapes.Circle', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>", 
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2526,7 +2610,9 @@ def distance(
     return min(distance(entity1.center, point2), distance(entity1.center, point2)) - entity1.radius
 
 
-@overload('shapes.Line', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Point]'
@@ -2544,7 +2630,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.Line', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Polygon]'
@@ -2563,7 +2651,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.Line', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2581,7 +2671,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.Line', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Circle]'
@@ -2599,7 +2691,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.Line', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Line]'
@@ -2621,7 +2715,9 @@ def distance(
     return 0
 
 
-@overload('shapes.Line', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2642,7 +2738,9 @@ def distance(
     return min(distance(entity1, entity2.end1), distance(entity1, entity2.end2))
 
 
-@overload('shapes.LineSegment', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Point]'
@@ -2661,7 +2759,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.LineSegment', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Polygon]'
@@ -2682,7 +2782,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.LineSegment', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2703,7 +2805,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.LineSegment', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>"',
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Circle]'
@@ -2722,7 +2826,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.LineSegment', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Line]'
@@ -2741,7 +2847,9 @@ def distance(
     return intersection(entity2, entity1)
 
 
-@overload('shapes.LineSegment', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2768,7 +2876,9 @@ def distance(
     ])
 
 
-@overload('shapes.Point', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Point]'
@@ -2789,7 +2899,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.Point', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Polygon]'
@@ -2811,7 +2923,9 @@ def projection(
     return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
-@overload('shapes.Point', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2833,7 +2947,9 @@ def projection(
     return intersection(shapes.LineSegment(entity1, entity2.center), entity2)
 
 
-@overload('shapes.Point', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Circle]'
@@ -2855,7 +2971,9 @@ def projection(
     return intersection(line, entity2)
 
 
-@overload('shapes.Point', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.Line]'
@@ -2875,7 +2993,9 @@ def projection(
     return intersection(line, entity2)
 
 
-@overload('shapes.Point', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Point'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.Point]',
     entity2: 'Type[shapes.LineSegment]'
@@ -2898,7 +3018,9 @@ def projection(
     return None
 
 
-@overload('shapes.Polygon', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Point]'
@@ -2918,7 +3040,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.Polygon', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Polygon]'
@@ -2952,7 +3076,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.Polygon', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Rectangle]'
@@ -2985,7 +3111,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.Polygon', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Circle]'
@@ -3008,7 +3136,9 @@ def projection(
     return interval.entities[0]
 
 
-@overload('shapes.Polygon', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.Line]'
@@ -3031,7 +3161,9 @@ def projection(
     return interval.entities[0]
 
 
-@overload('shapes.Polygon', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Polygon'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.Polygon]',
     entity2: 'Type[shapes.LineSegment]'
@@ -3058,7 +3190,9 @@ def projection(
     return None
 
 
-@overload('shapes.Rectangle', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Point]'
@@ -3078,7 +3212,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.Rectangle', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Polygon]'
@@ -3111,7 +3247,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.Rectangle', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Rectangle]'
@@ -3145,7 +3283,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.Rectangle', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Circle]'
@@ -3168,7 +3308,9 @@ def projection(
     return interval.entities[0]
 
 
-@overload('shapes.Rectangle', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.Line]'
@@ -3191,7 +3333,9 @@ def projection(
     return interval.entities[0]
 
 
-@overload('shapes.Rectangle', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.Rectangle]',
     entity2: 'Type[shapes.LineSegment]'
@@ -3218,7 +3362,9 @@ def projection(
     return None
 
 
-@overload('shapes.Circle', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Point]'
@@ -3237,7 +3383,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.Circle', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Polygon]'
@@ -3261,7 +3409,9 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload('shapes.Circle', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Rectangle]'
@@ -3285,7 +3435,9 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload('shapes.Circle', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Circle]'
@@ -3311,7 +3463,9 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload('shapes.Circle', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.Line]'
@@ -3335,7 +3489,9 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload('shapes.Circle', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.Circle]',
     entity2: 'Type[shapes.LineSegment]'
@@ -3363,7 +3519,9 @@ def projection(
     return projection(line3, entity2)
 
 
-@overload('shapes.Line', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Point]'
@@ -3382,7 +3540,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.Line', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Polygon]'
@@ -3415,7 +3575,9 @@ def projection(
     return tuple(res)    
 
 
-@overload('shapes.Line', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Rectangle]'
@@ -3448,7 +3610,9 @@ def projection(
     return tuple(res) 
 
 
-@overload('shapes.Line', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Circle]'
@@ -3471,7 +3635,9 @@ def projection(
     return shapes.Arc(entity2, points[0], points[1])
 
 
-@overload('shapes.Line', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.Line]'
@@ -3493,7 +3659,9 @@ def projection(
     return shapes.Line(entity2.slope, entity2.width)
 
 
-@overload('shapes.Line', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.Line'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.Line]',
     entity2: 'Type[shapes.LineSegment]'
@@ -3513,7 +3681,9 @@ def projection(
     return shapes.LineSegment(entity2.end1, entity2.end2)
 
 
-@overload('shapes.LineSegment', 'shapes.Point')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Point'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Point]'
@@ -3534,7 +3704,9 @@ def projection(
     return shapes.Point(entity2.x, entity2.y)
 
 
-@overload('shapes.LineSegment', 'shapes.Polygon')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Polygon'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Polygon]'
@@ -3575,7 +3747,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.LineSegment', 'shapes.Rectangle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Rectangle]'
@@ -3616,7 +3790,9 @@ def projection(
     return tuple(res)
 
 
-@overload('shapes.LineSegment', 'shapes.Circle')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Circle]'
@@ -3641,7 +3817,9 @@ def projection(
     return shapes.Arc(entity2, point1, point2)
 
 
-@overload('shapes.LineSegment', 'shapes.Line')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.Line'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.Line]'
@@ -3664,7 +3842,9 @@ def projection(
     return shapes.LineSegment(point1, point2)
 
 
-@overload('shapes.LineSegment', 'shapes.LineSegment')
+@overload(
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
+    "<class 'geometry.two_dimensional_entities.LineSegment'>")
 def projection(
     entity1: 'Type[shapes.LineSegment]',
     entity2: 'Type[shapes.LineSegment]'
