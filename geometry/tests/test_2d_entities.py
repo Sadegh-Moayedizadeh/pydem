@@ -1,10 +1,14 @@
 """Test cases for all the classes and their methods from
-two_dimensional_entities module from geometry sub-package
+two_dimensional_entities module from geometry sub-packages
 """
-
 import unittest
-from geometry import two_dimensional_entities as td
 import numpy as np
+import os
+os.chdir('geometry/')
+print(os.getcwd())
+print(os.listdir())
+import two_dimensional_entities as shapes
+import two_dimensional_operations as two_dimensional_operations
 
 
 class TestPoint(unittest.TestCase):
