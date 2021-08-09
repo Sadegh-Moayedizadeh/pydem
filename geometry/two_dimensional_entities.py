@@ -63,7 +63,10 @@ class Point(object):
         """
 
         r = np.sqrt((self.x) ** 2 + (self.y) ** 2)
-        theta = np.arctan((self.y) / (self.x))
+        try:
+            theta = np.arctan((self.y) / (self.x))
+        except ZeroDivisionError:
+            theta = np.math.pi / 90
         coordinates = (r, theta)
         return coordinates
 
@@ -175,8 +178,8 @@ class Polygon(object):
         circumcircle = Circle(center, diameter)
         n = number_of_vertices
         points = [
-            circumcircle.get_point_on_perimeter(angle)
-            for angle in count(0, 2 * np.pi, 2 * np.pi / n)
+            circumcircle.get_point_on_perimeter(i*(2*np.math.pi/n))
+            for i in range(0, n)
         ]
         return cls(*points)
 

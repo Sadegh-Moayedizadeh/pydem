@@ -352,7 +352,7 @@ def intersection(
             given entity1, otherwise None
     """
     
-    if entity2.width == (entity1.y - (entity2.x) * (entity2.slope)):
+    if entity2.width == (entity1.y - (entity1.x) * (entity2.slope)):
         return shapes.Point(entity1.x, entity1.y)
 
 
@@ -2806,7 +2806,7 @@ def distance(
 
 
 @overload(
-    "<class 'geometry.two_dimensional_entities.LineSegment'>"',
+    "<class 'geometry.two_dimensional_entities.LineSegment'>",
     "<class 'geometry.two_dimensional_entities.Circle'>")
 def distance(
     entity1: 'Type[shapes.LineSegment]',

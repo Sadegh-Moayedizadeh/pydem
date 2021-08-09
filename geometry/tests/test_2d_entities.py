@@ -4,9 +4,6 @@ two_dimensional_entities module from geometry sub-packages
 import unittest
 import numpy as np
 import os
-# os.chdir('geometry/')
-# print(os.getcwd())
-# print(os.lisshapesir())
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
 #
@@ -61,7 +58,7 @@ class TestPolygon(unittest.TestCase):
 
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
-        self.assertRaises(RuntimeError, shapes.Polygon.__init__(p1, p2))
+        self.assertRaises(RuntimeError, shapes.Polygon(p1, p2))
 
     def test_construction2(self):
         """testing the constuction of the object with the same vetex
@@ -70,7 +67,7 @@ class TestPolygon(unittest.TestCase):
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(0, 1)
         p2 = shapes.Point(0, 0)
-        self.assertRaises(RuntimeError, shapes.Polygon.__init__(p1, p2, p3))
+        self.assertRaises(RuntimeError, shapes.Polygon(p1, p2, p3))
 
     def test_construction3(self):
         """testing the construction of the object with vertices given
@@ -171,7 +168,7 @@ class TestRectangle(unittest.TestCase):
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
         p3 = shapes.Point(0, 1)
-        self.assertRaises(BadEntries, shapes.Rectangle.__init__(p1, p2, p3))
+        self.assertRaises(RuntimeError, shapes.Rectangle(p1, p2, p3))
 
     def test_construction2(self):
         """testing the construction of Rectangle instance with more
@@ -192,7 +189,7 @@ class TestRectangle(unittest.TestCase):
         p2 = shapes.Point(1, 0)
         p3 = shapes.Point(2, 1)
         p4 = shapes.Point(1, 0)
-        self.assertRaises(BadEntries, shapes.Rectangle.__init__(p1, p2, p3, p4))
+        self.assertRaises(RuntimeError, shapes.Rectangle(p1, p2, p3, p4))
 
     def test_from_midline(self):
         """testing the 'from_midline' method of Rectangle class"""
@@ -306,7 +303,7 @@ class TestCircle(unittest.TestCase):
 
         c = shapes.Point(0, 0)
         d = -1
-        self.assertRaises(RuntimeError, shapes.Circle.__init__(center=c, diameter=d))
+        self.assertRaises(RuntimeError, shapes.Circle(center=c, diameter=d))
 
     def test_area(self):
         """testing the 'area' method of Circle class"""
@@ -493,7 +490,7 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 0)
-        self.assertRaises(RuntimeError, shapes.LineSegment.__init__(point1, point2))
+        self.assertRaises(RuntimeError, shapes.LineSegment(point1, point2))
 
     def test_equality(self):
         """testing the equality condition of the LineSegment object"""
@@ -558,7 +555,7 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 1)
-        instance = shapes.Linesegment(point1, point2)
+        instance = shapes.LineSegment(point1, point2)
         expected = np.tan(np.pi / 2)
         self.assertEqual(instance.slope, expected)
 
@@ -623,7 +620,7 @@ class TestLineSegment(unittest.TestCase):
         p1 = shapes.Point(0, 0)
         p2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(p1, p2)
-        self.assertRaises(BadEntries, instance.midpoint(2))
+        self.assertRaises(RuntimeError, instance.midpoint(2))
 
     def test_navigator(self):
         """testing the navigator method of the LineSegment class"""
