@@ -197,7 +197,7 @@ class TestRectangle(unittest.TestCase):
 
         end1 = shapes.Point(1, 0)
         end2 = shapes.Point(1, 1)
-        instance = shapes.Rectangle.from_midline(
+        instance1 = shapes.Rectangle.from_midline(
             midline=shapes.LineSegment(end1, end2), tolerance=1
         )
         vertex1 = shapes.Point(0, 0)
@@ -280,7 +280,7 @@ class TestRectangle(unittest.TestCase):
         vertex4 = shapes.Point(0, 1)
         instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
         expected = shapes.Point(0.5, 0.5)
-        self.assertEqual(instance.centre, expected)
+        self.assertEqual(instance.center, expected)
 
     def test_circumcircle(self):
         """testing the 'circumcircle' method of Rectangle class"""
@@ -290,7 +290,7 @@ class TestRectangle(unittest.TestCase):
         vertex3 = shapes.Point(1, 2)
         vertex4 = shapes.Point(0, 2)
         instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
-        expected = shapes.Circle(centre=shapes.Point(0.5, 0.5), diameter=np.sqrt(2))
+        expected = shapes.Circle(center=shapes.Point(0.5, 0.5), diameter=np.sqrt(2))
         self.assertEqual(instance.circumcircle, expected)
 
 
@@ -328,9 +328,9 @@ class TestCircle(unittest.TestCase):
         """testing the 'get_point_on_perimeter' method of Circle class"""
 
         c = shapes.Point(0, 0)
-        d = 1
+        d = 2
         instance = shapes.Circle(c, d)
-        angle = (np.pi) / 4
+        angle = (np.pi) / 2
         expected = shapes.Point(0, 1)
         self.assertEqual(instance.get_point_on_perimeter(angle), expected)
 

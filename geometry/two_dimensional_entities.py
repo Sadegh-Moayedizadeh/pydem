@@ -99,6 +99,9 @@ class Point(object):
         if isinstance(other, Point) and self.x == other.x and self.y == other.y:
             return True
         return False
+    
+    def __hash__(self):
+        return int(self.x**2 + self.y**2)
 
 
 class Polygon(object):
@@ -147,19 +150,19 @@ class Polygon(object):
             dd[(vertex.x, vertex.y)] += 1
             if dd[(vertex.x, vertex.y)] == 2:
                 raise RuntimeError("the same vertex entered twice")
-        for edge1 in self.edges:
-            for edge2 in self.edges:
-                if edge1 != edge2 and operations.intersection(edge1, edge2):
-                    inter = operations.intersection(edge1, edge2)
-                    if not(
-                        inter == edge1.end1 or
-                        inter == edge1.end2 or
-                        inter == edge2.end1 or
-                        inter == endge2.end2
-                    ):
-                        raise RuntimeError(
-                            "the given vertices form a polygon with intersecting edges"
-                        )
+        # for edge1 in self.edges:
+        #     for edge2 in self.edges:
+        #         if edge1 != edge2 and operations.intersection(edge1, edge2):
+        #             inter = operations.intersection(edge1, edge2)
+        #             if not(
+        #                 inter == edge1.end1 or
+        #                 inter == edge1.end2 or
+        #                 inter == edge2.end1 or
+        #                 inter == edge2.end2
+        #             ):
+        #                 raise RuntimeError(
+        #                     "the given vertices form a polygon with intersecting edges"
+        #                 )
 
     @classmethod
     def as_regular(
@@ -258,7 +261,7 @@ class Polygon(object):
             instances
         """
 
-        if isinstance(other, Point) and set(self.vertices) == set(other.verteices):
+        if isinstance(other, Polygon) and set(self.vertices) == set(other.vertices):
             return True
         return False
 
@@ -380,14 +383,13 @@ class Rectangle(Polygon):
             instance as LineSegment objects with the longer one being
             the first element
         """
-        end1 = self.edges[0].midpoint
-        end2 = self.edges[2].midpoint
+        end1 = self.edges[0].midpoint()
+        end2 = self.edges[2].midpoint()
         line1 = LineSegment(end1, end2)
-        end3 = self.edges[1].midpoint
-        end4 = self.edges[3].midpoint
+        end3 = self.edges[1].midpoint()
+        end4 = self.edges[3].midpoint()
         line2 = LineSegment(end3, end4)
-        lines = sorted([line1, line2], key=lambda x: x.length, reverse=True)
-        return tuple(lines)
+        return (line1, line2) if (line1.end1.x > line2.end2.x) else (line2, line1)
 
     @property
     def diagonals(self) -> Tuple["LineSegment"]:
@@ -976,7 +978,7 @@ class LineSegment(object):
             )
         return y
 
-    def midpoint(self, ratio: float) -> Type[Point]:
+    def midpoint(self, ratio: float = 0.5) -> Type[Point]:
         """finds a point on the LineSegment object located at the given
         ratio, taken the 'end1' attribute of the object as the starting
         point

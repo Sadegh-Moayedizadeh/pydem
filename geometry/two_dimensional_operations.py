@@ -378,9 +378,13 @@ def intersection(
     """
     
     inter = intersection(entity1, entity2.infinite)
-    if inter and is_inside(entity1, shapes.Rectangle.from_diagonal(entity2)):
+    if not inter:
+        return None
+    if (inter.x > entity2.end1.x)^(inter.x > entity2.end2.x):
         return inter
-
+    if (inter.y > entity2.end1.y)^(inter.y > entity2.end2.y):
+        return inter
+    
 
 @overload(
     "<class 'geometry.two_dimensional_entities.Point'>",
