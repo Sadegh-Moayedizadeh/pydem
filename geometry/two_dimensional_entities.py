@@ -150,9 +150,16 @@ class Polygon(object):
         for edge1 in self.edges:
             for edge2 in self.edges:
                 if edge1 != edge2 and operations.intersection(edge1, edge2):
-                    raise RuntimeError(
-                        "the given vertices form a polygon with intersecting edges"
-                    )
+                    inter = operations.intersection(edge1, edge2)
+                    if not(
+                        inter == edge1.end1 or
+                        inter == edge1.end2 or
+                        inter == edge2.end1 or
+                        inter == endge2.end2
+                    ):
+                        raise RuntimeError(
+                            "the given vertices form a polygon with intersecting edges"
+                        )
 
     @classmethod
     def as_regular(
