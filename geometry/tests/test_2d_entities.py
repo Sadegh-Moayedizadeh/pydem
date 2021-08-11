@@ -86,7 +86,7 @@ class TestPolygon(unittest.TestCase):
         """testing 'as_regular' method from Polygon class"""
 
         instance = shapes.Polygon.as_regular(
-            center=shapes.Point(0, 0), diameter=1, number_of_vertices=4
+            center=shapes.Point(0, 0), diameter=2, number_of_vertices=4
         )
         expected_vertices = (
             shapes.Point(1, 0),
@@ -94,7 +94,9 @@ class TestPolygon(unittest.TestCase):
             shapes.Point(-1, 0),
             shapes.Point(0, -1),
         )
-        self.assertEqual(instance.vertices, expected_vertices)
+        for i in range(4):
+            self.assertAlmostEqual(instance.vertices[i].x, expected_vertices[i].x)
+            self.assertAlmostEqual(instance.vertices[i].y, expected_vertices[i].y)
 
     def test_number_of_vertices(self):
         """testing the number_of_vertices method from Polygon class"""
@@ -200,12 +202,12 @@ class TestRectangle(unittest.TestCase):
         end1 = shapes.Point(1, 0)
         end2 = shapes.Point(1, 1)
         instance1 = shapes.Rectangle.from_midline(
-            midline=shapes.LineSegment(end1, end2), tolerance=1
+            midline=shapes.LineSegment(end1, end2), tolerance = 2
         )
-        vertex1 = shapes.Point(0, 0)
-        vertex2 = shapes.Point(2, 0)
-        vertex3 = shapes.Point(2, 1)
-        vertex4 = shapes.Point(0, 1)
+        vertex1 = shapes.Point(-1, 0)
+        vertex2 = shapes.Point(3, 0)
+        vertex3 = shapes.Point(3, 1)
+        vertex4 = shapes.Point(-1, 1)
         instance2 = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
         self.assertEqual(instance1, instance2)
 
@@ -255,10 +257,16 @@ class TestRectangle(unittest.TestCase):
         vertex3 = shapes.Point(1, 2)
         vertex4 = shapes.Point(0, 2)
         instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
-        midline1 = shapes.LineSegment(end1=shapes.Point(0.5, 0), end2=shapes.Point(0.5, 2))
-        midline2 = shapes.LineSegment(end1=shapes.Point(0, 1), end2=shapes.Point(1, 1))
-        expected = (midline1, midline2)
-        self.assertEqual(instance.midlines, expected)
+        midline1 = shapes.LineSegment(end1 = shapes.Point(0.5, 0), end2 = shapes.Point(0.5, 2))
+        midline2 = shapes.LineSegment(end1 = shapes.Point(0, 1), end2 = shapes.Point(1, 1))
+        expected = [midline2, midline1]
+        res = sorted(instance.midlines, key = lambda x: x.end1.y)
+        sys.stdout.write(res.__repr__())
+        for i in range(2):
+            self.assertAlmostEqual(res[i].end1.x, expected[i].end1.x)
+            self.assertAlmostEqual(res[i].end1.y, expected[i].end1.y)
+            self.assertAlmostEqual(res[i].end2.x, expected[i].end2.x)
+            self.assertAlmostEqual(res[i].end2.y, expected[i].end2.y)
 
     def test_diagonals(self):
         """testing the 'diagonals' method of Rectangle class"""
@@ -273,7 +281,7 @@ class TestRectangle(unittest.TestCase):
         expected = (diagonal1, diagonal2)
         self.assertEqual(instance.diagonals, expected)
 
-    def test_centre(self):
+    def test_center(self):
         """testing the 'centre' method of Rectangle class"""
 
         vertex1 = shapes.Point(0, 0)

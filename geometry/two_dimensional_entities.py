@@ -100,6 +100,9 @@ class Point(object):
             return True
         return False
     
+    def __repr__(self):
+        return f'Point({self.x}, {self.y})'
+    
     def __hash__(self):
         return int(self.x**2 + self.y**2)
 
@@ -264,6 +267,10 @@ class Polygon(object):
         if isinstance(other, Polygon) and set(self.vertices) == set(other.vertices):
             return True
         return False
+    
+    def __repr__(self):
+        vertices = [point.__repr__() for point in self.vertices]
+        return 'Polygon' + str(vertices)
 
 
 class Rectangle(Polygon):
@@ -328,20 +335,20 @@ class Rectangle(Polygon):
 
         angle = midline.inclination
         vertex1 = Point(
-            midline.end1.x + 2 * np.cos(np.pi / 2 - angle),
-            midline.end1.y - 2 * np.sin(np.pi / 2 - angle),
+            midline.end1.x + tolerance * np.cos(np.pi / 2 - angle),
+            midline.end1.y - tolerance * np.sin(np.pi / 2 - angle),
         )
         vertex2 = Point(
-            midline.end1.x - 2 * np.cos(np.pi / 2 - angle),
-            midline.end1.y + 2 * np.sin(np.pi / 2 - angle),
+            midline.end1.x - tolerance * np.cos(np.pi / 2 - angle),
+            midline.end1.y + tolerance * np.sin(np.pi / 2 - angle),
         )
         vertex3 = Point(
-            midline.end2.x - 2 * np.cos(np.pi / 2 - angle),
-            midline.end2.y + 2 * np.sin(np.pi / 2 - angle),
+            midline.end2.x - tolerance * np.cos(np.pi / 2 - angle),
+            midline.end2.y + tolerance * np.sin(np.pi / 2 - angle),
         )
         vertex4 = Point(
-            midline.end2.x + 2 * np.cos(np.pi / 2 - angle),
-            midline.end2.y - 2 * np.sin(np.pi / 2 - angle),
+            midline.end2.x + tolerance * np.cos(np.pi / 2 - angle),
+            midline.end2.y - tolerance * np.sin(np.pi / 2 - angle),
         )
         return cls(vertex1, vertex2, vertex3, vertex4)
 
@@ -429,6 +436,10 @@ class Rectangle(Polygon):
         """
 
         return Circle(center=self.center, diameter=self.diagonals[0].length)
+    
+    def __repr__(self):
+        vertices = [point.__repr__() for point in self.vertices]
+        return 'Rectangle' + str(vertices)
 
 
 class Circle(object):
@@ -586,6 +597,9 @@ class Circle(object):
         ):
             return True
         return False
+    
+    def __repr__(self):
+        return f'Circle[Point({self.center.x}, {self.center.y}), {self.diameter}]'
 
 
 class Line(object):
@@ -810,6 +824,9 @@ class Line(object):
         ):
             return True
         return False
+    
+    def __repr__(self):
+        return f'Line({self.slope}, {self.width})'
 
 
 class LineSegment(object):
@@ -1055,6 +1072,12 @@ class LineSegment(object):
         ):
             return True
         return False
+    
+    def __hash__(self):
+        return (self.end1.__hash__() + self.end2.__hash__()) ** 3
+    
+    def __repr__(self):
+        return f'LineSegment[Point({self.end1.x}, {self.end1.y}), Point({self.end2.x}, {self.end2.y})]'
 
 
 class Arc(object):
