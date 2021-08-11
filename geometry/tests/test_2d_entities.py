@@ -1,6 +1,8 @@
 """Test cases for all the classes and their methods from
 two_dimensional_entities module from geometry sub-packages
 """
+
+import sys
 import unittest
 import numpy as np
 import os
@@ -20,8 +22,8 @@ class TestPoint(unittest.TestCase):
         'r-theta' coordinates"""
 
         instance = shapes.Point.from_rtheta(1, np.pi / 2)
-        self.assertEqual(0, instance.x)
-        self.assertEqual(1, instance.y)
+        self.assertAlmostEqual(0, instance.x)
+        self.assertAlmostEqual(1, instance.y)
 
     def test_get_rtheta(self):
         """testing the 'r' and 'theta' recieved form the get_rtheta
@@ -326,13 +328,14 @@ class TestCircle(unittest.TestCase):
 
     def test_get_point_on_perimeter(self):
         """testing the 'get_point_on_perimeter' method of Circle class"""
-
+        
         c = shapes.Point(0, 0)
         d = 2
         instance = shapes.Circle(c, d)
         angle = (np.pi) / 2
-        expected = shapes.Point(0, 1)
-        self.assertEqual(instance.get_point_on_perimeter(angle), expected)
+        res = instance.get_point_on_perimeter(angle)
+        self.assertAlmostEqual(res.x, 0)
+        self.assertAlmostEqual(res.y, 1)
 
     def test_equality(self):
         """testing the equality condition of Circle class"""
@@ -347,12 +350,14 @@ class TestCircle(unittest.TestCase):
         """testing the 'navigator' method of the Circle class"""
 
         c = shapes.Point(0, 0)
-        d = 1
+        d = 2
         instance = shapes.Circle(c, d)
         gen = instance.navigator(0, np.pi / 4, 1)
         next(gen)
         expected = shapes.Point((np.sqrt(2) / 2), (np.sqrt(2) / 2))
-        self.assertEqual(next(gen), expected)
+        p = next(gen)
+        self.assertAlmostEqual(p.x, expected.x)
+        self.assertAlmostEqual(p.y, expected.y)
 
     def test_navigator2(self):
         """testing if the 'navigator' method of the Circle class
@@ -365,7 +370,7 @@ class TestCircle(unittest.TestCase):
         count = 0
         for _ in gen:
             count += 1
-        self.assertEqual(count, 8)
+        self.assertEqual(count, 16)
 
     def test_move(self):
         """testing the 'move' method of the Circle class"""
@@ -375,7 +380,8 @@ class TestCircle(unittest.TestCase):
         d = 1
         instance1 = shapes.Circle(c1, d)
         instance2 = shapes.Circle(c2, d)
-        self.assertEqual(instance1.move(1, 1), instance2)
+        instance1.move(1, 1)
+        self.assertEqual(instance1, instance2)
 
 
 class TestLine(unittest.TestCase):

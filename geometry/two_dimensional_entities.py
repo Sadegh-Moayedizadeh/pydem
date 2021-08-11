@@ -66,7 +66,7 @@ class Point(object):
         try:
             theta = np.arctan((self.y) / (self.x))
         except ZeroDivisionError:
-            theta = np.math.pi / 90
+            theta = np.math.pi / 2
         coordinates = (r, theta)
         return coordinates
 
@@ -565,7 +565,7 @@ class Circle(object):
                 Circle instance
         """
 
-        self.center.move(delta_x, delta_y)
+        self.center = Point(self.center.x + delta_x, self.center.y + delta_y)
 
     def __eq__(self, other: Any) -> bool:
         """Defining the equality condition of the Circle instance
