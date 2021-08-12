@@ -629,7 +629,7 @@ class Line(object):
             and 'y' coordinates
     """
 
-    def __init__(self, slope: float, width: float) -> None:
+    def __init__(self, slope: float, width: float, length_if_vertical: float = None) -> None:
         """initializing the Line object
 
         Args:
@@ -641,6 +641,7 @@ class Line(object):
 
         self.slope = slope
         self.width = width
+        self.length_if_vertical = length_if_vertical
 
     @classmethod
     def from_points(cls, point1: Type[Point], point2: Type[Point]) -> "Line":
@@ -654,12 +655,14 @@ class Line(object):
 
         x1, y1 = point1.x, point1.y
         x2, y2 = point2.x, point2.y
+        length_if_vertical = None
         try:
             slope = (y2 - y1) / (x2 - x1)
         except ZeroDivisionError:
             slope = np.tan(np.pi / 2)
+            length_if_vertical = point1.x
         width = y1 - slope * x1
-        return cls(slope, width)
+        return cls(slope, width, length_if_vertical)
 
     @classmethod
     def from_point_and_inclination(
@@ -735,13 +738,15 @@ class Line(object):
             the x coordinate of the point on the Line instance
         """
 
-        try:
-            res = (y - self.width) / (self.slope)
-        except ZeroDivisionError:
+        if self.slope == 0:
             raise RuntimeError(
                 "the line instance has the slope of zero, asking for an 'x' coordinate is invalid in this case"
             )
-        return res
+        if self.slope > 1e15 or self.slope < -1e15:
+            if not(self.length_if_vertical is None):
+                return self.length_if_vertical
+            return 0
+        return (y - self.width) / (self.slope)
 
     def get_y(self, x: float) -> float:
         """calculate the 'y' coordinate of a point on the Line instance

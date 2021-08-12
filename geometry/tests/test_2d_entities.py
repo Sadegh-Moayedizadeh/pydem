@@ -411,10 +411,11 @@ class TestLine(unittest.TestCase):
         from_point_and_inclination method"""
 
         point = shapes.Point(0, 0)
-        inclination = (np.pi) / 4
+        inclination = (np.math.pi) / 4
         instance1 = shapes.Line.from_point_and_inclination(point, inclination)
         instance2 = shapes.Line(1, 0)
-        self.assertEqual(instance1, instance2)
+        self.assertAlmostEqual(instance1.slope, instance2.slope)
+        self.assertAlmostEqual(instance1.width, instance2.width)
 
     def test_from_ij(self):
         """testing the construction of the Line object via from_ij
@@ -447,7 +448,7 @@ class TestLine(unittest.TestCase):
         point1 = shapes.Point(1, 0)
         point2 = shapes.Point(1, 1)
         instance = shapes.Line.from_points(point1, point2)
-        self.assertEqual(instance.get_x, 1)
+        self.assertEqual(instance.get_x(1), 1)
 
     def test_get_x3(self):
         """testing the 'get_x' method of the Line class with the Line
@@ -469,32 +470,35 @@ class TestLine(unittest.TestCase):
         instance2 = shapes.Line(1, 0)
         self.assertEqual(instance1, instance2)
 
-    def test_navigator(self):
+    def test_navigator1(self):
         """testing the 'navigator' method of the Line class"""
 
         instance = shapes.Line(1, 0)
         start = shapes.Point(0, 0)
         end = shapes.Point(1, 1)
-        gen = instance.navigator(start, end, 0.2)
+        gen = instance.navigator(start, end, 2)
         next(gen)
-        expected = shapes.Point(0.2, 0.2)
-        self.assertEqual(next(gen), expected)
+        expected = shapes.Point(np.sqrt(2), np.sqrt(2))
+        res = next(gen)
+        self.assertAlmostEqual(res.x, expected.x)
+        self.assertAlmostEqual(res.y, expected.y)
 
-    def test_navigator(self):
+    def test_navigator2(self):
         """testing the 'navigator' method of the Line class with an invalid
         start point given, which is not located on the Line"""
 
         instance = shapes.Line(1, 0)
         start = shapes.Point(0, 1)
         end = shapes.Point(1, 1)
-        self.assertRaises(RuntimeError, instance.navigator, start, end, 0.2)
+        self.assertRaises(RuntimeError, instance.navigator, start, end, 0)
 
     def test_move(self):
         """testing the 'move' method of the Line class"""
 
         instance1 = shapes.Line(1, 0)
         instance2 = shapes.Line(1, 1)
-        self.assertEqual(instance1.move(0, 1), instance2)
+        instance1.move(0, 1)
+        self.assertEqual(instance1, instance2)
 
 
 class TestLineSegment(unittest.TestCase):
@@ -522,11 +526,15 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
+        point3 = shapes.Point(0.5, 0.5)
         inclination = (np.pi) / 4
         size = np.sqrt(2)
         instance1 = shapes.LineSegment(point1, point2)
-        instance2 = shapes.LineSegment.from_point_and_inclination(point1, inclination, size)
-        self.assertEqual(instance1, instance2)
+        instance2 = shapes.LineSegment.from_point_and_inclination(point3, inclination, size)
+        self.assertAlmostEqual(instance1.end1.x, instance2.end1.x)
+        self.assertAlmostEqual(instance1.end1.y, instance2.end1.y)
+        self.assertAlmostEqual(instance1.end2.x, instance2.end2.x)
+        self.assertAlmostEqual(instance1.end2.y, instance2.end2.y)
 
     def test_length(self):
         """testing the 'length' method of the LineSegment class"""
@@ -543,8 +551,11 @@ class TestLineSegment(unittest.TestCase):
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(point1, point2)
-        circle = shapes.Circle(shapes.Point(0.5, 0.5), np.sqrt(2))
-        self.assertEqual(instance.circumcircle, circle)
+        circle = shapes.Circle(shapes.Point(0.5, 0.5), np.sqrt(2) / 2)
+        res = instance.circumcircle
+        self.assertAlmostEqual(res.center.x, circle.center.x)
+        self.assertAlmostEqual(res.center.y, circle.center.y)
+        self.assertAlmostEqual(res.diameter, circle.diameter)
 
     def test_inclination(self):
         """testing the 'inclination' method of the LineSegment class"""
@@ -626,7 +637,9 @@ class TestLineSegment(unittest.TestCase):
         p2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(p1, p2)
         expected = shapes.Point(0.5, 0.5)
-        self.assertEqual(instance.midpoint(0.5), expected)
+        res = instance.midpoint(0.5)
+        self.assertAlmostEqual(res.x, expected.x)
+        self.assertAlmostEqual(res.y, expected.y)
 
     def test_midpoint2(self):
         """testing the 'midpoint' method of the LineSegment class given
