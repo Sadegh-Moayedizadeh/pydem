@@ -272,7 +272,7 @@ def intersection(
     
     x1, y1 = entity1.x, entity1.y
     x2, y2 = entity2.x, entity2.y
-    if x1 == x2 and y1 == y2:
+    if (abs(x1 - x2) < 1e-10) and (abs(y1 - y2) < 1e-10):
         return shapes.Point(x1, y1)
 
 
@@ -356,11 +356,11 @@ def intersection(
         if abs(entity1.x - entity2.length_if_vertical) < 1e-10:
             return shapes.Point(entity1.x, entity1.y)
         return None
-    if entity2.slope > 1e10:
+    if entity2.slope > 1e10 or entity2.slope < -1e10:
         if abs(entity1.y - entity2.width) < 1e-10:
             return shapes.Point(entity1.x, entity1.y)
         return None
-    y = (entity2.slope) * (entity1.x) - entity2.width
+    y = (entity2.slope) * (entity1.x) + entity2.width
     if abs(entity1.y - y) < 1e-10:
         return shapes.Point(entity1.x, entity1.y)
 
@@ -1226,6 +1226,33 @@ def intersection(
         Type[shapes.Point]: the intersection between the given entities
     """
     
+    if abs(entity1.infinite.slope - entity2.infinite.slope) < 1e-10:
+        ends = []
+        if intersection(entity1.end1, entity2):
+            ends.append(entity1.end1)
+        if intersection(entity1.end2, entity2):
+            ends.append(entity1.end2)
+        if intersection(entity2.end1, entity1):
+            ends.append(entity2.end1)
+        if intersection(entity2.end2, entity1):
+            ends.append(entity2.end2)
+        if len(ends) == 2:
+            if ends[0] == ends[1]:
+                return ends[0]
+            return shapes.LineSegment(ends[0], ends[1])
+        elif len(ends) == 3:
+            end1 = ends.pop()
+            end2 = ends[0] if ends[1] == end1 else ends[1]
+            return shapes.LineSegment(end1, end2)
+        elif len(ends) == 4:
+            end1 = ends.pop()
+            for point in ends:
+                if not (point == end1):
+                    end2 = point
+                    break
+            return shapes.LineSegment(end1, end2)
+        else:
+            return
     inter = intersection(entity1.infinite, entity2.infinite)
     if inter and intersection(inter, entity1) and intersection(inter, entity2):
         return inter

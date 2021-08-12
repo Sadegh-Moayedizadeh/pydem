@@ -1152,7 +1152,7 @@ class TestIntersection(unittest.TestCase):
         self.assertEqual(operations.intersection(rec, line), res)
     
     def test_for_circle_and_point1(self):
-        """the first first test for intersection between a point and a
+        """the first test for intersection between a point and a
         circle with the given point being located inside the given
         circle
         """
@@ -1281,8 +1281,8 @@ class TestIntersection(unittest.TestCase):
         them touching each other in one point
         """
         
-        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
-        circle2 = shapes.Circle(shapes.Point(3, 0), 1)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 4)
+        circle2 = shapes.Circle(shapes.Point(3, 0), 2)
         point = shapes.Point(2, 0)
         self.assertEqual(operations.intersection(circle1, circle2), point)
     
@@ -1291,8 +1291,8 @@ class TestIntersection(unittest.TestCase):
         them intersecting each other in two points
         """
         
-        circle1 = shapes.Circle(shapes.Point(0, 0), 2)
-        circle2 = shapes.Circle(shapes.Point(2, 2), 2)
+        circle1 = shapes.Circle(shapes.Point(0, 0), 4)
+        circle2 = shapes.Circle(shapes.Point(2, 2), 4)
         res = (shapes.Point(2, 0), shapes.Point(0, 2))
         self.assertEqual(operations.intersection(circle1, circle2), res)
     
@@ -1311,7 +1311,7 @@ class TestIntersection(unittest.TestCase):
         being horizental
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line(0, 1)
         point = shapes.Point(0, 1)
         self.assertEqual(operations.intersection(circle, line), point)
@@ -1322,7 +1322,7 @@ class TestIntersection(unittest.TestCase):
         being vertical
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line.from_points(shapes.Point(1, -1), shapes.Point(1, 1))
         point = shapes.Point(1, 0)
         self.assertEqual(operations.intersection(circle, line), point)
@@ -1333,7 +1333,7 @@ class TestIntersection(unittest.TestCase):
         having an arbitrary slope
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line(1, -1*np.sqrt(2))
         point = shapes.Point(np.sqrt(2)/2, -1*np.sqrt(2)/2)
         self.assertEqual(operations.intersection(circle, line), point)
@@ -1489,7 +1489,7 @@ class TestIntersection(unittest.TestCase):
         
         point = shapes.Point(1, 0)
         line = shapes.Line.from_points(shapes.Point(0, 0), shapes.Point(0, 1))
-        self.assertEqual(operations.intersection(line, point), point)
+        self.assertEqual(operations.intersection(line, point), None)
     
     def test_for_line_and_point5(self):
         """the fifth test for intersection between a point and an
@@ -1909,7 +1909,7 @@ class TestIntersection(unittest.TestCase):
         
         point = shapes.Point(1, 0)
         line = shapes.LineSegment(shapes.Point(0, -0.5), shapes.Point(0, 0.5))
-        self.assertEqual(operations.intersection(line, point), point)
+        self.assertEqual(operations.intersection(line, point), None)
     
     def test_for_linesegment_and_point5(self):
         """the fifth test for intersection between a point and a line
@@ -2301,7 +2301,7 @@ class TestIntersection(unittest.TestCase):
         whith one of the first one's ends touching the other one's body
         """
 
-        end1 = shapes.Point(0, 1)
+        end1 = shapes.Point(0, 0)
         end2 = shapes.Point(2, 2)
         line1 = shapes.LineSegment(end1, end2)
         end3 = shapes.Point(0, 4)
@@ -2315,7 +2315,7 @@ class TestIntersection(unittest.TestCase):
         with them touching each other's ends
         """
         
-        end1 = shapes.Point(0, 0)
+        end1 = shapes.Point(-1, 0)
         end2 = shapes.Point(1, 1)
         line1 = shapes.LineSegment(end1, end2)
         end3 = shapes.Point(1, 1)

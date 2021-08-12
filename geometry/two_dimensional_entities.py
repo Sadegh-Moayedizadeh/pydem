@@ -96,7 +96,7 @@ class Point(object):
             instances
         """
 
-        if isinstance(other, Point) and self.x == other.x and self.y == other.y:
+        if isinstance(other, Point) and abs(self.x - other.x) < 1e-10 and abs(self.y - other.y) < 1e-10:
             return True
         return False
     
@@ -879,9 +879,14 @@ class LineSegment(object):
             raise RuntimeError(
                 "the given points have the same coordinates, they can't produce a line segment"
             )
+        if end1.x == end2.x:
+            if end1.y > end2.y:
+                end1, end2 = end2, end1
+        elif end1.x > end2.x:
+            end1, end2 = end2, end1
         self.end1 = end1
         self.end2 = end2
-
+    
     @classmethod
     def from_point_and_inclination(
         cls, point: Type[Point], inclination: float, size: float
