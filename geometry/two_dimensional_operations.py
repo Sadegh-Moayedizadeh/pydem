@@ -458,7 +458,7 @@ def intersection(
     Args:
         entity1 (Type[shapes.Polygon]): the given shapes.Polygon
             instance
-        entity2 (Type[shapes.Rectangle]): the other given shapes.Polygon
+        entity2 (Type[shapes.Polygon]): the other given shapes.Polygon
             instance
 
     Returns:
@@ -473,7 +473,32 @@ def intersection(
             inter = intersection(line1, line2)
             if inter:
                 res.append(inter)
-    return tuple(res) if res else None
+    # removing repetitve stuff
+    res2 = []
+    for item in res:
+        for item2 in res2:
+            if item == item2:
+                break
+        else:
+            res2.append(item)
+    # removing points that are located on other lines
+    points = [item for item in res2 if isinstance(item, shapes.Point)]
+    lines = [item for item in res2 if isinstance(item, shapes.LineSegment)]
+    res3 = []
+    for point in points:
+        for line in lines:
+            if intersection(point, line):
+                break
+        else:
+            res3.append(point)
+    else:
+        res3.extend(lines)
+    # returning in the acceptable form
+    if not res3:
+        return None
+    if len(res3) == 1:
+        return res3[0]
+    return tuple(res3)
 
 
 @overload(
@@ -503,7 +528,32 @@ def intersection(
             inter = intersection(line1, line2)
             if inter:
                 res.append(inter)
-    return tuple(res)
+    # removing repetitve stuff
+    res2 = []
+    for item in res:
+        for item2 in res2:
+            if item == item2:
+                break
+        else:
+            res2.append(item)
+    # removing points that are located on other lines
+    points = [item for item in res2 if isinstance(item, shapes.Point)]
+    lines = [item for item in res2 if isinstance(item, shapes.LineSegment)]
+    res3 = []
+    for point in points:
+        for line in lines:
+            if intersection(point, line):
+                break
+        else:
+            res3.append(point)
+    else:
+        res3.extend(lines)
+    # returning in the acceptable form
+    if not res3:
+        return None
+    if len(res3) == 1:
+        return res3[0]
+    return tuple(res3)
 
 
 @overload(
@@ -530,7 +580,7 @@ def intersection(
         inter = intersection(line, entity2)
         if inter:
             res.append(inter)
-    return tuple(res)
+    return tuple(res) if res else None
 
 
 @overload(
@@ -1064,10 +1114,18 @@ def intersection(
         Type[shapes.Point]: the intersection between two given entities
     """
     
-    if entity1.slope == entity2.slope:
+    if abs(entity1.slope - entity2.slope) < 1e-10:
         if abs(entity1.width - entity2.width) < 1e-10:
             return shapes.Line(entity1.slope, entity1.width)
         return
+    if entity1.slope > 1e10:
+        x = entity1.length_if_vertical
+        y = entity2.slope * x + entity2.width
+        return shapes.Point(x, y)
+    if entity2.slope > 1e10:
+        x = entity2.length_if_vertical
+        y = entity1.slope * x + entity1.width
+        return shapes.Point(x, y)
     x = (entity2.width - entity1.width) / (entity1.slope - entity2.slope)
     y = entity1.get_y(x)
     return shapes.Point(x, y)

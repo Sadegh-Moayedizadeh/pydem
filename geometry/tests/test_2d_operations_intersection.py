@@ -399,9 +399,10 @@ class TestIntersection(unittest.TestCase):
         pol1 = shapes.Polygon(v1, v2, v3, v4, v5)
         v6 = shapes.Point(0.5, 0)
         v7 = shapes.Point(1.5, 0)
-        v8 = shapes.Point(1.5, 0.5)
-        pol2 = shapes.Polygon(v6, v7, v8)
-        self.assertEqual(operations.intersection(pol1, pol2), shapes.Point(0, 1))
+        v8 = shapes.Point(1.5, 2)
+        v9 = shapes.Point(0.5, 2)
+        pol2 = shapes.Polygon(v6, v7, v8, v9)
+        self.assertEqual(operations.intersection(pol1, pol2), shapes.Point(1, 0))   
     
     def test_for_polygon_and_polygon5(self):
         """the fifth test for intersection between two polygons with
@@ -418,7 +419,7 @@ class TestIntersection(unittest.TestCase):
         v7 = shapes.Point(1.5, -1)
         v8 = shapes.Point(1, -2)
         pol2 = shapes.Polygon(v6, v7, v8)
-        line = shapes.lineSegment(v6, v3)
+        line = shapes.LineSegment(v6, v3)
         self.assertEqual(operations.intersection(pol1, pol2), line)
     
     def test_for_polygon_and_rectangle1(self):
@@ -491,8 +492,10 @@ class TestIntersection(unittest.TestCase):
         v8 = shapes.Point(1.5, 0.5)
         v9 = shapes.Point(0.5, 0.5)
         rec = shapes.Rectangle(v6, v7, v8, v9)
-        self.assertEqual(operations.intersection(pol, rec), shapes.Point(0, 1))
-    
+        point1 = shapes.Point(1, 0)
+        point2 = shapes.Point(1, 0.5)
+        exp = (point1, point2)
+        self.assertEqual(set(operations.intersection(pol, rec)), set(exp))    
     def test_for_polygon_and_rectangle5(self):
         """the fifth test for intersection between a polygon and a
         rectangle with overlapping edges
@@ -509,7 +512,7 @@ class TestIntersection(unittest.TestCase):
         v8 = shapes.Point(1.5, -2)
         v9 = shapes.Point(0.5, -2)
         rec = shapes.Rectangle(v6, v7, v8, v9)
-        line = shapes.lineSegment(v6, v3)
+        line = shapes.LineSegment(v6, v3)
         self.assertEqual(operations.intersection(pol, rec), line)
     
     def test_for_polygon_and_circle1(self):
@@ -2323,6 +2326,20 @@ class TestIntersection(unittest.TestCase):
         line2 = shapes.LineSegment(end3, end4)
         point = shapes.Point(1, 1)
         self.assertEqual(operations.intersection(line1, line2), point)
+    
+    def test_for_linesegment_and_linesegment7(self):
+        """the seventh test for intersection between two line segments
+        with one of them being horizental and the other vertical
+        """
+        
+        p1 = shapes.Point(1, 1)
+        p2 = shapes.Point(1, -1)
+        l1 = shapes.LineSegment(p1, p2)
+        p3 = shapes.Point(0.5, 0)
+        p4 = shapes.Point(1.5, 0)
+        l2 = shapes.LineSegment(p3, p4)
+        exp = shapes.Point(1, 0)
+        self.assertEqual(operations.intersection(l1, l2), exp)        
 
 
 if __name__ == '__main__':
