@@ -889,28 +889,29 @@ def intersection(
             instances
     """
     
-    # formula from:
-    # https://math.stackexchange.com/questions/228841/how-do-i-calculate-the-intersections-of-a-straight-line-and-a-circle
-    # written by "Fly by Night": https://math.stackexchange.com/users/38495/fly-by-night
+    if not (entity2.length_if_vertical is None):
+        di = abs(entity1.center.x - entity2.length_if_vertical)
+        if abs(di - entity1.radius) < 1e-10:
+            return shapes.Point(entity2.length_if_vertical, entity1.center.y)
+        elif di < entity1.radius:
+            X = entity2.length_if_vertical - entity1.center.x
+            y1 = np.sqrt(entity1.radius**2 - X**2) + entity1.center.y
+            y2 = -1 * np.sqrt(entity1.radius**2 - X**2) + entity1.center.y
+            return (shapes.Point(entity2.length_if_vertical, y1), shapes.Point(entity2.length_if_vertical, y2))
+        else:
+            return None
+    t = entity2.width - entity1.center.y
     a = (entity2.slope)**2 + 1
-    b = 2 * (
-        ((entity2.slope) * (entity2.width)) 
-        - ((entity2.slope) * (entity1.center.y))
-        - (entity1.center.x)
-        )
-    c = (
-        (entity1.center.y)**2
-        - (entity1.radius)**2
-        + (entity1.center.x)**2
-        - 2 * ((entity1.center.y) * (entity2.width))
-        + (entity2.width)**2
-    )
-    try:
-        x1 = (-1 * (b) + np.sqrt(b**2 - 4*a*c)) / (2*a)
-        x2 = (-1 * (b) - np.sqrt(b**2 - 4*a*c)) / (2*a)
-    except:
-        return
-    if x1 == x2:
+    b = 2 * (entity2.slope*t - entity1.center.x)
+    c = (t**2 + (entity1.center.x)**2 - (entity1.radius)**2)
+    delta = b**2 - 4*a*c
+    if abs(delta - 0) < 1e-10:
+        delta = 0
+    elif delta < 0:
+        return None
+    x1 = (-1 * (b) + np.sqrt(delta)) / (2*a)
+    x2 = (-1 * (b) - np.sqrt(delta)) / (2*a)
+    if abs(x1 - x2) < 1e-10:
         return shapes.Point(x1, entity2.get_y(x1))
     y1 = entity2.get_y(x1)
     y2 = entity2.get_y(x2)
@@ -940,10 +941,17 @@ def intersection(
     if inter is None:
         return
     res = []
+    if isinstance(inter, shapes.Point):
+        if intersection(inter, entity2):
+            return inter
+        else:
+            return None
     for point in inter:
         if intersection(point, entity2):
             res.append(point)
-    return tuple(res)
+    if len(res) == 1:
+        return res[0]
+    return tuple(res) if res else None
 
 
 @overload(

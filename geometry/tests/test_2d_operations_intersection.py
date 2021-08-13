@@ -1344,10 +1344,10 @@ class TestIntersection(unittest.TestCase):
         being horizental
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line(0, 0)
-        res = (shapes.Point(-1, 0), shapes(1, 0))
-        self.assertEqual(operations.intersection(circle, line), res)
+        res = (shapes.Point(-1, 0), shapes.Point(1, 0))
+        self.assertEqual(set(operations.intersection(circle, line)), set(res))
     
     def test_for_circle_and_line5(self):
         """the fifth test for intersection between a circle and an
@@ -1355,10 +1355,10 @@ class TestIntersection(unittest.TestCase):
         being vertical
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line.from_points(shapes.Point(0, 0), shapes.Point(0, 10))
-        res = (shapes.Point(-1, 0), shapes.Point(1, 0))
-        self.assertEqual(operations.intersection(circle, line), res)
+        res = (shapes.Point(0, -1), shapes.Point(0, 1))
+        self.assertEqual(set(operations.intersection(circle, line)), set(res))
     
     def test_for_circle_and_line6(self):
         """the sixth test for intersection between a circle and an
@@ -1366,17 +1366,17 @@ class TestIntersection(unittest.TestCase):
         having an arbitrary slope
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line(1, 0)
         res = (shapes.Point(np.sqrt(2)/2, np.sqrt(2)/2), shapes.Point(-1*np.sqrt(2)/2, -1*np.sqrt(2)/2))
-        self.assertEqual(operations.intersection(circle, line), res)
+        self.assertEqual(set(operations.intersection(circle, line)), set(res))
     
     def test_for_circle_and_line7(self):
         """the seventh test for intersection between a circle and an
         infinite line with them being apart
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         line = shapes.Line(1, 10)
         self.assertEqual(operations.intersection(circle, line), None)
     
@@ -1387,8 +1387,8 @@ class TestIntersection(unittest.TestCase):
         """
         
         circle = shapes.Circle(shapes.Point(0, 0), 2)
-        end1 = shapes.Point(-1, -1)
-        end2 = shapes.Point(1, 1)
+        end1 = shapes.Point(-0.5, -0.5)
+        end2 = shapes.Point(0.5, 0.5)
         line = shapes.LineSegment(end1, end2)
         self.assertEqual(operations.intersection(circle, line), None)
     
@@ -1397,7 +1397,7 @@ class TestIntersection(unittest.TestCase):
         segment with them intersecting in one point
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(2, 0)
         line = shapes.LineSegment(end1, end2)
@@ -1409,7 +1409,7 @@ class TestIntersection(unittest.TestCase):
         segment with them intersecting in two points
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         end1 = shapes.Point(0, 10)
         end2 = shapes.Point(0, -3)
         line = shapes.LineSegment(end1, end2)
@@ -1433,7 +1433,7 @@ class TestIntersection(unittest.TestCase):
         the circle
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         end1 = shapes.Point(1, 0)
         end2 = shapes.Point(2, 0)
         line = shapes.LineSegment(end1, end2)
@@ -1444,7 +1444,7 @@ class TestIntersection(unittest.TestCase):
         segment with them touching in one point on the line's body
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         end1 = shapes.Point(1, 1)
         end2 = shapes.Point(1, -1)
         line = shapes.LineSegment(end1, end2)
