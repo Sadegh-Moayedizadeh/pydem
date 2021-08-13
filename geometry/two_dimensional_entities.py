@@ -153,19 +153,19 @@ class Polygon(object):
             dd[(vertex.x, vertex.y)] += 1
             if dd[(vertex.x, vertex.y)] == 2:
                 raise RuntimeError("the same vertex entered twice")
-        # for edge1 in self.edges:
-        #     for edge2 in self.edges:
-        #         if edge1 != edge2 and operations.intersection(edge1, edge2):
-        #             inter = operations.intersection(edge1, edge2)
-        #             if not(
-        #                 inter == edge1.end1 or
-        #                 inter == edge1.end2 or
-        #                 inter == edge2.end1 or
-        #                 inter == edge2.end2
-        #             ):
-        #                 raise RuntimeError(
-        #                     "the given vertices form a polygon with intersecting edges"
-        #                 )
+        for edge1 in self.edges:
+            for edge2 in self.edges:
+                if edge1 != edge2 and operations.intersection(edge1, edge2):
+                    inter = operations.intersection(edge1, edge2)
+                    if not(
+                        inter == edge1.end1 or
+                        inter == edge1.end2 or
+                        inter == edge2.end1 or
+                        inter == edge2.end2
+                    ):
+                        raise RuntimeError(
+                            "the given vertices form a polygon with intersecting edges"
+                        )
 
     @classmethod
     def as_regular(
@@ -223,9 +223,8 @@ class Polygon(object):
         """Create a tuple of edges of the Polygon as LineSegment
         objects"""
 
-        n = self.number_of_vertices
         lst = []
-        for i in range(n):
+        for i in range(self.number_of_vertices):
             p1 = self.vertices[i - 1]
             p2 = self.vertices[i]
             edge = LineSegment(p1, p2)
@@ -416,15 +415,15 @@ class Rectangle(Polygon):
         lines = (line1, line2)
         return lines
 
-    @property
-    def center(self) -> Point:
-        """calculating the center of the Rectangle instance
+    # @property
+    # def center(self) -> Point:
+    #     """calculating the center of the Rectangle instance
 
-        Returns:
-            the center of the Rectangle instance as a Point object
-        """
+    #     Returns:
+    #         the center of the Rectangle instance as a Point object
+    #     """
 
-        return self.diagonals[0].midpoint
+    #     return 
 
     @property
     def circumcircle(self) -> "Circle":
@@ -593,7 +592,7 @@ class Circle(object):
         if (
             isinstance(other, Circle)
             and self.center == other.center
-            and self.diameter == other.diameter
+            and abs(self.diameter - other.diameter) < 1e-10
         ):
             return True
         return False
@@ -824,8 +823,8 @@ class Line(object):
 
         if (
             isinstance(other, Line)
-            and self.slope == other.slope
-            and self.width == other.width
+            and abs(self.slope - other.slope) < 1e-10
+            and abs(self.width - other.width) < 1e-10
         ):
             return True
         return False
@@ -1022,7 +1021,7 @@ class LineSegment(object):
 
         if ratio < 0 or ratio > 1:
             raise RuntimeError("the given ratio should have a value between zero and one")
-        point = self.end1
+        point = Point(self.end1.x, self.end1.y)
         delta_x = (np.cos(self.inclination)) * (self.length) * (ratio)
         delta_y = (np.sin(self.inclination)) * (self.length) * (ratio)
         point.move(delta_x, delta_y)
@@ -1042,7 +1041,7 @@ class LineSegment(object):
 
         if step < 0 or step > 1:
             raise RuntimeError("the given ratio should have a value between zero and one")
-        point = self.end1
+        point = Point(self.end1.x, self.end1.y)
         dist = 0
         delta_x = (np.cos(self.inclination)) * (self.length) * (step)
         delta_y = (np.sin(self.inclination)) * (self.length) * (step)
@@ -1077,8 +1076,14 @@ class LineSegment(object):
 
         if (
             isinstance(other, LineSegment)
-            and self.end1 == other.end1
+            and ((
+                self.end1 == other.end1
             and self.end2 == other.end2
+            )
+            or (
+                self.end2 == other.end1
+            and self.end1 == other.end2
+            ))
         ):
             return True
         return False

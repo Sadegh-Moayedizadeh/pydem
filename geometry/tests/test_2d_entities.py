@@ -77,8 +77,8 @@ class TestPolygon(unittest.TestCase):
         in a way that edges intersect one another"""
 
         p1 = shapes.Point(0, 0)
-        p2 = shapes.Point(1, 0)
-        p3 = shapes.Point(1, 1)
+        p2 = shapes.Point(1, 1)
+        p3 = shapes.Point(1, 0)
         p4 = shapes.Point(0, 1)
         self.assertRaises(RuntimeError, shapes.Polygon, p1, p2, p3, p4)
 
@@ -252,21 +252,16 @@ class TestRectangle(unittest.TestCase):
     def test_midlines(self):
         """testing the 'midlines' method of Rectangle class"""
 
-        vertex1 = shapes.Point(0, 0)
-        vertex2 = shapes.Point(1, 0)
-        vertex3 = shapes.Point(1, 2)
-        vertex4 = shapes.Point(0, 2)
-        instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 2)
+        v4 = shapes.Point(0, 2)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
         midline1 = shapes.LineSegment(end1 = shapes.Point(0.5, 0), end2 = shapes.Point(0.5, 2))
         midline2 = shapes.LineSegment(end1 = shapes.Point(0, 1), end2 = shapes.Point(1, 1))
-        expected = [midline2, midline1]
-        res = sorted(instance.midlines, key = lambda x: x.end1.y)
-        sys.stdout.write(res.__repr__())
-        for i in range(2):
-            self.assertAlmostEqual(res[i].end1.x, expected[i].end1.x)
-            self.assertAlmostEqual(res[i].end1.y, expected[i].end1.y)
-            self.assertAlmostEqual(res[i].end2.x, expected[i].end2.x)
-            self.assertAlmostEqual(res[i].end2.y, expected[i].end2.y)
+        expected = [midline1, midline2]
+        res = rec.midlines
+        self.assertEqual(set(res), set(expected))
 
     def test_diagonals(self):
         """testing the 'diagonals' method of Rectangle class"""
@@ -300,7 +295,7 @@ class TestRectangle(unittest.TestCase):
         vertex3 = shapes.Point(1, 2)
         vertex4 = shapes.Point(0, 2)
         instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
-        expected = shapes.Circle(center=shapes.Point(0.5, 0.5), diameter=np.sqrt(2))
+        expected = shapes.Circle(shapes.Point(0.5, 1), np.sqrt(5))
         self.assertEqual(instance.circumcircle, expected)
 
 
@@ -490,7 +485,8 @@ class TestLine(unittest.TestCase):
         instance = shapes.Line(1, 0)
         start = shapes.Point(0, 1)
         end = shapes.Point(1, 1)
-        self.assertRaises(RuntimeError, instance.navigator, start, end, 0)
+        gen = instance.navigator(start, end, 0)
+        self.assertRaises(RuntimeError, next, gen)
 
     def test_move(self):
         """testing the 'move' method of the Line class"""
@@ -551,11 +547,9 @@ class TestLineSegment(unittest.TestCase):
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
         instance = shapes.LineSegment(point1, point2)
-        circle = shapes.Circle(shapes.Point(0.5, 0.5), np.sqrt(2) / 2)
+        circle = shapes.Circle(shapes.Point(0.5, 0.5), np.sqrt(2))
         res = instance.circumcircle
-        self.assertAlmostEqual(res.center.x, circle.center.x)
-        self.assertAlmostEqual(res.center.y, circle.center.y)
-        self.assertAlmostEqual(res.diameter, circle.diameter)
+        self.assertEqual(res, circle)
 
     def test_inclination(self):
         """testing the 'inclination' method of the LineSegment class"""
@@ -670,7 +664,8 @@ class TestLineSegment(unittest.TestCase):
         point3 = shapes.Point(1, 1)
         point4 = shapes.Point(2, 2)
         instance2 = shapes.LineSegment(point3, point4)
-        self.assertEqual(instance1.move(1, 1), instance2)
+        instance1.move(1, 1)
+        self.assertEqual(instance1, instance2)
 
 
 if __name__ == "__main__":
