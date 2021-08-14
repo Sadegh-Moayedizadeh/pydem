@@ -2387,7 +2387,7 @@ def distance(
     factor = 1
     if is_inside(entity1, entity2):
         factor = -1
-    return min([distance(entity1, line) for line in entity2.vertices]) * factor
+    return min([distance(entity1, line) for line in entity2.edges]) * factor
 
 
 @overload(

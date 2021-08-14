@@ -5,6 +5,7 @@ import unittest
 from geometry import two_dimensional_operations as operations
 from geometry import two_dimensional_entities as shapes
 import numpy as np
+import sys
 
 
 class TestDistance(unittest.TestCase):

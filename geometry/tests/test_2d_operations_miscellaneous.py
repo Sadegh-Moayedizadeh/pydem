@@ -5,9 +5,10 @@ import unittest
 from geometry import two_dimensional_operations as operations
 from geometry import two_dimensional_entities as shapes
 import numpy as np
+import sys
 
 
-class Testoppositesides(unittest.TestCase):
+class TestOppositeSides(unittest.TestCase):
     """testing the "opposite_sides" function
     """
     
