@@ -41,12 +41,19 @@ class TestOppositeSides(unittest.TestCase):
         an arbitrary inclination
         """
         
-        line = shapes.Line(0, 1)
+        line = shapes.Line(1, 0)
         point1 = shapes.Point(0, 1)
         point2 = shapes.Point(0, -1)
         point3 = shapes.Point(0, 2)
         self.assertTrue(operations.opposite_sides(line, point1, point2))
         self.assertFalse(operations.opposite_sides(line, point1, point3))
+    
+    def test_for_point_on_the_line(self):
+
+        line = shapes.Line(0, 1)
+        point1 = shapes.Point(0, 1)
+        point2 = shapes.Point(0, -1)
+        self.assertFalse(operations.opposite_sides(line, point1, point2))
 
 
 class TestBisector(unittest.TestCase):
@@ -108,11 +115,11 @@ class TestBisector(unittest.TestCase):
         trigonometric circle
         """
 
-        end1 = shapes.Point(-2, 1)
-        end2 = shapes.Point(-4, 2)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(-1, 2)
         line1 = shapes.LineSegment(end1, end2)
-        end3 = shapes.Point(-1, 2)
-        end4 = shapes.Point(-2, 4)
+        end3 = shapes.Point(0, 0)
+        end4 = shapes.Point(-2, 1)
         line2 = shapes.LineSegment(end3, end4)
         res = shapes.Line(-1, 0)
         self.assertEqual(operations.bisector(line1, line2), res)
@@ -145,7 +152,7 @@ class TestNormal(unittest.TestCase):
         located on that line
         """
 
-        point = shapes.Pont(0, 0)
+        point = shapes.Point(0, 0)
         line = shapes.Line(0, 0)
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 1)
@@ -153,15 +160,55 @@ class TestNormal(unittest.TestCase):
         self.assertEqual(operations.normal(point, line), res)
     
     def test_for_vertical_line(self):
-        """test for the normal line of a vertical line
+        """test for the normal line of a vertical line with the point
+        being located on the line
         """
 
-        point = shapes.Point(1, 1)
+        point = shapes.Point(0, 2)
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(0, 1)
         line = shapes.Line.from_points(point1, point2)
-        res = shapes.Line(0, 1)
+        res = shapes.Line(0, 2)
         self.assertEqual(operations.normal(point, line), res)
+    
+    def test_for_vertical_line2(self):
+        """second test for a vertical line with the point not being
+        located on the line
+        """
+
+        p1 = shapes.Point(1, 0)
+        p2 = shapes.Point(1, 1)
+        line = shapes.Line.from_points(p1, p2)
+        point = shapes.Point(-1, -2)
+        exp = shapes.Line(0, -2)
+        res = operations.normal(point, line)
+        self.assertEqual(res, exp)
+    
+    def test_for_horizental_line1(self):
+        """test for the normal line of a horizental line with the point
+        being located on the line
+        """
+
+        line = shapes.Line(0, 2)
+        point = shapes.Point(0, 2)
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 1)
+        res = operations.normal(point, line)
+        exp = shapes.Line.from_points(point1, point2)
+        self.assertEqual(res, exp)
+    
+    def test_for_horizental_line2(self):
+        """test for the normal line of a horizental line with the point
+        not being located on the line
+        """
+
+        line = shapes.Line(0, 0)
+        point = shapes.Point(0, -2)
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(0, 1)
+        res = operations.normal(point, line)
+        exp = shapes.Line.from_points(point1, point2)
+        self.assertEqual(res, exp)
     
     def test_for_line_with_arbitrary_slope(self):
         """test for the normal line of a given line with and arbitrarry
@@ -170,8 +217,18 @@ class TestNormal(unittest.TestCase):
 
         point = shapes.Point(-1, -1)
         line = shapes.Line(1, 0)
-        res = shapes.Line(-1, 0)
+        res = shapes.Line(-1, -2)
         self.assertEqual(operations.normal(point, line), res)
+    
+    def test_for_point_outside_the_line(self):
+        """testing for a line with arbitrary inclination and a point
+        outside the line
+        """
+
+        point = shapes.Point(0, -1)
+        line = shapes.Line(1, 0)
+        res = shapes.Line(-1, -1)
+        self.assertEqual(operations.normal(point, line), res)       
 
 
 class TestIntersectionLength(unittest.TestCase):
@@ -436,7 +493,7 @@ class TestAngleInBetween(unittest.TestCase):
     
     def test_for_parallel_lines2(self):
         """the second test for angle in between two parallel lines with
-        them being bertical
+        them being vertical
         """
 
         point1 = shapes.Point(0, 0)
@@ -446,6 +503,18 @@ class TestAngleInBetween(unittest.TestCase):
         point4 = shapes.Point(1, 1)
         line2 = shapes.Line.from_points(point3, point4)
         self.assertEqual(operations.angle_in_between(line1, line2), 0)
+    
+    def test_for_parallel_lines3(self):
+        """the third test for two lines which are parallel but
+        constructed in different ways
+        """
+
+        line1 = shapes.Line(1, 0)
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(-1, -1)
+        line2 = shapes.LineSegment(end1, end2)
+        self.assertEqual(operations.angle_in_between(line1, line2), 0)
+        
     
     def test_for_orthogonal_lines1(self):
         """the first test for two orthogonal lines which are located
@@ -471,18 +540,19 @@ class TestAngleInBetween(unittest.TestCase):
     
     def test_for_arbitrary_slopes1(self):
         """the first test for finding the angle in between two line segments
-        with arbitrary slopes both located in the second quarter of the
+        with arbitrary slopes both located in the third quarter of the
         trigonometric circle
         """
 
-        end1 = shapes.Point(-2, 1)
-        end2 = shapes.Point(-4, 2)
+        end1 = shapes.Point(-1, -1)
+        end2 = shapes.Point(-2, -2)
         line1 = shapes.LineSegment(end1, end2)
-        end3 = shapes.Point(-1, 2)
-        end4 = shapes.Point(-2, 4)
+        end3 = shapes.Point(-1, 0)
+        end4 = shapes.Point(0, np.sqrt(3))
         line2 = shapes.LineSegment(end3, end4)
-        res = (np.math.pi / 6)
-        self.assertEqual(operations.angle_in_between(line1, line2), res)
+        res = operations.angle_in_between(line1, line2)
+        exp = np.math.pi / 12
+        self.assertAlmostEqual(res, exp)
 
     def test_for_arbitrary_slopes2(self):
         """the second test for two line segments that one of them is
@@ -490,16 +560,16 @@ class TestAngleInBetween(unittest.TestCase):
         of the trigonomical circle
         """
         
-        end1 = shapes.Point(-2, 1)
-        end2 = shapes.Point(-4, 2)
+        end1 = shapes.Point(2, 1)
+        end2 = shapes.Point(1, 1 + np.sqrt(3))
         line1 = shapes.LineSegment(end1, end2)
-        end3 = shapes.Point(2, 1)
-        end4 = shapes.Point(4, 2)
+        end3 = shapes.Point(-1, 0)
+        end4 = shapes.Point(0, np.sqrt(3))
         line2 = shapes.LineSegment(end3, end4)
-        point1 = shapes.Point(0, 0)
-        point2 = shapes.Point(0, 1)
-        res = (np.math.pi / 3)
-        self.assertEqual(operations.angle_in_between(line1, line2), res)
+        res = operations.angle_in_between(line1, line2)
+        exp = np.math.pi / 3
+        self.assertAlmostEqual(res, exp)
+
 
 
 class TestStandardizedInclination(unittest.TestCase):

@@ -68,6 +68,8 @@ def opposite_sides(
             opposite sides of the given line
     """
     
+    if intersection(point1, line) or intersection(point2, line):
+        return False
     dif1 = (point1.y) - ((line.slope) * (point1.x) + (line.width))
     dif2 = (point2.y) - ((line.slope) * (point2.x) + (line.width))
     sign1 = dif1 / abs(dif1)
@@ -95,13 +97,14 @@ def bisector(
         line1 = line1.infinite
     if isinstance(line2, shapes.LineSegment):
         line2 = line2.infinite
-    if line1.slope == line2.slope:
+    if abs(line1.inclination - line2.inclination) < 1e-10:
         width = (line1.width + line2.width) / 2
         return shapes.Line(line1.slope, width)
     point = intersection(line1, line2)
-    slope = (line1.slope + line2.slope) / 2
-    inclination = np.arctan(slope)
-    return shapes.Line.from_point_and_inclination(point, inclination)
+    inc1 = standardized_inclination(line1.inclination)
+    inc2 = standardized_inclination(line2.inclination)
+    new_inc = (inc1 + inc2) / 2
+    return shapes.Line.from_point_and_inclination(point, new_inc)
 
 
 def normal(
@@ -201,6 +204,8 @@ def standardized_inclination(inc: float) -> float:
         float: the standardized inclination
     """
     
+    if (inc % (np.math.pi)) < 1e-10:
+        return 0
     inc = inc % (2 * (np.math.pi))
     if inc < 0:
         inc = (2 * (np.math.pi)) + inc

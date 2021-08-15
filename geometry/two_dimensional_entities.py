@@ -679,6 +679,8 @@ class Line(object):
 
         slope = np.tan(inclination)
         width = point.y - slope * point.x
+        if (inclination % (np.math.pi / 2)) < 1e-10:
+            return cls(slope, width, point.x)
         return cls(slope, width)
 
     @classmethod
@@ -694,7 +696,7 @@ class Line(object):
         try:
             slope = j / i
         except ZeroDivisionError:
-            slope = np.tan(np.pi / 2)
+            return cls(np.tan(np.pi / 2), 0, 0)
         width = 0
         return cls(slope, width)
 
@@ -821,6 +823,14 @@ class Line(object):
                 objects
         """
 
+        # for vertical lines
+        if (isinstance(other, Line)
+            and not(self.length_if_vertical is None)
+            and not(other.length_if_vertical is None)
+            and abs(self.length_if_vertical - other.length_if_vertical) < 1e-10
+            ):
+            return True
+        # for other lines
         if (
             isinstance(other, Line)
             and abs(self.slope - other.slope) < 1e-10
