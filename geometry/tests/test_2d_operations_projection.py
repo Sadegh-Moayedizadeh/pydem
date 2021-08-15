@@ -6,7 +6,7 @@ import unittest
 from geometry import two_dimensional_operations as operations
 from geometry import two_dimensional_entities as shapes
 import numpy as np
-
+import sys
 
 class TestProjection(unittest.TestCase):
     """test cases for the 'projection' function from
@@ -1399,3 +1399,7 @@ class TestProjection(unittest.TestCase):
         end5 = shapes.Point(1, 2)
         end6 = shapes.Point(3, 2)
         self.assertEqual(operations.projection(line1, line2), res)
+    
+
+if __name__ == '__main__':
+    unittest.main()

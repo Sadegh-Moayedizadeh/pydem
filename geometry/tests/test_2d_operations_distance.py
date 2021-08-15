@@ -50,7 +50,7 @@ class TestDistance(unittest.TestCase):
         of the polygon
         """
         
-        point = shapes.Point(0, 2)
+        point = shapes.Point(2, 0)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
         v3 = shapes.Point(2, -2)
@@ -66,7 +66,7 @@ class TestDistance(unittest.TestCase):
         polygon
         """
         
-        point = shapes.Point(0, 3)
+        point = shapes.Point(3, 0)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
         v3 = shapes.Point(2, -2)
@@ -96,7 +96,7 @@ class TestDistance(unittest.TestCase):
         rectangle
         """
         
-        point = shapes.Point(0, 1)
+        point = shapes.Point(1, 0)
         v1 = shapes.Point(-1, -1)
         v2 = shapes.Point(1, -1)
         v3 = shapes.Point(1, 1)
@@ -123,8 +123,8 @@ class TestDistance(unittest.TestCase):
         """
         
         point = shapes.Point(0, 0)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
-        self.assertEqual(opetations.distance(point, circle), -1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        self.assertEqual(operations.distance(point, circle), -1)
     
     def test_for_point_and_circle2(self):
         """the second test for distance between a given point and a
@@ -133,7 +133,7 @@ class TestDistance(unittest.TestCase):
         """
         
         point = shapes.Point(0, 1)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.distance(point, circle), 0)
     
     def test_for_point_and_circle3(self):
@@ -143,7 +143,7 @@ class TestDistance(unittest.TestCase):
         """
         
         point = shapes.Point(0, 2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.distance(point, circle), 1)
     
     def test_for_point_and_line1(self):
@@ -164,7 +164,7 @@ class TestDistance(unittest.TestCase):
         
         point = shapes.Point(1, 1)
         line = shapes.Line(0, 0)
-        self.assertEqual(opetations.distance(point, line), 1)
+        self.assertEqual(operations.distance(point, line), 1)
     
     def test_for_point_and_line3(self):
         """the third test for distance between a given point and a
@@ -285,7 +285,7 @@ class TestDistance(unittest.TestCase):
         polygon
         """
         
-        point = shapes.Point(0, 3)
+        point = shapes.Point(3, 0)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
         v3 = shapes.Point(2, -2)

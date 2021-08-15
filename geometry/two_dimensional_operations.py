@@ -2430,7 +2430,7 @@ def distance(
     factor = 1
     if is_inside(entity1, entity2):
         factor = -1
-    return min([distance(entity1, line) for line in entity2.vertices]) * factor
+    return min([distance(entity1, line) for line in entity2.edges]) * factor
 
 
 @overload(
@@ -2516,6 +2516,8 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     return distance(entity2, entity1)
 
 
@@ -2538,10 +2540,12 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     factor = 1
-    if is_inside(entity1, entity2) or is_inside(entity2, entity1):
+    if is_inside(entity1, entity2):
         factor = -1
-    return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
+    return min(distance(line1, line2) for line1 in entity1.edges for line2 in entity2.edges) * factor
 
 
 @overload(
@@ -3283,7 +3287,7 @@ def projection(
             second one
     """
 
-    line = shapes.Line.from_point_and_inclination(entity1, (entity2.inclination + np.math.pi))
+    line = normal(entity1, entity2)
     return intersection(line, entity2)
 
 
