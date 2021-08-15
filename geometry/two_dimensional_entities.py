@@ -726,7 +726,7 @@ class Line(object):
             new_slope = np.tan(np.math.pi / 2)
         else:
             new_slope = -1 / self.slope
-        return Line.from_point_and_inclination(np.arctan(new_slope), point)
+        return operations.normal(point, self)
 
     def get_x(self, y: float) -> float:
         """calculate the 'x' coordinate of a point on the Line instance

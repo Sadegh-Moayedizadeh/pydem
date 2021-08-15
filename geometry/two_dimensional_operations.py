@@ -150,10 +150,14 @@ def intersection_length(
             intersection with the given entity
     """
     
+    if is_inside(line, entity):
+        return line.length
     inter = intersection(line, entity)
     if isinstance(inter, shapes.LineSegment):
         return inter.length
     if isinstance(inter, shapes.Point):
+        if intersection(inter, line.end1) or intersection(inter, line.end2):
+            return 0
         line1 = shapes.LineSegment(line.end1, inter)
         line2 = shapes.LineSegment(inter, line.end2)
         if is_inside(line.end1, entity):
@@ -1535,6 +1539,8 @@ def is_inside(
             inside entity2
     """
 
+    if intersection(entity1, entity2):
+        return False
     line = shapes.Line(0.5, entity1.y)
     ints = intersection(line, entity2)
     if not isinstance(ints, tuple):
@@ -1542,7 +1548,7 @@ def is_inside(
     ints = list(ints)
     points = []
     points.append(ints.pop())
-    norm = line.normal(entity1)
+    norm = normal(entity1, line)
     for p in ints:
         if not opposite_sides(norm, points[0], p):
             points.append(p)
@@ -1570,6 +1576,8 @@ def is_inside(
             inside entity2
     """
     
+    if intersection(entity1, entity2):
+        return False
     line = shapes.Line(0.5, entity1.y)
     ints = intersection(line, entity2)
     if not isinstance(ints, tuple):
@@ -1982,6 +1990,8 @@ def is_inside(
             inside entity2
     """
     
+    if intersection(entity1, entity2):
+        return False
     if not is_inside(entity1.center, entity2):
         return False
     for line in entity2.vertices:
@@ -2008,6 +2018,8 @@ def is_inside(
             inside entity2
     """
     
+    if intersection(entity1, entity2):
+        return False
     if not is_inside(entity1.center, entity2):
         return False
     for line in entity2.vertices:
@@ -2034,7 +2046,9 @@ def is_inside(entity1, entity2):
             inside entity2
     """
     
-    if distance(entity1.center, entity2.center) + entity2.radius < entity1.radius:
+    if intersection(entity1, entity2):
+        return False
+    if distance(entity1.center, entity2.center) + entity1.radius < entity2.radius:
         return True
     return False
 

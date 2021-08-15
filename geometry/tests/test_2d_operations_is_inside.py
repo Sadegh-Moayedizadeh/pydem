@@ -5,6 +5,7 @@ import unittest
 from geometry import two_dimensional_operations as operations
 from geometry import two_dimensional_entities as shapes
 import numpy as np
+import sys
 
 
 class TestIsInside(unittest.TestCase):
@@ -338,7 +339,7 @@ class TestIsInside(unittest.TestCase):
         v7 = shapes.Point(-1, -2)
         v8 = shapes.Point(4, -2)
         v9 = shapes.Point(4, 2)
-        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        rec = shapes.Rectangle(v6, v7, v8, v9)
         self.assertFalse(operations.is_inside(pol, rec))
     
     def test_for_polygon_and_rectangle4(self):
@@ -356,7 +357,7 @@ class TestIsInside(unittest.TestCase):
         v7 = shapes.Point(-0.5, -2)
         v8 = shapes.Point(4, -2)
         v9 = shapes.Point(4, 2)
-        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        rec = shapes.Rectangle(v6, v7, v8, v9)
         self.assertFalse(operations.is_inside(pol, rec))
     
     def test_for_polygon_and_rectangle5(self):
@@ -374,7 +375,7 @@ class TestIsInside(unittest.TestCase):
         v7 = shapes.Point(3.5, -2)
         v8 = shapes.Point(4, -2)
         v9 = shapes.Point(4, 2)
-        rec = shapes.Rectgangle(v6, v7, v8, v9)
+        rec = shapes.Rectangle(v6, v7, v8, v9)
         self.assertFalse(operations.is_inside(pol, rec))
     
     def test_for_polygon_and_circle1(self):
@@ -791,7 +792,7 @@ class TestIsInside(unittest.TestCase):
         v4 = shapes.Point(0, 2)
         rec = shapes.Rectangle(v1, v2, v3, v4)
         end1 = shapes.Point(0, 0)
-        end2 = shapes.LineSegment(1, 1)
+        end2 = shapes.Point(1, 1)
         line = shapes.LineSegment(end1, end2)
         self.assertFalse(operations.is_inside(rec, line))
     
@@ -826,7 +827,7 @@ class TestIsInside(unittest.TestCase):
         but touching one of its edges
         """
         
-        circle = shapes.Circle(shapes.Point(-1, 0), 1)
+        circle = shapes.Circle(shapes.Point(-1, 0), 2)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
         v3 = shapes.Point(2, -2)
@@ -886,7 +887,7 @@ class TestIsInside(unittest.TestCase):
         rectangle but touching one of its edges
         """
         
-        circle = shapes.Circle(shapes.Point(0, -1), 1)
+        circle = shapes.Circle(shapes.Point(0, -1), 2)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(2, -2)
         v3 = shapes.Point(2, 2)
@@ -927,7 +928,7 @@ class TestIsInside(unittest.TestCase):
         second one
         """
         
-        circle1 = shapes.Circle(shapes.Point(0, 0 ), 1)
+        circle1 = shapes.Circle(shapes.Point(0.1, 0), 0.5)
         circle2 = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertTrue(operations.is_inside(circle1, circle2))
     
@@ -1088,7 +1089,7 @@ class TestIsInside(unittest.TestCase):
         """
         
         end1 = shapes.Point(0, 0)
-        end2 = shapes.Point(0, 2)
+        end2 = shapes.Point(2, 0)
         line = shapes.LineSegment(end1, end2)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
@@ -1205,7 +1206,7 @@ class TestIsInside(unittest.TestCase):
         """
         
         end1 = shapes.Point(0, 0)
-        end2 = shapes.Point(0.5, 0.5)
+        end2 = shapes.Point(0, 0.4)
         line = shapes.LineSegment(end1, end2)
         circle = shapes.Circle(shapes.Point(0, 0), 1)
         self.assertTrue(operations.is_inside(line, circle))
