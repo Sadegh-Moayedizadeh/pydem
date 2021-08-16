@@ -1296,11 +1296,11 @@ def intersection(
         if abs(entity1.width - entity2.width) < 1e-10:
             return shapes.Line(entity1.slope, entity1.width)
         return
-    if entity1.slope > 1e10:
+    if not(entity1.length_if_vertical is None):
         x = entity1.length_if_vertical
         y = entity2.slope * x + entity2.width
         return shapes.Point(x, y)
-    if entity2.slope > 1e10:
+    if not(entity2.length_if_vertical is None):
         x = entity2.length_if_vertical
         y = entity1.slope * x + entity1.width
         return shapes.Point(x, y)
