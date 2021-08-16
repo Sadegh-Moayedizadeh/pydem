@@ -152,6 +152,12 @@ def intersection_length(
     
     if is_inside(line, entity):
         return line.length
+    if intersection(line.end1, entity):
+        if is_inside(line.end2, entity):
+            return line.length
+    if intersection(line.end2, entity):
+        if is_inside(line.end1, entity):
+            return line.length
     inter = intersection(line, entity)
     if isinstance(inter, shapes.LineSegment):
         return inter.length
@@ -168,7 +174,7 @@ def intersection_length(
             return line1.length
         return line2.length
     if isinstance(inter, tuple):
-        return shapes.LineSegment(inter[0], inter[1])
+        return shapes.LineSegment(inter[0], inter[1]).length
     return 0
 
 
@@ -3445,6 +3451,10 @@ def projection(
             entity on the second one
     """
     
+    if is_inside(entity1, entity2):
+        return None
+    if is_inside(entity2, entity1):
+        return shapes.Polygon(*entity2.vertices)
     res = []
     for line in entity2.edges:
         interval = shapes.LineInterval(line)
@@ -4194,6 +4204,13 @@ def projection(
             second one
     """
     
+    if is_inside(entity1, entity2):
+        return None
+    if intersection(entity1.infinite, entity2.center):
+        ints = intersection(entity1.infinite, entity2)
+        if distance(ints[0], entity1.end1) < distance(ints[1], entity1.end1):
+            return ints[0]
+        return ints[1]
     line1 = shapes.LineSegment(entity1.end1, entity2.center)
     line2 = shapes.LineSegment(entity1.end2, entity2.center)
     point1 = intersection(line1, entity2)
@@ -4223,6 +4240,8 @@ def projection(
     
     point1 = projection(entity1.end1, entity2)
     point2 = projection(entity1.end2, entity2)
+    if point1 == point2:
+        return point1
     return shapes.LineSegment(point1, point2)
 
 

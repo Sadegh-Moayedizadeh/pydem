@@ -1164,7 +1164,9 @@ class Arc(object):
         """
         
         if isinstance(other, Arc) and self.base == other.base:
-            if self.end1 == other.end1 and self.end2 == other.end2:
+            if (
+                (self.end1 == other.end1) and (self.end2 == other.end2)
+                ):
                 return True
         return False
 

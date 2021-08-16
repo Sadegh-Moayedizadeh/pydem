@@ -414,7 +414,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0, 0.5)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 0.5)
     
     def test_for_line_and_circle2(self):
@@ -426,7 +426,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0, 1)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 1)
     
     def test_for_line_and_circle3(self):
@@ -437,7 +437,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, -2)
         end2 = shapes.Point(0, 2)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 2)
     
     def test_for_line_and_circle4(self):
@@ -449,7 +449,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0, 1.5)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 1)
     
     def test_for_line_and_circle5(self):
@@ -461,7 +461,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0, 4)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 1)
     
     def test_for_line_and_circle6(self):
@@ -473,7 +473,7 @@ class TestIntersectionLength(unittest.TestCase):
         end1 = shapes.Point(0, 2)
         end2 = shapes.Point(0, 1)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.intersection_length(line, circle), 0)
     
 

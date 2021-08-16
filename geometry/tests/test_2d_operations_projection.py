@@ -58,7 +58,7 @@ class TestProjection(unittest.TestCase):
         polygon with the point being located outside the polygon
         """
         
-        point = shapes.Point(0, 3)
+        point = shapes.Point(3, 0)
         v1 = shapes.Point(-2, -2)
         v2 = shapes.Point(0, -4)
         v3 = shapes.Point(2, -2)
@@ -66,7 +66,7 @@ class TestProjection(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        res = shapes.Point(0, 2)
+        res = shapes.Point(2, 0)
         self.assertEqual(operations.projection(point, pol), res)
     
     def test_for_point_and_rectangle1(self):
@@ -110,7 +110,7 @@ class TestProjection(unittest.TestCase):
         res = shapes.Point(1, 0)
         self.assertEqual(operations.projection(point, rec), res)
     
-    def test_for_polygon_and_circle1(self):
+    def test_for_point_and_circle1(self):
         """the first test for projection of a given point on a given
         circle with the point being located inside the circle
         """
@@ -119,23 +119,23 @@ class TestProjection(unittest.TestCase):
         circle = shapes.Circle(shapes.Point(0, 0), 1)
         self.assertEqual(operations.projection(point, circle), None)
     
-    def test_for_polygon_and_circle2(self):
+    def test_for_point_and_circle2(self):
         """the second test for projection of a given point on a given
         rectangle with the point being located on the perimeter of the
         rectangle
         """
         
         point = shapes.Point(1, 0)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.projection(point, circle), point)
     
-    def test_for_polygon_and_circle3(self):
+    def test_for_point_and_circle3(self):
         """the third test for projection of a given point on a given
         rectangle with the point being located outside the rectangle
         """
         
         point = shapes.Point(2, 0)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         res = shapes.Point(1, 0)
         self.assertEqual(operations.projection(point, circle), res)
     
@@ -1152,7 +1152,7 @@ class TestProjection(unittest.TestCase):
         """
         
         line = shapes.Line(0, 0)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         self.assertEqual(operations.projection(line, circle), None)
     
     def test_for_line_and_circle2(self):
@@ -1161,7 +1161,7 @@ class TestProjection(unittest.TestCase):
         """
         
         line = shapes.Line(0, 3)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         arc = shapes.Arc(circle, shapes.Point(-1, 0), shapes.Point(1, 0))
         self.assertEqual(operations.projection(line, circle), arc)
     
@@ -1313,7 +1313,7 @@ class TestProjection(unittest.TestCase):
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(0, 0.5)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(end1, 1)
+        circle = shapes.Circle(end1, 2)
         self.assertEqual(operations.projection(line, circle), None)
     
     def test_for_linesegment_and_circle2(self):
@@ -1325,7 +1325,7 @@ class TestProjection(unittest.TestCase):
         end1 = shapes.Point(3, 0)
         end2 = shapes.Point(4, 0)
         line = shapes.LineSegment(end1, end2)
-        circle = shapes.Circle(shapes.Point(0, 0), 1)
+        circle = shapes.Circle(shapes.Point(0, 0), 2)
         res = shapes.Point(1, 0)
         self.assertEqual(operations.projection(line, circle), res)
     
@@ -1398,6 +1398,7 @@ class TestProjection(unittest.TestCase):
         line2 = shapes.LineSegment(end3, end4)
         end5 = shapes.Point(1, 2)
         end6 = shapes.Point(3, 2)
+        res = shapes.LineSegment(end5, end6)
         self.assertEqual(operations.projection(line1, line2), res)
     
 
