@@ -2640,6 +2640,8 @@ def distance(entity1, entity2):
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
@@ -2662,6 +2664,8 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     return distance(entity2, entity1)
 
 
@@ -2684,7 +2688,12 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity2, entity1)
+    if is_inside(entity2, entity1):
+        return 0
+    factor = 1
+    if is_inside(entity1, entity2) or is_inside(entity2, entity1):
+        factor = -1
+    return min(distance(shape1, shape2) for shape1 in entity1.edges for shape2 in entity2.edges) * factor
 
 
 @overload(
@@ -2703,6 +2712,8 @@ def distance(entity1, entity2):
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     factor = 1
     if is_inside(entity1, entity2) or is_inside(entity2, entity1):
         factor = -1
@@ -2772,6 +2783,8 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
     return min(distance(line, entity2) for line in entity1.edges) * factor
 
@@ -2793,6 +2806,8 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     return distance(entity2, entity1)
 
 
@@ -2814,7 +2829,14 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity2, entity1)
+    if intersection(entity1, entity2):
+        return 0
+    if is_inside(entity2, entity1):
+        return 0
+    factor = 1
+    if is_inside(entity1, entity2):
+        factor = -1
+    return min(distance(line, entity1) for line in entity2.edges) * factor
 
 
 @overload(
@@ -2835,7 +2857,14 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity2, entity1)
+    if intersection(entity1, entity2):
+        return 0
+    if is_inside(entity2, entity1):
+        return 0
+    factor = 1
+    if is_inside(entity1, entity2):
+        factor = -1
+    return min(distance(line, entity1) for line in entity2.edges) * factor
 
 
 @overload(
@@ -2860,7 +2889,7 @@ def distance(
     if intersection(entity1, entity2):
         return 0
     elif is_inside(entity2, entity1):
-        return distance(entity1.center, entity2.center) + entity2.radius - entity1.radius
+        return 0
     elif is_inside(entity1, entity2):
         return distance(entity2.center, entity1.center) + entity1.radius - entity2.radius
     return distance(entity1.center, entity2.center) - (entity1.radius + entity2.radius)
@@ -2952,7 +2981,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -2973,7 +3002,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -2993,7 +3022,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -3013,7 +3042,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -3104,7 +3133,10 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity2, entity1)
+    if intersection(entity1, entity2):
+        return 0
+    factor = -1 if is_inside(entity1, entity2) else 1
+    return min(distance(entity1, line) for line in entity2.edges) * factor
 
 
 @overload(
@@ -3127,7 +3159,10 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return distance(entity2, entity1)
+    if intersection(entity1, entity2):
+        return 0
+    factor = -1 if is_inside(entity1, entity2) else 1
+    return min(distance(entity1, line) for line in entity2.edges) * factor
 
 
 @overload(
