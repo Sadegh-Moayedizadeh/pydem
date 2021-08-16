@@ -2567,6 +2567,8 @@ def distance(
         float: the distance between the two given entities
     """
     
+    if is_inside(entity2, entity1):
+        return 0
     factor = 1
     if is_inside(entity1, entity2) or is_inside(entity2, entity1):
         factor = -1
@@ -2591,8 +2593,13 @@ def distance(
         float: the distance between the two given entities
     """
     
-    factor = -1 if is_inside(entity1, entity2) or is_inside(entity2, entity1) else 1
-    return min(distance(line, entity2) for line in entity1.edges) * factor
+    if intersection(entity1, entity2):
+        return 0
+    if is_inside(entity2, entity1):
+        return 0
+    if is_inside(entity1, entity2):
+        return max(distance(line, entity2) for line in entity1.edges)
+    return min(distance(line, entity2) for line in entity1.edges)
 
 
 @overload(
@@ -2902,10 +2909,30 @@ def distance(
     
     if intersection(entity1, entity2):
         return 0
-    point2 = projection(entity1.center, entity2.infinite)
-    if intersection(point2, entity2):
-        return distance(entity1.center, point2) - entity1.radius
-    return min(distance(entity1.center, point2), distance(entity1.center, point2)) - entity1.radius
+    if is_inside(entity2, entity1):
+        return 0
+    distances = []
+    line1 = shapes.Line.from_points(entity1.center, entity2.end1)
+    points = intersection(line1, entity1)
+    distances.append(min(
+        shapes.LineSegment(points[0], entity2.end1).length,
+        shapes.LineSegment(points[1], entity2.end1).length
+        ))
+    line2 = shapes.Line.from_points(entity1.center, entity2.end2)
+    points = intersection(line2, entity1)
+    distances.append(min(
+        shapes.LineSegment(points[0], entity2.end2).length,
+        shapes.LineSegment(points[1], entity2.end2).length
+        ))
+    proj = projection(entity1.center, entity2.infinite)
+    if intersection(proj, entity2):
+        line3 = shapes.Line.from_points(entity1.center, proj)
+        points = points = intersection(line3, entity1)
+        distances.append(min(
+        shapes.LineSegment(points[0], proj).length,
+        shapes.LineSegment(points[1], proj).length
+        ))
+    return -1 * min(distances) if is_inside(entity1, entity2) else min(distances)
 
 
 @overload(
@@ -3054,7 +3081,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -3077,7 +3104,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -3100,7 +3127,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(
@@ -3121,7 +3148,31 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    entity2, entity1 = entity1, entity2
+    if intersection(entity1, entity2):
+        return 0
+    distances = []
+    line1 = shapes.Line.from_points(entity1.center, entity2.end1)
+    points = intersection(line1, entity1)
+    distances.append(min(
+        shapes.LineSegment(points[0], entity2.end1).length,
+        shapes.LineSegment(points[1], entity2.end1).length
+        ))
+    line2 = shapes.Line.from_points(entity1.center, entity2.end2)
+    points = intersection(line2, entity1)
+    distances.append(min(
+        shapes.LineSegment(points[0], entity2.end2).length,
+        shapes.LineSegment(points[1], entity2.end2).length
+        ))
+    proj = projection(entity1.center, entity2.infinite)
+    if intersection(proj, entity2):
+        line3 = shapes.Line.from_points(entity1.center, proj)
+        points = points = intersection(line3, entity1)
+        distances.append(min(
+        shapes.LineSegment(points[0], proj).length,
+        shapes.LineSegment(points[1], proj).length
+        ))
+    return -1 * min(distances) if is_inside(entity2, entity1) else min(distances)
 
 
 @overload(
@@ -3142,7 +3193,7 @@ def distance(
         float: the distance between the two given entities
     """
     
-    return intersection(entity2, entity1)
+    return distance(entity2, entity1)
 
 
 @overload(

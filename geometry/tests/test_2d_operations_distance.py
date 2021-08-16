@@ -313,10 +313,10 @@ class TestDistance(unittest.TestCase):
         v10 = shapes.Point(3, 3)
         v11 = shapes.Point(0, 5)
         v12 = shapes.Point(-3, 3)
-        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        self.assertEqual(operations.distance(pol1, pol2), -1)
+        pol2 = shapes.Polygon(v7, v8, v9, v10, v11, v12)
+        self.assertEqual(operations.distance(pol1, pol2), -0.8320502943378438)
     
-    def test_for_polygon_polygon2(self):
+    def test_for_polygon_and_polygon2(self):
         """the second test for distance between two given polygons with
         them intersecting each other
         """
@@ -334,7 +334,7 @@ class TestDistance(unittest.TestCase):
         v10 = shapes.Point(3, 3)
         v11 = shapes.Point(0, 5)
         v12 = shapes.Point(-3, 3)
-        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        pol2 = shapes.Polygon(v7, v8, v9, v10, v11, v12)
         self.assertEqual(operations.distance(pol1, pol2), 0)
     
     def test_for_polygon_and_polygon3(self):
@@ -355,7 +355,7 @@ class TestDistance(unittest.TestCase):
         v10 = shapes.Point(13, 3)
         v11 = shapes.Point(10, 5)
         v12 = shapes.Point(7, 3)
-        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        pol2 = shapes.Polygon(v7, v8, v9, v10, v11, v12)
         self.assertEqual(operations.distance(pol1, pol2), 5)
     
     def test_for_polygon_and_polygon4(self):
@@ -376,7 +376,7 @@ class TestDistance(unittest.TestCase):
         v10 = shapes.Point(3, 3)
         v11 = shapes.Point(0, 5)
         v12 = shapes.Point(-3, 3)
-        pol2 = shapes.Polygon(v1, v2, v3, v4, v5, v6)
+        pol2 = shapes.Polygon(v7, v8, v9, v10, v11, v12)
         self.assertEqual(operations.distance(pol2, pol1), 0)
     
     def test_for_polygon_and_rectangle1(self):
@@ -467,7 +467,7 @@ class TestDistance(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        circle = shapes.Circle(shapes.Point(0, 0), 5)
+        circle = shapes.Circle(shapes.Point(0, 0), 10)
         self.assertEqual(operations.distance(pol, circle), -1)
     
     def test_for_polygon_and_circle2(self):
@@ -497,7 +497,7 @@ class TestDistance(unittest.TestCase):
         v5 = shapes.Point(0, 4)
         v6 = shapes.Point(-2, 2)
         pol = shapes.Polygon(v1, v2, v3, v4, v5, v6)
-        circle = shapes.Circle(shapes.Point(4, 0), 1)
+        circle = shapes.Circle(shapes.Point(4, 0), 2)
         self.assertEqual(operations.distance(pol, circle), 1)
     
     def test_for_polygon_and_circle4(self):
@@ -1312,22 +1312,22 @@ class TestDistance(unittest.TestCase):
         circle
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        circle = shapes.Circle(shapes.Point(0, 0), 4)
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(1, 0)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.distance(line, rec), 1)
+        self.assertEqual(operations.distance(line, circle), -1)
     
     def test_for_linesegment_and_circle2(self):
         """the second test for distance between a given line segment
         and a given circle with them intersecting each other
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        circle = shapes.Circle(shapes.Point(0, 0), 4)
         end1 = shapes.Point(0, 0)
         end2 = shapes.Point(2, 0)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.distance(line, rec), 0)
+        self.assertEqual(operations.distance(line, circle), 0)
     
     def test_for_linesegment_and_circle3(self):
         """the third test for distance between a given line segment and
@@ -1335,11 +1335,11 @@ class TestDistance(unittest.TestCase):
         and being vertical
         """
         
-        circle = shapes.Circle(shapes.Point(0, 0), 2)
+        circle = shapes.Circle(shapes.Point(0, 0), 4)
         end1 = shapes.Point(3, -1)
         end2 = shapes.Point(3, 1)
         line = shapes.LineSegment(end1, end2)
-        self.assertEqual(operations.distance(line, rec), 1)
+        self.assertEqual(operations.distance(line, circle), 1)
     
     def test_for_linesegment_and_linesegment1(self):
         """the first test for distance between two given line segments
