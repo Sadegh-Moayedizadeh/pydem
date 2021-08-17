@@ -22,7 +22,8 @@ from typing import Tuple, List, Dict, Set, Type, Any, Union
 from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
 from geometry import two_dimensional_entities as shapes
-from geometry import two_dimentional_operations as operations
+from geometry import two_dimensional_operations as operations
+
 
 class Particle(object):
     """Base class to create soil particles
@@ -75,28 +76,31 @@ class Particle(object):
                 due to its size in comparison to the size of other
                 particles
         """
-        
+
         self.x = x
         self.y = y
         self.inclination = inclination
         self.velocity = velocity
         self.force = force
         self.num = self.last_num
+        Particle.last_num += 1
         self.hierarchy = hierarchy
 
-    def __new__(cls, name: str, bases: Tuple, attrs: Dict) -> None:
-        cls.last_num += 1
-        super().__new__(cls, name, bases, attrs)
+    # def __new__(cls, name: str, bases: Tuple, attrs: Dict) -> None:
+    #     cls.last_num += 1
+    #     super().__new__(cls, name, bases, attrs)
     
     def __del__(self) -> None:
-        self.last_num -= 1
-        super().__del__(self)
+        Particle.last_num -= 1
     
     def __hash__(self) -> int:
         return self.num
     
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, self.__class__) and other.__hash__ == self.__hash__:
+        if (
+            isinstance(other, self.__class__)
+            and other.__hash__ == self.__hash__ 
+            and other.num == self.num):
             return True
         return False
 
@@ -141,8 +145,7 @@ class Particle(object):
         self.x += delta_x
         self.y += delta_y
         self.inclination += delta_theta
-        self.shape.move(delta_x, delta_y)
-        self.shape.rotate(delta_theta)
+        self.shape.move(delta_x, delta_y, delta_theta)
 
 
 class Clay(Particle):
@@ -296,8 +299,8 @@ class Kaolinite(Clay):
         formula (str): general formula for kaolinite particles
     """
     
-    length_bounds: Tuple(int, int) = (4000, 12000)
-    width_bounds: Tuple(int, int) = (1, 3) # to be modified
+    length_bounds: Tuple[int, int] = (4000, 12000)
+    width_bounds: Tuple[int, int] = (1, 3) # to be modified
     cec: float = 5
     ssa: float = 20
     hamaker_constant: float = 1e-19
@@ -351,7 +354,7 @@ class Quartz(Sand):
         formula (str): the general formula of the quartz particles
     """
 
-    diameter_bounds: Tuple(int, int) = ()
+    diameter_bounds: Tuple[int, int] = ()
     normal_contact_stiffness: float = 2
     shear_contact_stiffness: float = 2
     density: float = 2.65e-33
@@ -417,7 +420,7 @@ class Montmorillonite(Clay):
     """
     
     length_bounds: Tuple[int, int] = (80, 220)
-    width_bounds: Tuple(int, int) = (1, 3)
+    width_bounds: Tuple[int, int] = (1, 3)
     cec: float = 100
     ssa: float = 800
     hamaker_constant: float = 8.7e-21
@@ -483,7 +486,7 @@ class Illite(Clay):
     """
     
     length_bounds: Tuple[int, int] = (80, 220)
-    width_bounds: Tuple(int, int) = (1, 3)
+    width_bounds: Tuple[int, int] = (1, 3)
     cec: float = 100
     ssa: float = 800
     hamaker_constant: float = 8.7e-21

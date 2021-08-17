@@ -1,12 +1,14 @@
 """test cases for all the base classes for particles
 """
 
-from generation import base_classes
 import unittest
 import numpy as np
 from typing import Type, Union, Any
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
+from generation import base_classes
+import sys
+import logging
 
 
 class TestParticle(unittest.TestCase):
@@ -22,7 +24,9 @@ class TestParticle(unittest.TestCase):
         instantiating new ones
         """
 
-        pass
+        particle1 = base_classes.Particle(x = 0, y = 0, inclination = 0)
+        particle2 = base_classes.Particle(x = 1, y = 1, inclination = 0)
+        self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):
         """testing if the 'last_num' class attribute decreases by
@@ -30,27 +34,38 @@ class TestParticle(unittest.TestCase):
         correctly
         """
 
-        pass
+        particle1 = base_classes.Particle(x = 0, y = 0, inclination = 0)
+        particle2 = base_classes.Particle(x = 1, y = 1, inclination = 0)
+        del particle2
+        self.assertEqual(base_classes.Particle.last_num, particle1.num+1)
+        particle3 = base_classes.Particle(x = 1, y = 1, inclination = 0)
+        self.assertEqual(particle1.num + 1, particle3.num)
 
     def test_hashable(self):
         """testing if a generated particle is hashable or not
         """
 
-        pass
+        particle = base_classes.Particle(x = 0, y = 0, inclination = 0)
+        s = {particle}
+        self.assertTrue(s)
 
     def test_equality_condition(self):
         """testing the equality condition of a particle instance; a
         particle should only be equal to itself
         """
 
-        pass
+        particle1 = base_classes.Particle(x = 0, y = 0, inclination = 0)
+        particle2 = base_classes.Particle(x = 0, y = 0, inclination = 0)
+        self.assertNotEqual(particle1, particle2)
 
     def test_box_num(self):
         """testing if a the 'box_num' method of a Particle instance
         generates the correct box number given its required arguments
         """
 
-        pass
+        particle = base_classes.Particle(x = 55, y = 58, inclination = 0)
+        bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
+        self.assertEqual(bn, 505)  
 
 
 class TestClay(unittest.TestCase):
@@ -69,7 +84,13 @@ class TestClay(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Clay(
+            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            )
+        particle2 = base_classes.Clay(
+            x = 1, y = 1, inclination = 0, thickness = 1, length = 100,
+            )
+        self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):
         """testing if the particle number thing works in this class too
@@ -77,34 +98,72 @@ class TestClay(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Clay(
+            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            )
+        particle2 = base_classes.Clay(
+            x = 1, y = 1, inclination = 0, thickness = 1, length = 100,
+            )
+        del particle2
+        self.assertEqual(base_classes.Particle.last_num, particle1.num+1)
+        particle3 = base_classes.Clay(
+            x = 1, y = 1, inclination = 0, thickness = 1, length = 100,
+            )
+        self.assertEqual(particle1.num + 1, particle3.num)
     
     def test_hashable(self):
         """testing if the particle being hashable works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            )
+        s = {particle}
+        self.assertTrue(s)
 
     def test_equality_condition(self):
         """testing if the equality condition works here to; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle1 = base_classes.Clay(
+            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            )
+        particle2 = base_classes.Clay(
+            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            )
+        self.assertNotEqual(particle1, particle2)
 
     def test_box_num(self):
         """testing if the box_number method works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 501, y = 74, inclination = 0, thickness = 1, length = 100,
+            )
+        bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
+        self.assertEqual(bn, 750)  
 
-    def test_standardizing_inclination(self):
+    def test_standardizing_inclination1(self):
         """testing if a non-standard given inclination becomes standard
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 501, y = 74, inclination = 3*np.math.pi/2, thickness = 1, length = 100,
+            )
+        self.assertEqual(particle.inclination, np.math.pi/2)
+    
+    def test_standardizing_inclination2(self):
+        """testing if a non-standard given inclination becomes standard
+        with a negative inclination given
+        """
+
+        particle = base_classes.Clay(
+            x = 501, y = 74, inclination = -1*np.math.pi/6, thickness = 1, length = 100,
+            )
+        self.assertEqual(particle.inclination, 5*np.math.pi/6)
 
     def test_attribute_assigning(self):
         """testing if all the attributes that a Clay instance should
@@ -112,7 +171,17 @@ class TestClay(unittest.TestCase):
         and properties of the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 501, y = 74, inclination = -1*np.math.pi/6, thickness = 1, length = 100,
+            )
+        self.assertTrue(particle.x)
+        self.assertTrue(particle.y)
+        self.assertTrue(particle.inclination)
+        self.assertTrue(particle.thickness)
+        self.assertTrue(particle.length)
+        self.assertTrue(particle.midline)
+        self.assertTrue(particle.midpoint)
+        self.assertTrue(particle.segments)
 
     def test_midpoint(self):
         """testing if the midpoint attribute of the Clay instance is
@@ -506,3 +575,7 @@ class TestWall(unittest.TestCase):
         """
 
         pass
+
+
+if __name__ == '__main__':
+    unittest.main()
