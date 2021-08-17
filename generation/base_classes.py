@@ -14,6 +14,7 @@ Classes
         stuff to run simulations upon
 """
 
+import sys
 import multiprocessing
 import random
 import numpy as np
@@ -224,7 +225,15 @@ class Clay(Particle):
                 attrs['y'] = midpoint.y
                 attrs['length'] = size
                 name = f'Particle {particle_number}-{i%2}'
-                new_particle = type(name, self.__base__, attrs)
+                sys.stdout.write(str(attrs['inclination']))
+                inc = attrs['inclination']
+                new_particle = self.__class__(
+                    inc,
+                    x = attrs['x'],
+                    y = attrs['x'],
+                    thickness = attrs['thickness'],
+                    length = attrs['length']
+                )
                 new_particle.num = particle_number
                 res.append(new_particle)
         self.last_num -= 3
