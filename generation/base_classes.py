@@ -79,7 +79,7 @@ class Particle(object):
 
         self.x = x
         self.y = y
-        self.inclination = inclination
+        self.inclination = operations.standardized_inclination(inclination)
         self.velocity = velocity
         self.force = force
         self.num = self.last_num
@@ -186,27 +186,28 @@ class Clay(Particle):
                 class private attributes
         """
         
-        if kwargs['thickness'] < self.width_bounds[0]:
-            raise RuntimeError('the given thickness is lower than expected')
-        elif kwargs['thickness'] > self.width_bounds[1]:
-            raise RuntimeError('the given thickness is higher than expected')
-        elif kwargs['length'] < self.length_bounds[0]:
-            raise RuntimeError('the given length is lower than expected')
-        elif kwargs['length'] > self.length_bounds[1]:
-            raise RuntimeError('the given length is higher than expected')
-        
+        try:
+            if kwargs['thickness'] < self.width_bounds[0]:
+                raise RuntimeError('the given thickness is lower than expected')
+            elif kwargs['thickness'] > self.width_bounds[1]:
+                raise RuntimeError('the given thickness is higher than expected')
+            elif kwargs['length'] < self.length_bounds[0]:
+                raise RuntimeError('the given length is lower than expected')
+            elif kwargs['length'] > self.length_bounds[1]:
+                raise RuntimeError('the given length is higher than expected')
+        except AttributeError:
+            pass    
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
-        self.midpoint: Type[shapes.Point] = shapes.Point(self.x, self.y)
-        self.midline: Type[shapes.LineSegment] = shapes.LineSegment.from_point_and_inclination(
+        super().__init__(*args, *kwargs)
+        self.midpoint = shapes.Point(self.x, self.y)
+        self.midline = shapes.LineSegment.from_point_and_inclination(
             self.midpoint, self.inclination, self.length
             )
         self.shape: Type[shapes.Rectangle] = shapes.Rectangle.from_midline(
             self.midline, self.thickness
             )
         self.segments: List = self.segmentalize()
-        kwargs['inclination'] = operations.standardized_inclination(kwargs['inclination'])
-        super().__init__(*args, *kwargs)
     
     def segmentalize(self) -> List:
         """segmentalize the coresponding clay particles into 3 equal
@@ -223,7 +224,7 @@ class Clay(Particle):
                 attrs['y'] = midpoint.y
                 attrs['length'] = size
                 name = f'Particle {particle_number}-{i%2}'
-                new_particle = type(name, self.__bases__, attrs)
+                new_particle = type(name, self.__base__, attrs)
                 new_particle.num = particle_number
                 res.append(new_particle)
         self.last_num -= 3
