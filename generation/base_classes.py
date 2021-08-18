@@ -89,8 +89,7 @@ class Particle(object):
     #     super().__new__(cls, name, bases, attrs)
     
     def __del__(self) -> None:
-        if 'segments' in self.__dict__:
-            Particle.last_num -= 1
+        Particle.last_num -= 1
     
     def __hash__(self) -> int:
         return self.num + random.randint(0, 10000)
@@ -223,7 +222,7 @@ class Clay(Particle):
         particle_number = self.num
         size = self.length/3
         res = []
-        for i, midpoint in enumerate(self.midline.navigator(0.166)):
+        for i, midpoint in enumerate(self.midline.navigator(1/6)):
             if i % 2 == 1:
                 attrs = {k : v for k, v in self.__dict__.items()}
                 attrs['x'] = midpoint.x
@@ -240,7 +239,10 @@ class Clay(Particle):
         """
         
         pass
-
+    
+    def __del__(self):
+        if not self.is_segment:
+            Particle.last_num -= 1
 
 class Sand(Particle):
     """Base class to create different sand particles upon

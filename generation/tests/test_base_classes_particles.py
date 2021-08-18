@@ -179,6 +179,7 @@ class TestClay(unittest.TestCase):
         self.assertAlmostEqual(particle.inclination, 5*np.math.pi/6)
         self.assertEqual(particle.thickness, 1)
         self.assertEqual(particle.length, 100)
+        self.assertFalse(particle.is_segment)
         self.assertTrue(particle.midline)
         self.assertTrue(particle.midpoint)
         self.assertTrue(particle.segments)
@@ -188,21 +189,35 @@ class TestClay(unittest.TestCase):
         created correctly
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 501, y = 74, inclination = -1*np.math.pi/6, thickness = 1, length = 100,
+            )
+        self.assertEqual(particle.midpoint, shapes.Point(501, 74))
 
     def test_midline(self):
         """testing if the midline attribute of the Clay instance is
         created correctly
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 20*np.sqrt(2),
+            )
+        line = shapes.LineSegment(shapes.Point(-10, -10), shapes.Point(10, 10))
     
     def test_shape(self):
         """testing if the 'shape' attribute of the Clay instance is
         created correctly
         """
 
-        pass
+        particle = base_classes.Clay(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 10*np.sqrt(2), length = 20*np.sqrt(2),
+            )
+        v1 = shapes.Point(-20, 0)
+        v2 = shapes.Point(0, -20)
+        v3 = shapes.Point(20, 0)
+        v4 = shapes.Point(0, 20)
+        rec = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(particle.shape, rec)
 
     def test_segmentalize(self):
         """testing if the 'segments' attribute of the Clay instance is
@@ -212,8 +227,16 @@ class TestClay(unittest.TestCase):
         a correct 'num' attribute
         """
 
-        pass
-
+        particle = base_classes.Clay(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 6*np.sqrt(2),
+            )
+        self.assertEqual(len(particle.segments), 3)
+        for seg in particle.segments:
+            self.assertTrue(seg.is_segment)
+        self.assertEqual(particle.segments[1].midpoint, shapes.Point(0, 0))
+        self.assertEqual(particle.segments[0].length, 2*np.sqrt(2))
+        self.assertEqual(particle.segments[2].midline, shapes.LineSegment(shapes.Point(1, 1), shapes.Point(3, 3)))
+        
 
 class TestSand(unittest.TestCase):
     """test cases for the 'Sand' class from 'base_classes' module; the
