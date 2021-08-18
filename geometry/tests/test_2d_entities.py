@@ -196,8 +196,10 @@ class TestRectangle(unittest.TestCase):
         p4 = shapes.Point(1, 0)
         self.assertRaises(RuntimeError, shapes.Rectangle, p1, p2, p3, p4)
 
-    def test_from_midline(self):
-        """testing the 'from_midline' method of Rectangle class"""
+    def test_from_midline1(self):
+        """testing the 'from_midline' method of Rectangle class with a
+        vertical line segment given as the midline
+        """
 
         end1 = shapes.Point(1, 0)
         end2 = shapes.Point(1, 1)
@@ -208,6 +210,23 @@ class TestRectangle(unittest.TestCase):
         vertex2 = shapes.Point(3, 0)
         vertex3 = shapes.Point(3, 1)
         vertex4 = shapes.Point(-1, 1)
+        instance2 = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
+        self.assertEqual(instance1, instance2)
+    
+    def test_from_midline2(self):
+        """testing the 'from_midline' method of Rectangle class with a
+        line with arbitrary inclination segment given as the midline
+        """
+
+        end1 = shapes.Point(0, 0)
+        end2 = shapes.Point(1, 1)
+        instance1 = shapes.Rectangle.from_midline(
+            midline=shapes.LineSegment(end1, end2), tolerance = np.sqrt(2)
+        )
+        vertex1 = shapes.Point(-1, 1)
+        vertex2 = shapes.Point(0, 2)
+        vertex3 = shapes.Point(2, 0)
+        vertex4 = shapes.Point(1, -1)
         instance2 = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
         self.assertEqual(instance1, instance2)
 

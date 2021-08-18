@@ -312,7 +312,7 @@ class Rectangle(Polygon):
         if n != 4:
             raise RuntimeError("you should enter exactly four vertices")
         for i in range(n):
-            if abs(edges[i].inclination - edges[i - 1].inclination) != (np.math.pi / 2):
+            if abs(abs(edges[i].inclination - edges[i - 1].inclination) - (np.math.pi / 2)) > 1e-10:
                 raise RuntimeError(
                     "the given vertices do not form a rectangle with perpendecular edges"
                 )
@@ -332,12 +332,7 @@ class Rectangle(Polygon):
             the Rectangle instance created upon the given arguments
         """
 
-        normal1 = operations.normal(midline.end1, midline)
-        normal2 = operations.norman(midline.end2, midline)
-        
-
-
-        angle = midline.inclination
+        angle = operations.standardized_inclination(midline.inclination)
         vertex1 = Point(
             midline.end1.x + tolerance * np.cos(np.pi / 2 - angle),
             midline.end1.y - tolerance * np.sin(np.pi / 2 - angle),
@@ -908,6 +903,7 @@ class LineSegment(object):
         """Alternative constructor to create a LineSegment instance
         given a point and an inclination and a size"""
 
+        inclination = operations.standardized_inclination(inclination)
         x1 = (point.x) - (np.cos(inclination)) * (size / 2)
         y1 = (point.y) - (np.sin(inclination)) * (size / 2)
         x2 = (point.x) + (np.cos(inclination)) * (size / 2)

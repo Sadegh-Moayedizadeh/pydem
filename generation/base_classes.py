@@ -89,10 +89,11 @@ class Particle(object):
     #     super().__new__(cls, name, bases, attrs)
     
     def __del__(self) -> None:
-        Particle.last_num -= 1
+        if 'segments' in self.__dict__:
+            Particle.last_num -= 1
     
     def __hash__(self) -> int:
-        return self.num
+        return self.num + random.randint(0, 10000)
     
     def __eq__(self, other: Any) -> bool:
         if (
@@ -200,6 +201,7 @@ class Clay(Particle):
             pass
         if not 'is_segment' in kwargs.keys():
             kwargs['is_segment'] = False
+        self.is_segment = kwargs['is_segment']
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
         super().__init__(*args, **kwargs)
@@ -223,7 +225,7 @@ class Clay(Particle):
         res = []
         for i, midpoint in enumerate(self.midline.navigator(0.166)):
             if i % 2 == 1:
-                attrs = self.__dict__
+                attrs = {k : v for k, v in self.__dict__.items()}
                 attrs['x'] = midpoint.x
                 attrs['y'] = midpoint.y
                 attrs['length'] = size

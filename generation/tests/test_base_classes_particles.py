@@ -85,10 +85,10 @@ class TestClay(unittest.TestCase):
         """
         
         particle1 = base_classes.Clay(
-            x = 0, y = 0, inclination = 1, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         particle2 = base_classes.Clay(
-            x = 1, y = 1, inclination = 1, thickness = 1, length = 100,
+            x = 1, y = 1, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         self.assertEqual(particle1.num + 1, particle2.num)
 
@@ -99,15 +99,15 @@ class TestClay(unittest.TestCase):
         """
         
         particle1 = base_classes.Clay(
-            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         particle2 = base_classes.Clay(
-            x = 1, y = 1, inclination = 0, thickness = 1, length = 100,
+            x = 1, y = 1, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         del particle2
         self.assertEqual(base_classes.Particle.last_num, particle1.num+1)
         particle3 = base_classes.Clay(
-            x = 1, y = 1, inclination = 0, thickness = 1, length = 100,
+            x = 1, y = 1, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         self.assertEqual(particle1.num + 1, particle3.num)
     
@@ -117,7 +117,7 @@ class TestClay(unittest.TestCase):
         """
 
         particle = base_classes.Clay(
-            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         s = {particle}
         self.assertTrue(s)
@@ -128,10 +128,10 @@ class TestClay(unittest.TestCase):
         """
 
         particle1 = base_classes.Clay(
-            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         particle2 = base_classes.Clay(
-            x = 0, y = 0, inclination = 0, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         self.assertNotEqual(particle1, particle2)
 
@@ -141,7 +141,7 @@ class TestClay(unittest.TestCase):
         """
 
         particle = base_classes.Clay(
-            x = 501, y = 74, inclination = 0, thickness = 1, length = 100,
+            x = 501, y = 74, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
         self.assertEqual(bn, 750)  
@@ -163,7 +163,7 @@ class TestClay(unittest.TestCase):
         particle = base_classes.Clay(
             x = 501, y = 74, inclination = -1*np.math.pi/6, thickness = 1, length = 100,
             )
-        self.assertEqual(particle.inclination, 5*np.math.pi/6)
+        self.assertAlmostEqual(particle.inclination, 5*np.math.pi/6)
 
     def test_attribute_assigning(self):
         """testing if all the attributes that a Clay instance should
@@ -174,11 +174,11 @@ class TestClay(unittest.TestCase):
         particle = base_classes.Clay(
             x = 501, y = 74, inclination = -1*np.math.pi/6, thickness = 1, length = 100,
             )
-        self.assertTrue(particle.x)
-        self.assertTrue(particle.y)
-        self.assertTrue(particle.inclination)
-        self.assertTrue(particle.thickness)
-        self.assertTrue(particle.length)
+        self.assertEqual(particle.x, 501)
+        self.assertEqual(particle.y, 74)
+        self.assertAlmostEqual(particle.inclination, 5*np.math.pi/6)
+        self.assertEqual(particle.thickness, 1)
+        self.assertEqual(particle.length, 100)
         self.assertTrue(particle.midline)
         self.assertTrue(particle.midpoint)
         self.assertTrue(particle.segments)
