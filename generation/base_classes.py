@@ -268,15 +268,18 @@ class Sand(Particle):
                 attributes
         """
        
-        if kwargs['diameter'] < self.diameter_bounds[0]:
-            raise SizeOutOfBound('the given diameter is lower than expected')
-        elif kwargs['diameter'] > self.diameter_bounds[1]:
-            raise SizeOutOfBound('the given diameter is higher than expected')
-        
-        self.diameter = kwargs.pop('length')
+        try:
+            if kwargs['diameter'] < self.diameter_bounds[0]:
+                raise SizeOutOfBound('the given diameter is lower than expected')
+            elif kwargs['diameter'] > self.diameter_bounds[1]:
+                raise SizeOutOfBound('the given diameter is higher than expected')
+        except AttributeError:
+            pass
+        self.diameter = kwargs.pop('diameter')
         x, y = kwargs['x'], kwargs['y']
-        self.shape = shapes.Circle(x, y, self.diameter)
-        super().__init__(*args, *kwargs)
+        kwargs['inclination'] = 0
+        self.shape = shapes.Circle(shapes.Point(x, y), self.diameter)
+        super().__init__(*args, **kwargs)
 
 
 class Kaolinite(Clay):

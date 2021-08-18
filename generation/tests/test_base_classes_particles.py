@@ -144,7 +144,7 @@ class TestClay(unittest.TestCase):
             x = 501, y = 74, inclination = np.math.pi/4, thickness = 1, length = 100,
             )
         bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
-        self.assertEqual(bn, 750)  
+        self.assertEqual(bn, 750)
 
     def test_standardizing_inclination1(self):
         """testing if a non-standard given inclination becomes standard
@@ -251,7 +251,9 @@ class TestSand(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Sand(x = 20, y = 0, diameter = 10)
+        self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):
         """testing if the particle number thing works in this class too
@@ -259,35 +261,47 @@ class TestSand(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Sand(x = 20, y = 0, diameter = 10)
+        del particle2
+        self.assertEqual(particle1.num + 1, base_classes.Particle.last_num)
+        particle3 = base_classes.Sand(x = 20, y = 0, diameter = 10)
+        self.assertEqual(particle1.num + 1, particle3.num)
     
     def test_hashable(self):
         """testing if the particle being hashable works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        s = {particle}
+        self.assertTrue(s)
 
     def test_equality_condition(self):
         """testing if the equality condition works here to; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle1 = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        self.assertNotEqual(particle1, particle2)
 
     def test_box_num(self):
         """testing if the box_number method works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Sand(x = 482, y = 376, diameter = 10)
+        bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
+        self.assertEqual(bn, 3748)
     
     def test_shape(self):
         """testing if the 'shape' attribute of the Sand instance is
         assigned correctly
         """
 
-        pass
+        particle = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        self.assertEqual(particle.shape, shapes.Circle(shapes.Point(0, 0), 10))
     
     def test_attribute_assigning(self):
         """testing if all the attributes that a Sand instance should
@@ -295,7 +309,14 @@ class TestSand(unittest.TestCase):
         and properties of the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Sand(x = 0, y = 0, diameter = 10)
+        self.assertEqual(particle.x, 0)
+        self.assertEqual(particle.y, 0)
+        self.assertEqual(particle.diameter, 10)
+        self.assertEqual(particle.shape, shapes.Circle(shapes.Point(0, 0), 10))
+        self.assertEqual(particle.velocity, 0)
+        self.assertEqual(particle.force, (0, 0, 0))
+        self.assertEqual(particle.hierarchy, -1)
 
 class TestQuartz(unittest.TestCase):
     """test cases for the Quartz class from 'base_classes' module; all
