@@ -85,12 +85,11 @@ class TestClay(unittest.TestCase):
         """
         
         particle1 = base_classes.Clay(
-            0, 0, 0, thickness = 1, length = 100,
+            x = 0, y = 0, inclination = 1, thickness = 1, length = 100,
             )
         particle2 = base_classes.Clay(
-            1, 1, 0, thickness = 1, length = 100,
+            x = 1, y = 1, inclination = 1, thickness = 1, length = 100,
             )
-        sys.stdout.write(str(particle1.__dict__))
         self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):

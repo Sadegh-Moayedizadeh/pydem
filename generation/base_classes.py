@@ -47,22 +47,16 @@ class Particle(object):
 
     last_num: int = 0
     
-    def __init__(
-        self,
-        x: float,
-        y: float,
-        inclination: float,
-        hierarchy: int = -1,
-        velocity: Tuple[float, float, float] = (0, 0, 0),
-        force: Tuple[float, float, float] = (0, 0, 0),
-        ) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         """initializing the Particle instance
 
-        Args:
+        Args (*required while instantiating):
             x (float): x coordinate of the particle in nanometers
             y (float): y coordinate of the particle in nanometers
             inclination (float): the inclination of the particle in 
                 radians, ranges from '0' to '2*pi'
+        
+        Args (*not required; will be appointed by the class):
             velocity (Tuple, optional): the velocity of the particle in 
                 respect to x coordinate, and y coordinate in nanometers
                 per second, and the rotational velocity in radians per
@@ -78,14 +72,17 @@ class Particle(object):
                 particles
         """
 
-        self.x = x
-        self.y = y
-        self.inclination = operations.standardized_inclination(inclination)
-        self.velocity = velocity
-        self.force = force
-        self.num = self.last_num
-        Particle.last_num += 1
-        self.hierarchy = hierarchy
+        self.x = kwargs['x']
+        self.y = kwargs['y']
+        self.inclination = operations.standardized_inclination(kwargs['inclination'])
+        self.velocity = 0
+        self.force = (0, 0, 0)
+        if 'is_segment' in kwargs.keys() and kwargs['is_segment']:
+            self.num = Particle.last_num - 1
+        else:
+            self.num = Particle.last_num
+            Particle.last_num += 1
+        self.hierarchy = -1
 
     # def __new__(cls, name: str, bases: Tuple, attrs: Dict) -> None:
     #     cls.last_num += 1
@@ -169,6 +166,9 @@ class Clay(Particle):
             y (float): y coordinate of the particle in nanometers
             inclination (float): the inclination of the particle in 
                 radians, ranges from '0' to '2*pi'
+            is_segment (bool): specifies if the particle to be created
+                is a segment of another particle or not; while
+                instantiation it should be set to false
         
         Other Attributes:
             midpoint (Type[shapes.Point]): shapes.Point instance
@@ -197,10 +197,12 @@ class Clay(Particle):
             elif kwargs['length'] > self.length_bounds[1]:
                 raise RuntimeError('the given length is higher than expected')
         except AttributeError:
-            pass    
+            pass
+        if not 'is_segment' in kwargs.keys():
+            kwargs['is_segment'] = False
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
-        super().__init__(*args, *kwargs)
+        super().__init__(*args, **kwargs)
         self.midpoint = shapes.Point(self.x, self.y)
         self.midline = shapes.LineSegment.from_point_and_inclination(
             self.midpoint, self.inclination, self.length
@@ -208,7 +210,8 @@ class Clay(Particle):
         self.shape: Type[shapes.Rectangle] = shapes.Rectangle.from_midline(
             self.midline, self.thickness
             )
-        self.segments: List = self.segmentalize()
+        if not kwargs['is_segment']:
+            self.segments: List = self.segmentalize()
     
     def segmentalize(self) -> List:
         """segmentalize the coresponding clay particles into 3 equal
@@ -224,20 +227,17 @@ class Clay(Particle):
                 attrs['x'] = midpoint.x
                 attrs['y'] = midpoint.y
                 attrs['length'] = size
-                name = f'Particle {particle_number}-{i%2}'
-                sys.stdout.write(str(attrs['inclination']))
-                inc = attrs['inclination']
-                new_particle = self.__class__(
-                    inc,
-                    x = attrs['x'],
-                    y = attrs['x'],
-                    thickness = attrs['thickness'],
-                    length = attrs['length']
-                )
+                attrs['is_segment'] = True
+                new_particle = self.__class__(**attrs)
                 new_particle.num = particle_number
                 res.append(new_particle)
-        self.last_num -= 3
-        self.segments = res
+        return res
+    
+    def reassemble_segments(self):
+        """reassembles the segments of the particle
+        """
+        
+        pass
 
 
 class Sand(Particle):

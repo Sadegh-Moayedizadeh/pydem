@@ -649,11 +649,15 @@ class TestLineSegment(unittest.TestCase):
 
         point1 = shapes.Point(0, 0)
         point2 = shapes.Point(1, 1)
-        instance = shapes.LineSegment(point1, point2)
-        gen = instance.navigator(0.2)
-        next(gen)
-        expected = shapes.Point(0.2, 0.2)
-        self.assertEqual(next(gen), expected)
+        line = shapes.LineSegment(point1, point2)
+        gen = line.navigator(0.2)
+        self.assertEqual(next(gen), shapes.Point(0, 0))
+        self.assertEqual(next(gen), shapes.Point(0.2, 0.2))
+        self.assertEqual(next(gen), shapes.Point(0.4, 0.4))
+        self.assertEqual(next(gen), shapes.Point(0.6, 0.6))
+        self.assertEqual(next(gen), shapes.Point(0.8, 0.8))
+        self.assertEqual(next(gen), shapes.Point(1, 1))
+        self.assertRaises(StopIteration, next, gen)
 
     def test_move(self):
         """testing the 'move' method of the LineSegment class"""

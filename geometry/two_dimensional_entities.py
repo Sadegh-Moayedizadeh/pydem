@@ -332,6 +332,11 @@ class Rectangle(Polygon):
             the Rectangle instance created upon the given arguments
         """
 
+        normal1 = operations.normal(midline.end1, midline)
+        normal2 = operations.norman(midline.end2, midline)
+        
+
+
         angle = midline.inclination
         vertex1 = Point(
             midline.end1.x + tolerance * np.cos(np.pi / 2 - angle),
@@ -1051,13 +1056,15 @@ class LineSegment(object):
 
         if step < 0 or step > 1:
             raise RuntimeError("the given ratio should have a value between zero and one")
-        point = Point(self.end1.x, self.end1.y)
-        dist = 0
+        x, y = self.end1.x, self.end1.y
         delta_x = (np.cos(self.inclination)) * (self.length) * (step)
         delta_y = (np.sin(self.inclination)) * (self.length) * (step)
-        while dist < self.length:
+        while True:
+            point = Point(x, y)
+            if not operations.intersection(point, self):
+                break
             yield point
-            point.move(delta_x, delta_y)
+            x, y = x+delta_x, y+delta_y
 
     def move(self, delta_x: float, delta_y: float) -> None:
         """moving the LineSegment instance with the given changes in its
