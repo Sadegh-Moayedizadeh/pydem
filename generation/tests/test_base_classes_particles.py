@@ -210,7 +210,7 @@ class TestClay(unittest.TestCase):
         """
 
         particle = base_classes.Clay(
-            x = 0, y = 0, inclination = np.math.pi/4, thickness = 10*np.sqrt(2), length = 20*np.sqrt(2),
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 20*np.sqrt(2), length = 20*np.sqrt(2),
             )
         v1 = shapes.Point(-20, 0)
         v2 = shapes.Point(0, -20)
@@ -551,7 +551,10 @@ class TestKaolinite(unittest.TestCase):
         """testing if a non-standard given inclination becomes standard
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 501, y = 74, inclination = -3*np.math.pi/4, thickness = 1, length = 10000,
+            )
+        self.assertEqual(particle.inclination, np.math.pi/4)
 
     def test_attribute_assigning(self):
         """testing if all the attributes that a Montmorillonite instance
@@ -560,28 +563,57 @@ class TestKaolinite(unittest.TestCase):
         'Clay'
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 501, y = 74, inclination = -3*np.math.pi/4, thickness = 2, length = 10000,
+            )
+        self.assertEqual(particle.x, 501)
+        self.assertEqual(particle.y, 74)
+        self.assertAlmostEqual(particle.inclination, np.math.pi/4)
+        self.assertEqual(particle.thickness, 2)
+        self.assertEqual(particle.length, 10000)
+        self.assertFalse(particle.is_segment)
+        self.assertTrue(particle.midline)
+        self.assertTrue(particle.midpoint)
+        self.assertTrue(particle.segments)
+
 
     def test_midpoint(self):
         """testing if the midpoint attribute of the Montmorillonite
         instance is created correctly
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 500, y = 70, inclination = -3*np.math.pi/4, thickness = 2, length = 10000,
+            )
+        self.assertEqual(particle.midpoint, shapes.Point(500, 70))
 
     def test_midline(self):
         """testing if the midline attribute of the Montmorillonite
         instance is created correctly
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 500, y = 70, inclination = -3*np.math.pi/4, thickness = 2, length = 10000,
+            )
+        end1 = shapes.Point(500 - 2500*np.sqrt(2), 70 - 2500*np.sqrt(2))
+        end2 = shapes.Point(500 + 2500*np.sqrt(2), 70 + 2500*np.sqrt(2))
+        exp = shapes.LineSegment(end1, end2)
+        self.assertEqual(particle.midline, exp)
     
     def test_shape(self):
         """testing if the 'shape' attribute of the Montmorillonite
         instance is created correctly
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 100, y = 100, inclination = np.math.pi/2, thickness = 2, length = 10000,
+            )
+        v1 = shapes.Point(101, 5100)
+        v2 = shapes.Point(99, 5100)
+        v3 = shapes.Point(99, -4900)
+        v4 = shapes.Point(101, -4900)
+        exp = shapes.Rectangle(v1, v2, v3, v4)
+        self.assertEqual(particle.shape, exp)
 
     def test_segmentalize(self):
         """testing if the 'segments' attribute of the Montmorillonite
@@ -593,7 +625,16 @@ class TestKaolinite(unittest.TestCase):
         type
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 1, length = 6000*np.sqrt(2),
+            )
+        self.assertEqual(len(particle.segments), 3)
+        for seg in particle.segments:
+            self.assertTrue(seg.is_segment)
+        self.assertEqual(particle.segments[1].midpoint, shapes.Point(0, 0))
+        self.assertAlmostEqual(particle.segments[0].length, 2000*np.sqrt(2))
+        self.assertEqual(particle.segments[2].midline, shapes.LineSegment(
+            shapes.Point(1000, 1000), shapes.Point(3000, 3000)))
     
     def test_move(self):
         """testing if the Montmorillonite instance moves correctly with
@@ -601,14 +642,33 @@ class TestKaolinite(unittest.TestCase):
         'Particle'
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 2, length = 6000*np.sqrt(2),
+            )
+        particle.move(delta_x = 1000, delta_y = 1000, delta_theta = np.math.pi/4)
+        self.assertEqual(particle.x, 1000)
+        self.assertEqual(particle.y, 1000)
+        self.assertEqual(particle.inclination, np.math.pi/2)
+        self.assertEqual(particle.midpoint, shapes.Point(1000, 1000))
+        self.assertEqual(particle.midline, shapes.LineSegment(
+            shapes.Point(1000, 1000 + 3000*np.sqrt(2)), shapes.Point(1000, 1000 - 3000*np.sqrt(2))))
+        v1 = shapes.Point(1001, 1000 + 3000*np.sqrt(2))
+        v2 = shapes.Point(999, 1000 + 3000*np.sqrt(2))
+        v3 = shapes.Point(999, 1000 - 3000*np.sqrt(2))
+        v4 = shapes.Point(1001, 1000 - 3000*np.sqrt(2))
+        self.assertEqual(particle.shape, shapes.Rectangle(v1, v2, v3, v4))
 
     def test_mass(self):
         """testing if the Montmorillonite instance returns a correct
         mass; this is inherited from the parent class 'Particle'
         """
         
-        pass
+        particle = base_classes.Kaolinite(
+            x = 0, y = 0, inclination = np.math.pi/4, thickness = 2, length = 6000*np.sqrt(2),
+            )
+        exp = base_classes.Kaolinite.density * 2 * 6000*np.sqrt(2)
+        self.assertAlmostEqual(particle.mass, exp)
+
     
     def test_moment_of_inertia(self):
         """testing if the Montmorillonite instance returns a correct

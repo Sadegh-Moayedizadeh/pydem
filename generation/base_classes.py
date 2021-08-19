@@ -205,15 +205,29 @@ class Clay(Particle):
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
         super().__init__(*args, **kwargs)
-        self.midpoint = shapes.Point(self.x, self.y)
-        self.midline = shapes.LineSegment.from_point_and_inclination(
-            self.midpoint, self.inclination, self.length
-            )
-        self.shape: Type[shapes.Rectangle] = shapes.Rectangle.from_midline(
-            self.midline, self.thickness
-            )
         if not kwargs['is_segment']:
             self.segments: List = self.segmentalize()
+    
+    @property
+    def shape(self):
+        """the realistic 2D shape of the clay particle as a rectangle
+        """
+        
+        return shapes.Rectangle.from_midline(self.midline, self.thickness/2)
+
+    @property
+    def midline(self):
+        """the long line that represents the clay particle without a thickness
+        """
+        
+        return shapes.LineSegment.from_point_and_inclination(self.midpoint, self.inclination, self.length)
+
+    @property
+    def midpoint(self):
+        """the point at the middle of the particle
+        """
+        
+        return shapes.Point(self.x, self.y)
     
     def segmentalize(self) -> List:
         """segmentalize the coresponding clay particles into 3 equal
@@ -606,18 +620,24 @@ class Wall(Particle):
             length (float): the length of the wall
         """
         
+        if 'is_fixed' not in kwargs.keys():
+            kwargs['is_fixed'] = True
         self.is_fixed = kwargs.pop('is_fixed')
         if kwargs['length'] <= 0:
             raise RuntimeError(
                 'the given length for the wall should be a positive number'
                 )
         self.length = kwargs.pop('length')
-        self.shape = shapes.LineSegment.from_point_and_inclination(
-            point = shapes.Point(kwargs['x'], kwargs['y']),
-            inclination = kwargs['inclination'],
-            length = self.length
-        )
         super().__init__(*args, **kwargs)
+    
+    @property
+    def shapes(self):
+        """the geometrical shape of the Wall instance which is a line
+        segment
+        """
+        
+        return shapes.LineSegment.from_point_and_inclination(
+            shapes.Point(self.x, self.y), self.inclination, self.length)
     
     @classmethod
     def from_ends(
@@ -650,6 +670,14 @@ class Wall(Particle):
         else:
             inclination = np.arctan((y2 - y1) / (x2 - x1))
         return Wall(x = x, y = y, inclination = inclination, length = length, is_fixed = is_fixed)
+    
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_y: float = 0):
+        """moves the wall with the given derivetives
+        """
+
+        self.x += delta_x
+        self.y += delta_y
+        self.inclination = operations.standardized_inclination(self.inclination + delta_theta)
 
 
 class Container(object):
