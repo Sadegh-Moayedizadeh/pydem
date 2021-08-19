@@ -316,6 +316,23 @@ class TestRectangle(unittest.TestCase):
         instance = shapes.Rectangle(vertex1, vertex2, vertex3, vertex4)
         expected = shapes.Circle(shapes.Point(0.5, 1), np.sqrt(5))
         self.assertEqual(instance.circumcircle, expected)
+    
+    def test_move(self):
+        """testing the 'move' method of the Rectangle class
+        """
+
+        v1 = shapes.Point(np.sqrt(2), np.sqrt(2))
+        v2 = shapes.Point(-1*np.sqrt(2), np.sqrt(2))
+        v3 = shapes.Point(-1*np.sqrt(2), -1*np.sqrt(2))
+        v4 = shapes.Point(np.sqrt(2), -1*np.sqrt(2))
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        rec1.move(delta_theta = np.math.pi/4)
+        v5 = shapes.Point(2, 0)
+        v6 = shapes.Point(0, 2)
+        v7 = shapes.Point(-2, 0)
+        v8 = shapes.Point(0, -2)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(rec1, rec2)
 
 
 class TestCircle(unittest.TestCase):
@@ -678,7 +695,7 @@ class TestLineSegment(unittest.TestCase):
         self.assertEqual(next(gen), shapes.Point(1, 1))
         self.assertRaises(StopIteration, next, gen)
 
-    def test_move(self):
+    def test_move1(self):
         """testing the 'move' method of the LineSegment class"""
 
         point1 = shapes.Point(0, 0)
@@ -690,6 +707,33 @@ class TestLineSegment(unittest.TestCase):
         instance1.move(1, 1)
         self.assertEqual(instance1, instance2)
 
+    def test_move2(self):
+        """testing the 'move' method of the LineSegment class with a
+        full rotation
+        """
+
+        point1 = shapes.Point(0, 0)
+        point2 = shapes.Point(1, 1)
+        line = shapes.LineSegment(point1, point2)
+        line.move(delta_theta = np.math.pi)
+        self.assertEqual(line, shapes.LineSegment(point1, point2))
+        line.move(delta_theta = np.math.pi*2)
+        self.assertEqual(line, shapes.LineSegment(point1, point2))
+    
+    def test_move3(self):
+        """testing the 'move' method of LineSegment class with all
+        the coordinates changing
+        """
+
+        point1 = shapes.Point(-1*np.sqrt(2), 0)
+        point2 = shapes.Point(np.sqrt(2), 0)
+        line1 = shapes.LineSegment(point1, point2)
+        line1.move(delta_x = 5, delta_y = 5, delta_theta = 3*np.math.pi/4)
+        point3 = shapes.Point(4, 6)
+        point4 = shapes.Point(6, 4)
+        line2 = shapes.LineSegment(point3, point4)
+        self.assertEqual(line1, line2)
+            
 
 if __name__ == "__main__":
     unittest.main()

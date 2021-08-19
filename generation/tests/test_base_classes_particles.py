@@ -330,7 +330,9 @@ class TestQuartz(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):
         """testing if the particle number thing works in this class too
@@ -338,28 +340,39 @@ class TestQuartz(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        del particle2
+        self.assertEqual(particle1.num+1, base_classes.Particle.last_num)
+        particle3 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        self.assertEqual(particle1.num + 1, particle3.num)
     
     def test_hashable(self):
         """testing if the particle being hashable works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        s = {particle}
+        self.assertTrue(s)
 
     def test_equality_condition(self):
         """testing if the equality condition works here to; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle1 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        particle2 = base_classes.Quartz(x = 0, y = 0, diameter = 10)
+        self.assertNotEqual(particle1, particle2)
 
     def test_box_num(self):
         """testing if the box_number method works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Sand(x = 1, y = 1, diameter = 10)
+        bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
+        self.assertEqual(bn, 0)
     
     def test_diameter_validation(self):
         """testing if the invalid input for 'diameter' argument raises
@@ -367,7 +380,8 @@ class TestQuartz(unittest.TestCase):
         inherited from the parent class 'Sand'
         """
         
-        pass
+        d = base_classes.Quartz.diameter_bounds[1]+1
+        self.assertRaises(RuntimeError, base_classes.Quartz, x=0, y=0, diameter=d)
     
     def test_shape(self):
         """testing if the 'shape' attribute of the Sand instance is
@@ -375,7 +389,8 @@ class TestQuartz(unittest.TestCase):
         class 'Sand'
         """
 
-        pass
+        particle = base_classes.Sand(x = 1, y = 1, diameter = 10)
+        self.assertEqual(particle.shape, shapes.Circle(shapes.Point(1, 1), 10))
     
     def test_attribute_assigning(self):
         """testing if all the attributes that a Sand instance should
@@ -383,7 +398,14 @@ class TestQuartz(unittest.TestCase):
         and properties of the parent classes 'Particle' and 'Sand'
         """
 
-        pass
+        particle = base_classes.Sand(x = 1, y = 1, diameter = 10)
+        self.assertEqual(particle.x, 1)
+        self.assertEqual(particle.y, 1)
+        self.assertEqual(particle.diameter, 10)
+        self.assertEqual(particle.shape, shapes.Circle(shapes.Point(1, 1), 10))
+        self.assertEqual(particle.velocity, 0)
+        self.assertEqual(particle.force, (0, 0, 0))
+        self.assertEqual(particle.hierarchy, -1)
     
     def test_move(self):
         """testing if the Quartz instance moves correctly with the 
@@ -391,14 +413,20 @@ class TestQuartz(unittest.TestCase):
         'Particle'
         """
 
-        pass
+        particle = base_classes.Sand(x = 1, y = 1, diameter = 10)
+        particle.move(delta_x = 2, delta_y = 2)
+        self.assertEqual(particle.x, 3)
+        self.assertEqual(particle.y, 3)
+        self.assertEqual(particle.shape, shapes.Circle(shapes.Point(3, 3), 10))
 
     def test_mass(self):
         """testing if the Quartz instance returns a correct mass; this
         is inherited from the parent class 'Particle'
         """
         
-        pass
+        particle = base_classes.Quartz(x = 1, y = 1, diameter = 10)
+        exp = base_classes.Quartz.density * (np.math.pi*10**2)/4
+        self.assertAlmostEqual(particle.mass, exp)
     
     def test_moment_of_inertia(self):
         """testing if the Quartz instance returns a correct moment of
@@ -408,7 +436,7 @@ class TestQuartz(unittest.TestCase):
         pass
 
 
-class TestMontmorillonite(unittest.TestCase):
+class TestKaolinite(unittest.TestCase):
     """test cases for the Montmorillonite class from 'base_classes'
     module; it also includes tests for all the stuff inherited from
     parent classes 'Clay' and 'Particle'
@@ -420,7 +448,13 @@ class TestMontmorillonite(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Kaolinite(
+            x = 0, y = 0, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        particle2 = base_classes.Kaolinite(
+            x = 10, y = 10, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        self.assertEqual(particle1.num + 1, particle2.num)
 
     def test_descending_particle_number(self):
         """testing if the particle number thing works in this class too
@@ -428,42 +462,90 @@ class TestMontmorillonite(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        particle1 = base_classes.Kaolinite(
+            x = 0, y = 0, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        particle2 = base_classes.Kaolinite(
+            x = 10, y = 10, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        del particle2
+        self.assertEqual(particle1.num + 1, base_classes.Kaolinite.last_num)
+        particle3 = base_classes.Kaolinite(
+            x = 10, y = 10, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        self.assertEqual(particle1.num + 1, particle3.num)
     
     def test_hashable(self):
         """testing if the particle being hashable works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 0, y = 0, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        s = {particle}
+        self.assertTrue(s)
 
     def test_equality_condition(self):
         """testing if the equality condition works here to; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle1 = base_classes.Kaolinite(
+            x = 0, y = 0, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        particle2 = base_classes.Kaolinite(
+            x = 0, y = 0, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        self.assertNotEqual(particle1, particle2)
 
     def test_box_num(self):
         """testing if the box_number method works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        particle = base_classes.Kaolinite(
+            x = 6023, y = 5634, length = 5000, thickness = 2, inclination = np.math.pi/4,
+            )
+        bn = particle.box_num(nc = 100, box_length = 10, box_width = 10)
+        self.assertEqual(bn, 56902)
+        
     
     def test_thickness_validation(self):
         """testing if an invalid given thickness raises an error and a
         valid given thickness goes alright
         """
 
-        pass
+        lower = base_classes.Kaolinite.width_bounds[0]-0.5
+        higher = base_classes.Kaolinite.width_bounds[1]+0.5
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Kaolinite,
+            x = 6023, y = 5634, length = 5000, thickness = lower, inclination = np.math.pi/4
+            )
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Kaolinite,
+            x = 6023, y = 5634, length = 5000, thickness = higher, inclination = np.math.pi/4
+            )
 
     def test_length_validation(self):
         """testing if an invalid given length raises an error and a
         valid given thickness goes alright
         """
 
-        pass
+        lower = base_classes.Kaolinite.length_bounds[0]-0.5
+        higher = base_classes.Kaolinite.length_bounds[1]+0.5
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Kaolinite,
+            x = 6023, y = 5634, length = lower, thickness = 2, inclination = np.math.pi/4
+            )
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Kaolinite,
+            x = 6023, y = 5634, length = higher, thickness = 2, inclination = np.math.pi/4
+            )
 
     def test_standardizing_inclination(self):
         """testing if a non-standard given inclination becomes standard

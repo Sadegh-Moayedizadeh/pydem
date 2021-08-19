@@ -168,7 +168,8 @@ class Clay(Particle):
                 radians, ranges from '0' to '2*pi'
             is_segment (bool): specifies if the particle to be created
                 is a segment of another particle or not; while
-                instantiation it should be set to false
+                instantiation it should be set to false; defaults to
+                False
         
         Other Attributes:
             midpoint (Type[shapes.Point]): shapes.Point instance
@@ -187,20 +188,20 @@ class Clay(Particle):
                 class private attributes
         """
         
+        if not 'is_segment' in kwargs.keys():
+            kwargs['is_segment'] = False
+        self.is_segment = kwargs['is_segment']
         try:
             if kwargs['thickness'] < self.width_bounds[0]:
                 raise RuntimeError('the given thickness is lower than expected')
             elif kwargs['thickness'] > self.width_bounds[1]:
                 raise RuntimeError('the given thickness is higher than expected')
-            elif kwargs['length'] < self.length_bounds[0]:
+            elif kwargs['length'] < self.length_bounds[0] and not self.is_segment:
                 raise RuntimeError('the given length is lower than expected')
-            elif kwargs['length'] > self.length_bounds[1]:
+            elif kwargs['length'] > self.length_bounds[1] and not self.is_segment:
                 raise RuntimeError('the given length is higher than expected')
         except AttributeError:
             pass
-        if not 'is_segment' in kwargs.keys():
-            kwargs['is_segment'] = False
-        self.is_segment = kwargs['is_segment']
         self.thickness = kwargs.pop('thickness')
         self.length = kwargs.pop('length')
         super().__init__(*args, **kwargs)
@@ -240,6 +241,25 @@ class Clay(Particle):
         
         pass
     
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
+        """moves the Clay particle by the given derivetives
+
+        Args:
+            delta_x (float, optional): the amount of particle's movement
+                in the x coordinate; Defaults to 0.
+            delta_y (float, optional): the amount of particle's movement
+                in the y coordinate; Defaults to 0.
+            delta_theta (float, optional): the amount of particle's
+                roatation; Defaults to 0.
+        """
+        
+        self.x += delta_x
+        self.y += delta_y
+        self.inclination = operations.standardized_inclination(self.inclination + delta_theta)
+        self.shape.move(delta_x = delta_x, delta_y = delta_y, delta_theta = delta_theta)
+        self.midline.move(delta_x = delta_x, delta_y = delta_y, delta_theta = delta_theta)
+        self.midpoint.move(delta_x = delta_x, delta_y = delta_y)
+    
     def __del__(self):
         if not self.is_segment:
             Particle.last_num -= 1
@@ -270,9 +290,9 @@ class Sand(Particle):
        
         try:
             if kwargs['diameter'] < self.diameter_bounds[0]:
-                raise SizeOutOfBound('the given diameter is lower than expected')
+                raise RuntimeError('the given diameter is lower than expected')
             elif kwargs['diameter'] > self.diameter_bounds[1]:
-                raise SizeOutOfBound('the given diameter is higher than expected')
+                raise RuntimeError('the given diameter is higher than expected')
         except AttributeError:
             pass
         self.diameter = kwargs.pop('diameter')
@@ -280,6 +300,22 @@ class Sand(Particle):
         kwargs['inclination'] = 0
         self.shape = shapes.Circle(shapes.Point(x, y), self.diameter)
         super().__init__(*args, **kwargs)
+    
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
+        """moves the Sand particle by the given derivetives
+
+        Args:
+            delta_x (float, optional): the amount of particle's movement
+                in the x coordinate; Defaults to 0.
+            delta_y (float, optional): the amount of particle's movement
+                in the y coordinate; Defaults to 0.
+            delta_theta (float, optional): the amount of particle's
+                roatation; Defaults to 0.
+        """
+        
+        self.x += delta_x
+        self.y += delta_y
+        self.shape.move(delta_x, delta_y)
 
 
 class Kaolinite(Clay):
@@ -343,11 +379,11 @@ class Kaolinite(Clay):
                 class private attributes
         """
         
-        kwargs['thickness'] = 2
         super().__init__(*args, **kwargs)
     
     def __repr__(self) -> str:
-        return f'Kaolinite-{self.num}'
+        name = f'Kaolinite:: number {self.num}'
+        return name if not self.is_segment else name + '-S' 
 
 
 class Quartz(Sand):
@@ -371,7 +407,7 @@ class Quartz(Sand):
         formula (str): the general formula of the quartz particles
     """
 
-    diameter_bounds: Tuple[int, int] = ()
+    diameter_bounds: Tuple[int, int] = (0, 100)
     normal_contact_stiffness: float = 2
     shear_contact_stiffness: float = 2
     density: float = 2.65e-33
@@ -398,7 +434,7 @@ class Quartz(Sand):
         super().__init__(*args, **kwargs)
 
     def __repr__(self) -> str:
-        return f'Quartz-{self.num}'
+        return f'Quartz:: number {self.num}'
 
 
 class Montmorillonite(Clay):

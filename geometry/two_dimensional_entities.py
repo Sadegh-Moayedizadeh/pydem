@@ -7,6 +7,7 @@ import numpy as np
 from itertools import count
 from collections import defaultdict
 from geometry import two_dimensional_operations as operations
+import sys
 
 
 class Point(object):
@@ -436,6 +437,25 @@ class Rectangle(Polygon):
 
         return Circle(center=self.center, diameter=self.diagonals[0].length)
     
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
+        """moving the Rectangle instance with the given derivatives
+
+        Args:
+            delta_x (float, optional): the amount of movement of the
+                Rectangle instance in the 'x' coordinate; Defaults to 0.
+            delta_y (float, optional): the amount of movement of the
+                Rectangle instance in the 'y' coordinate; Defaults to 0.
+            delta_theta (float, optional): the amount of rotational
+                movement of the Rectangle instance; Defaults to 0.
+        """
+        
+        lines = self.midlines
+        line = lines[0] if lines[0].length > lines[1].length else lines[1]
+        tol = self.edges[0].length/2 if self.edges[0].length < self.edges[1].length else self.edges[1].length/2
+        line.move(delta_x = delta_x, delta_y = delta_y, delta_theta = delta_theta)
+        new_rec = Rectangle.from_midline(line, tol)
+        self.vertices = new_rec.vertices
+   
     def __repr__(self):
         vertices = [point.__repr__() for point in self.vertices]
         return 'Rectangle' + str(vertices)
@@ -1062,7 +1082,7 @@ class LineSegment(object):
             yield point
             x, y = x+delta_x, y+delta_y
 
-    def move(self, delta_x: float, delta_y: float) -> None:
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0) -> None:
         """moving the LineSegment instance with the given changes in its
         coordinates
 
@@ -1071,10 +1091,23 @@ class LineSegment(object):
                 LineSegment instance
             delta_y (float): the change in the 'y' coordinate of the
                 LineSegment instance
+            delat_theta (float): the rotational movement of the LineSegment
+                instance
         """
 
-        self.end1.move(delta_x, delta_y)
-        self.end2.move(delta_x, delta_y)
+        theta = operations.standardized_inclination(self.inclination + delta_theta)
+        circle = self.circumcircle
+        p1 = circle.get_point_on_perimeter(theta)
+        p2 = circle.get_point_on_perimeter(theta + np.math.pi)
+        p1.move(delta_x, delta_y)
+        p2.move(delta_x, delta_y)
+        if p1.x == p2.x:
+            if p1.y > p2.y:
+                p1, p2 = p2, p1
+        elif p1.x > p2.x:
+            p1, p2 = p2, p1
+        self.end1 = Point(p1.x, p1.y)
+        self.end2 = Point(p2.x, p2.y)
 
     def __eq__(self, other: Any) -> bool:
         """Defining the equality condition
