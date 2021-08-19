@@ -92,7 +92,7 @@ class Particle(object):
         Particle.last_num -= 1
     
     def __hash__(self) -> int:
-        return self.num + random.randint(0, 10000)
+        return self.num**2 + self.x**2 + self.y**2
     
     def __eq__(self, other: Any) -> bool:
         if (
@@ -631,7 +631,7 @@ class Wall(Particle):
         super().__init__(*args, **kwargs)
     
     @property
-    def shapes(self):
+    def shape(self):
         """the geometrical shape of the Wall instance which is a line
         segment
         """
@@ -671,7 +671,7 @@ class Wall(Particle):
             inclination = np.arctan((y2 - y1) / (x2 - x1))
         return Wall(x = x, y = y, inclination = inclination, length = length, is_fixed = is_fixed)
     
-    def move(self, delta_x: float = 0, delta_y: float = 0, delta_y: float = 0):
+    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
         """moves the wall with the given derivetives
         """
 

@@ -691,7 +691,11 @@ class TestWall(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        wall1 = base_classes.Wall(
+            x = 0, y = 0, inclination = np.math.pi/2, is_fixed = True, length = 10000)
+        wall2 = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        self.assertEqual(wall1.num+1, wall2.num)
 
     def test_descending_particle_number(self):
         """testing if the particle number thing works in this class too
@@ -699,28 +703,54 @@ class TestWall(unittest.TestCase):
         the parent class 'Particle'
         """
         
-        pass
+        wall1 = base_classes.Wall(
+            x = 0, y = 0, inclination = np.math.pi/2, is_fixed = True, length = 10000)
+        wall2 = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        del wall2
+        self.assertEqual(wall1.num+1, base_classes.Wall.last_num)
+        wall3 = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        self.assertEqual(wall1.num+1, wall3.num)
     
     def test_hashable(self):
         """testing if the particle being hashable works here too; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        wall = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        s = {wall}
+        self.assertTrue(s)
+        d = {wall:1}
+        self.assertEqual(d[wall], 1)
 
     def test_equality_condition(self):
         """testing if the equality condition works here to; it is
         inherited from the parent class 'Particle'
         """
 
-        pass
+        wall1 = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        wall2 = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        self.assertEqual(wall1, wall1)
+        self.assertNotEqual(wall1, wall2)
     
     def test_move(self):
         """testing if the Wall instance moves correctly with the given
         derivatives; this is inherited from the parent class 'Particle'
         """
 
-        pass
+        wall = base_classes.Wall(
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = 10000)
+        wall.move(delta_x = 1000, delta_theta = np.math.pi)
+        self.assertEqual(wall.x, 6000)
+        self.assertEqual(wall.y, 0)
+        self.assertEqual(wall.inclination, 0)
+        self.assertEqual(wall.shape, shapes.LineSegment(
+            shapes.Point(1000, 0), shapes.Point(11000, 0)
+        ))
 
     def test_mass(self):
         """testing if the Wall instance returns a correct mass; this is
