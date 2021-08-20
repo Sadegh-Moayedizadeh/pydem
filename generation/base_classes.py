@@ -75,8 +75,9 @@ class Particle(object):
         self.x = kwargs['x']
         self.y = kwargs['y']
         self.inclination = operations.standardized_inclination(kwargs['inclination'])
-        self.velocity = 0
+        self.velocity = (0, 0, 0)
         self.force = (0, 0, 0)
+        self.acceleration = (0, 0, 0)
         if 'is_segment' in kwargs.keys() and kwargs['is_segment']:
             self.num = Particle.last_num - 1
         else:
@@ -640,12 +641,12 @@ class Wall(Particle):
             shapes.Point(self.x, self.y), self.inclination, self.length)
     
     @classmethod
-    def from_ends(
+    def from_ends(cls,
         x1: float,
         y1: float,
         x2: float,
         y2: float,
-        is_fixed: bool,
+        is_fixed: bool = True,
     ) -> 'Wall':
         """alternative constructor to create a Wall instance from end
         points

@@ -771,26 +771,50 @@ class TestWall(unittest.TestCase):
         length 
         """
 
-        pass
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Wall,
+            x = 5000, y = 0, inclination = 0, is_fixed = True, length = -1
+            )
 
     def test_shape(self):
         """testing if the 'shape' attribute is assigned correctly
         """
 
-        pass
+        wall = base_classes.Wall(
+            x = 5000, y = 0, inclination = np.math.pi/2, is_fixed = True, length = 10000)
+        end1 = shapes.Point(5000, -5000)
+        end2 = shapes.Point(5000, 5000)
+        exp = shapes.LineSegment(end1, end2)
+        self.assertEqual(wall.shape, exp)
 
     def test_attribute_assigning(self):
         """testing if all the attributes are assigned correctly; this
         includes those of the parent class 'Particle'
         """
 
-        pass
+        wall = base_classes.Wall(
+            x = 5000, y = 0, inclination = np.math.pi/2, is_fixed = True, length = 10000)
+        self.assertEqual(wall.x, 5000)
+        self.assertEqual(wall.y, 0)
+        self.assertAlmostEqual(wall.inclination, np.math.pi/2)
+        self.assertEqual(wall.length, 10000)
+        self.assertEqual(wall.force, (0, 0, 0))
+        self.assertEqual(wall.velocity, (0, 0, 0))
 
-    def test_frorm_ends(self):
+    def test_from_ends(self):
         """testing the classmethod 'from_ends'
         """
 
-        pass
+        x1, y1 = 0, 0
+        x2, y2 = 0, 10000
+        wall1 = base_classes.Wall(
+            x = 0, y = 5000, inclination = np.math.pi/2, is_fixed = True, length = 10000)
+        wall2 = base_classes.Wall.from_ends(x1, x2, y1, y2)
+        exp = shapes.LineSegment(shapes.Point(x1, y1), shapes.Point(x2, y2))
+        self.assertEqual(wall1.shape, wall2.shape)
+        self.assertEqual(wall2.shape, exp)
+        
 
 
 if __name__ == '__main__':
