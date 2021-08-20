@@ -367,16 +367,19 @@ class Kaolinite(Clay):
         formula (str): general formula for kaolinite particles
     """
     
-    length_bounds: Tuple[int, int] = (4000, 12000)
-    width_bounds: Tuple[int, int] = (1, 3) # to be modified
-    cec: float = 5
-    ssa: float = 20
-    hamaker_constant: float = 1e-19
-    boltzman_constant: float = 1.38e-23
-    young_modulus: float = 2e-8
-    density: float = 2.65e-33
-    maximum_stiffness_coefficient: float = 1.5e-7 # to be modified
-    formula: str = 'Al2Si2O5(OH)4'
+    length_bounds: Tuple[int, int] = (4000, 12000) # in nanometer; may change
+    width_bounds: Tuple[int, int] = (1, 3) # in nanometer; may change
+    cec: float = 5 # according to M.Khabazian and A.Mirghasemi, 2018
+    ssa: float = 20 # in square meters per gram; ///
+    hamaker_constant: float = 1e-19 # in Joule; ///
+    boltzman_constant: float = 1.38e-23 # in Joule; ///
+    young_modulus: float = 2e-8 # in Newton per square nanometer; ///
+    shear_modulus: float = 8e-9 # in Newton per square nanometer; ///
+    surface_tension: float = 0.075 # in Newton per meter; ///
+    normal_stiffness: float = 3e-6 # in Newton per nanometer; ///
+    shear_stiffness: float = 1.2e-6 # in Newton per nanometer; ///
+    density: float = 2.7e-33 # in Newton second per nanometer to the power of four; ///
+    formula: str = 'Al2Si2O5(OH)4' # according to 'sciencedirect.com/topics/chemical-engineering/kaolinite'
     
     def __init__(self, *args, **kwargs):
         """initialize the montmorillonite particle
@@ -716,6 +719,7 @@ class Container(object):
         'quartz' : Quartz,
         }
     valid_simulation_types = ['TT', 'DS', 'SS']
+    temprature: int = 293 # in Kelvin; According to M.Khabazian and A.Mirghasemi, 2018
     
     def __init__(
         self,
@@ -723,6 +727,8 @@ class Container(object):
         width: float,
         particles_info: List[Dict],
         simulation_type: str,
+        time_step: float,
+        fluid_characteristics: Dict
         ) -> None:
         """initialize the Container instance
 
@@ -730,9 +736,9 @@ class Container(object):
             length (float): the length of the container instance
             width (float): the width of the container instance
             particles_info (List[Dict]): the information associated to the
-                particles to be generated in the container in and array
+                particles to be generated in the container in an array
                 in which every element is a dictionary in which the
-                keys "type, size_upper_bound, size_lower_bound,
+                keys "type, size_upper_bound, size_lower_bound, and
                 quantity" have to be present;
             simulation_type (str): the type of simulation to be run on
                 the container; it should be either of these options:
@@ -774,7 +780,7 @@ class Container(object):
             raise RuntimeError(
                 'invalid input for the simulation type; should be either of "TT", "DS", or "SS"'
                 )
-        self.simulation_type = simulation_type
+        self.simulation_type = simulation_type.upper()
         if length <= 0 or width <= 0:
             raise RuntimeError(
                 'the given length and width of the container should be a positive number'
@@ -797,7 +803,7 @@ class Container(object):
         self.box_width, self.box_length = self._make_boxes()
         self.nr: List = [self.width // w for w in self.box_width]
         self.nc: List = [self.length // l for l in self.box_length]
-        self.walls: List[Type[Wall]] = self.setup_walls()
+        self.walls: List = []
     
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -827,6 +833,8 @@ class Container(object):
             if d['size_lower_bound'] > d['size_upper_bound']:
                 return False
             if d['size_lower_bound'] < 0 or d['size_upper_bound'] < 0 or d['quantity'] < 0:
+                return False
+            if d['size_upper_bound'] > self.length or d['size_upper_bound'] > self.width:
                 return False
         return True
     
