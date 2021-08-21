@@ -209,20 +209,61 @@ class TestSimleSetups(unittest.TestCase):
     place at the beginning of the simulation
     """
     
+    def test_number_of_groups(self):
+        """testing the 'number_of_groups' attribute of the Container
+        class
+        """
+        
+        pass
+
+    def test_box_width(self):
+        """testing the 'box_width' attribute if the Container class;
+        """
+        
+        pass
+
+    def test_box_length(self):
+        """testing the 'box_length' attribute of the Container class
+        """
+        
+        pass
+    
+    def test_make_boxes(self):
+        """testing the 'make_boxes' method of the container class
+        """
+        
+        pass
+
+    def test_nr(self):
+        """testing the 'nr' attribute of the Container class
+        """
+        
+        pass
+
+    def test_nc(self):
+        """testing the 'nc' attribute of the container class
+        """
+        
+        pass
+    
+    def test_setup_walls(self):
+        """testing the 'setup_walls' method of the Container class
+        """
+        
+        pass
+    
+    
+class TestContacts(unittest.TestCase):
+    """test cases for the contact detection operations for different
+    types of contacts and particles
+    """
+    
     pass
 
 
 class TestParticleGeneration(unittest.TestCase):
     """test cases to see if the particle generation phase in the
     container takes place flawlessly
-    """
-    
-    pass
-
-
-class TestContacts(unittest.TestCase):
-    """test cases for the contact detection operations for different
-    types of contacts and particles
     """
     
     pass
