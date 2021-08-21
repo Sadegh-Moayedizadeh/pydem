@@ -787,9 +787,10 @@ class Container(object):
                 )
         self.length = length
         self.width = width
-        if not self._validate_info(particles_info):
+        if not (self._validate_info(particles_info) is True):
+            message = self._validate_info(particles_info)
             raise RuntimeError(
-                'invalid input for particles_info'
+                'invalid input for particles_info; ' + message
                 )
         particles_info = sorted(
             particles_info, key = lambda x: x['size_upper_bound'], reverse = True
@@ -821,21 +822,21 @@ class Container(object):
                                 'size_lower_bound', 'quantity',]
         valid_types = list(self.type_reference.keys())
         if not isinstance(info, list):
-            return False
+            return "the given input should be a list"
         for d in info:
             if not isinstance(d, dict):
-                return False
+                return "the items of the list should be dictionaries"
             for att in essential_attributes:
                 if not att in d.keys():
-                    return False
+                    return "some of the essential attributes of the particle info are missing"
             if not d['type'] in valid_types:
-                return False
+                return "the given particle type is invalid"
             if d['size_lower_bound'] > d['size_upper_bound']:
-                return False
+                return "the given lower bound should be smaller than the upper bound"
             if d['size_lower_bound'] < 0 or d['size_upper_bound'] < 0 or d['quantity'] < 0:
-                return False
+                return "the given values for lower and upper bound and quantity should be positive numbers"
             if d['size_upper_bound'] > self.length or d['size_upper_bound'] > self.width:
-                return False
+                return "the given upper bound for particle size should be smaller than container's dimensions"
         return True
     
     def setup_walls(self) -> List[Type[Wall]]:
@@ -876,7 +877,7 @@ class Container(object):
                 width.append(d['size_upper_bound'])
                 while (self.width % width[-1] != 0):
                     width[-1] += 1
-                while (self.lenght % length != 0):
+                while (self.length % length[-1] != 0):
                     length[-1] += 1
             else:
                 width.append(width[-1] * (d['size_upper_bound'] // width[-1]

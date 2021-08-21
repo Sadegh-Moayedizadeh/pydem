@@ -19,8 +19,8 @@ class TestValidations(unittest.TestCase):
 
     kaolinite_clay1 = {
         'type': 'kaolinite',
-        'size_upper_bound': 1000,
-        'size_lower_bound': 3000,
+        'size_upper_bound': 3000,
+        'size_lower_bound': 1000,
         'quantity': 1000
     }
     
@@ -35,14 +35,16 @@ class TestValidations(unittest.TestCase):
             width = 35000,
             simulation_type = 'tf',
             time_step = 1.8e-13,
-            partice_info = self.kaolinite_clay1
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
             )
         container = base_classes.Container(
             length = 35000,
             width = 35000,
             simulation_type = 'tt',
             time_step = 1.8e-13,
-            partice_info = [self.kaolinite_clay1]
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
         )
         self.assertEqual(container.simulation_type, 'TT')
     
@@ -50,40 +52,156 @@ class TestValidations(unittest.TestCase):
         """testing the validation of length parameter
         """
 
-        pass
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 0,
+            width = 35000,
+            simulation_type = 'ds',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+            )
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'ds',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'DS')
 
     def test_width(self):
         """testing the validation of width parameter
         """
         
-        pass
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 35000,
+            width = 0,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+            )
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'TT')
 
     def test_particle_type(self):
         """testing the validation of 'type' parameter in the particle
         info parameter
         """
         
-        pass
+        info = {k:v for k,v in self.kaolinite_clay1.items()}
+        info['type'] = 'bent'
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [info],
+            fluid_characteristics = None
+            )
+        info['type'] = 'quartz'
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'TT')
 
     def test_particle_info_data_type(self):
         """testing the validation of the data type of the particle_info
         array
         """
         
-        pass
+        info = {k:v for k,v in self.kaolinite_clay1.items()}
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = info,
+            fluid_characteristics = None
+            )
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [info],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'TT')
 
     def test_particle_essential_attributes(self):
         """testing the validation of particle_info array due to the
         essential attrirbutes that need to present in each dictionary
         """
         
-        pass
+        info = {k:v for k,v in self.kaolinite_clay1.items()}
+        info.pop('type')
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [info],
+            fluid_characteristics = None
+            )
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'TT')
 
     def test_particle_size_bounds(self):
         """testing the validation of particle size bounds
         """
         
-        pass
+        info = {k:v for k,v in self.kaolinite_clay1.items()}
+        info['size_upper_bound'] = 36000
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [info],
+            fluid_characteristics = None
+            )
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.simulation_type, 'TT')
 
 
 class TestSimleSetups(unittest.TestCase):
@@ -123,3 +241,7 @@ class TestUpdates(unittest.TestCase):
     """
     
     pass
+
+
+if __name__ == '__main__':
+    unittest.main()
