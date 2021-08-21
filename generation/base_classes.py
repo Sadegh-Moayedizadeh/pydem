@@ -871,25 +871,37 @@ class Container(object):
         """
         
         length, width = [], []
+        reference_width, reference_length = self.width, self.length
         for i, d in enumerate(self.particles_info):
-            if i == 0:
-                length.append(d['size_upper_bound'])
-                width.append(d['size_upper_bound'])
-                while (self.width % width[-1] != 0):
-                    width[-1] += 1
-                while (self.length % length[-1] != 0):
-                    length[-1] += 1
-            else:
-                width.append(width[-1] * (d['size_upper_bound'] // width[-1]
-                                          + ((d['size_upper_bound'] / width[-1]) % 1 != 0)))
-                nr = self.width / width[-2]
-                while nr % (width[-1] / width[-2]) != 0:
-                    width[-1] += width[-2]
-                length.append(length[-1] * (d['size_upper_bound'] // length[-1]
-                                          + ((d['size_upper_bound'] / length[-1]) % 1 != 0)))
-                nr = self.length / length[-2]
-                while nr % (length[-1] / length[-2]) != 0:
-                    length[-1] += length[-2]
+            if i != 0:
+                reference_width, reference_length = width[-1], length[-1]
+            length.append(d['size_upper_bound'])
+            width.append(d['size_upper_bound'])
+            while (reference_width % width[-1] != 0):
+                width[-1] += 1
+            while (reference_length % length[-1] != 0):
+                length[-1] += 1
+            # else:
+            #     width.append(width[-1] * (d['size_upper_bound'] // width[-1]
+            #                               + ((d['size_upper_bound'] / width[-1]) % 1 != 0)))
+            #     nr = self.width / width[-2]
+            #     while nr % (width[-1] / width[-2]) != 0:
+            #         width[-1] += width[-2]
+            #     length.append(length[-1] * (d['size_upper_bound'] // length[-1]
+            #                               + ((d['size_upper_bound'] / length[-1]) % 1 != 0)))
+            #     nr = self.length / length[-2]
+            #     while nr % (length[-1] / length[-2]) != 0:
+            #         length[-1] += length[-2]
+        for w in width:
+            if self.width // w <= 2:
+                raise RuntimeError(
+                    'the given dimensions and sizes are not suitable to generate a proper grid system'
+                    )
+        for l in length:
+            if self.length // l <= 2:
+                raise RuntimeError(
+                    'the given dimensions and sizes are not suitable to generate a proper grid system'
+                    )
         return width, length
     
     def generate(self) -> None:

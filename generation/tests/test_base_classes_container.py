@@ -204,28 +204,124 @@ class TestValidations(unittest.TestCase):
         self.assertEqual(container.simulation_type, 'TT')
 
 
-class TestSimleSetups(unittest.TestCase):
+class TestSimpleSetups(unittest.TestCase):
     """test cases for simple setups and attribute settings that take
     place at the beginning of the simulation
     """
+    
+    kaolinite_clay1 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 2000,
+        'size_lower_bound': 1000,
+        'quantity': 500
+    }
+    kaolinite_clay2 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 3000,
+        'size_lower_bound': 2000,
+        'quantity': 500
+    }
+    quartz_sand1 = {
+        'type': 'quartz',
+        'size_upper_bound': 10000,
+        'size_lower_bound': 8000,
+        'quantity': 50
+    }
     
     def test_number_of_groups(self):
         """testing the 'number_of_groups' attribute of the Container
         class
         """
         
-        pass
+        container = base_classes.Container(
+            length = 35000,
+            width = 35000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay1, self.kaolinite_clay2, self.quartz_sand1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.number_of_groups, 3)
 
-    def test_box_width(self):
-        """testing the 'box_width' attribute if the Container class;
+    def test_box_length_and_width1(self):
+        """testing the 'box_length' and 'box_width' attribute of the
+        Container class with one grop of particles given
         """
         
-        pass
-
-    def test_box_length(self):
-        """testing the 'box_length' attribute of the Container class
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.box_length, [10000])
+        self.assertEqual(container.box_width, [10000])
+        
+    def test_box_length_and_width2(self):
+        """testing the 'box_length' and 'box_width' attribute of the
+        Container class with one grop of particles given and the upper
+        bound size for the given particle is a number that the container
+        dimensions are not divisible by it
         """
         
+        kaolinite = {k:v for k,v in self.kaolinite_clay2.items()}
+        kaolinite['size_upper_bound'] = 2700
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [kaolinite],
+            fluid_characteristics = None
+        )
+        self.assertEqual(len(container.box_length), 1)
+        self.assertEqual(container.box_length, [3125])
+        self.assertEqual(len(container.box_width), 1)
+        self.assertEqual(container.box_width, [3125])
+    
+    def test_box_length_and_width3(self):
+        """testing the 'box_length' and 'box_width' attribute of the
+        Container class with one grop of particles given and the given
+        length and width for the container not being proper numbers so
+        the generated boxes become 
+        """
+        
+        self.assertRaises(
+            RuntimeError,
+            base_classes.Container,
+            length = 100001,
+            width = 100001,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1],
+            fluid_characteristics = None
+            )
+    
+    def test_box_length_and_width4(self):
+        """testing the 'box_length' and 'box_width' attribute of the
+        Container class with two grop of particles given
+        """
+        
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(len(container.box_length), 2)
+        self.assertEqual(container.box_length, [10000, 2000])
+        self.assertEqual(len(container.box_width), 2)
+        self.assertEqual(container.box_width, [10000, 2000])
+    
+    def test_box_length_and_width(self):
+        """testing the 'box_length' and 'box_width' attribute of the
+        Container class with three grop of particles given
+        """
+    
         pass
     
     def test_make_boxes(self):
@@ -253,9 +349,17 @@ class TestSimleSetups(unittest.TestCase):
         pass
     
     
-class TestContacts(unittest.TestCase):
-    """test cases for the contact detection operations for different
-    types of contacts and particles
+class TestMechanicalContacts(unittest.TestCase):
+    """test cases for mechanical contact detection operations for
+    different types of particles
+    """
+    
+    pass
+
+
+class TestDDLandVDVcontancts(unittest.TestCase):
+    """testing the ddl and van der vaals contact detection between two
+    clay particles
     """
     
     pass
@@ -269,8 +373,17 @@ class TestParticleGeneration(unittest.TestCase):
     pass
 
 
-class TestForces(unittest.TestCase):
-    """test cases for the stuff that are related to particle forces
+class TestMechanicalForces(unittest.TestCase):
+    """test cases for mechanical forces calculated between different
+    types of particles
+    """
+    
+    pass
+
+
+class TestDDLandVDVforces(unittest.TestCase):
+    """testing the ddl and van der vaals forces calculated for clay
+    particles
     """
     
     pass
