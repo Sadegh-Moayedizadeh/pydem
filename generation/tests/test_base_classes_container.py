@@ -234,8 +234,8 @@ class TestSimpleSetups(unittest.TestCase):
         """
         
         container = base_classes.Container(
-            length = 35000,
-            width = 35000,
+            length = 100000,
+            width = 100000,
             simulation_type = 'tt',
             time_step = 1.8e-13,
             particles_info = [self.kaolinite_clay1, self.kaolinite_clay2, self.quartz_sand1],
@@ -317,36 +317,121 @@ class TestSimpleSetups(unittest.TestCase):
         self.assertEqual(len(container.box_width), 2)
         self.assertEqual(container.box_width, [10000, 2000])
     
-    def test_box_length_and_width(self):
+    def test_box_length_and_width5(self):
         """testing the 'box_length' and 'box_width' attribute of the
         Container class with three grop of particles given
         """
     
-        pass
-    
-    def test_make_boxes(self):
-        """testing the 'make_boxes' method of the container class
-        """
-        
-        pass
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1, self.kaolinite_clay2],
+            fluid_characteristics = None
+        )
+        self.assertEqual(len(container.box_length), 3)
+        self.assertEqual(container.box_length, [10000, 5000, 2500])
+        self.assertEqual(len(container.box_width), 3)
+        self.assertEqual(container.box_width, [10000, 5000, 2500])
 
-    def test_nr(self):
-        """testing the 'nr' attribute of the Container class
+    def test_nr_nc1(self):
+        """testing the 'nr' and 'nc' attribute of the Container class
+        for one group of particles given
         """
         
-        pass
-
-    def test_nc(self):
-        """testing the 'nc' attribute of the container class
-        """
-        
-        pass
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.number_of_rows, [10])
+        self.assertEqual(container.number_of_columns, [10])
     
-    def test_setup_walls(self):
-        """testing the 'setup_walls' method of the Container class
+    def test_nr_nc2(self):
+        """testing the 'nr' and 'nc' attribute of the Container class
+        for two group of particles given
         """
         
-        pass
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.number_of_rows, [10, 50])
+        self.assertEqual(container.number_of_columns, [10, 50])
+    
+    def test_nr_nc3(self):
+        """testing the 'nr' and 'nc' attribute of the Container class
+        for three group of particles given
+        """
+        
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.kaolinite_clay2, self.quartz_sand1, self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.number_of_rows, [10, 20, 40])
+        self.assertEqual(container.number_of_columns, [10, 20, 40])
+    
+    def test_setup_walls1(self):
+        """testing the 'setup_walls' method of the Container class with
+        the 'simulation_type' parameter being "tt"
+        """
+        
+        container = base_classes.Container(
+            length = 100000,
+            width = 100000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        wall1 = base_classes.Wall(
+            x = 0, y = 50000, inclination = np.math.pi/2, is_fixed = True, length = 100000)
+        wall2 = base_classes.Wall(
+            x = 50000, y = 100000, inclination = 0, is_fixed = False, length = 100000)
+        wall3 = base_classes.Wall(
+            x = 100000, y = 50000, inclination = np.math.pi/2, is_fixed = True, length = 100000)
+        wall4 = base_classes.Wall(
+            x = 50000, y = 0, inclination = 0, is_fixed = True, length = 100000)
+        exp = [wall1, wall2, wall3, wall4]
+        res = container.walls
+        self.assertEqual(set(res), set(exp))
+    
+    def test_setup_walls2(self):
+        """testing the 'setup_walls' method of the Container class with
+        the 'simulation_type' parameter being "tt" and the length and
+        width of the cotainer being different from each other
+        """
+        
+        container = base_classes.Container(
+            length = 100000,
+            width = 80000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1],
+            fluid_characteristics = None
+        )
+        wall1 = base_classes.Wall(
+            x = 0, y = 40000, inclination = np.math.pi/2, is_fixed = True, length = 80000)
+        wall2 = base_classes.Wall(
+            x = 50000, y = 80000, inclination = 0, is_fixed = False, length = 100000)
+        wall3 = base_classes.Wall(
+            x = 100000, y = 40000, inclination = np.math.pi/2, is_fixed = True, length = 80000)
+        wall4 = base_classes.Wall(
+            x = 50000, y = 0, inclination = 0, is_fixed = True, length = 100000)
+        walls = [wall1, wall2, wall3, wall4]
+        self.assertEqual(set(container.walls), set(walls))
     
     
 class TestMechanicalContacts(unittest.TestCase):

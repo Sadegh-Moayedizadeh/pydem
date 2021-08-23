@@ -93,7 +93,7 @@ class Particle(object):
         Particle.last_num -= 1
     
     def __hash__(self) -> int:
-        return self.num**2 + self.x**2 + self.y**2
+        return int(self.num**2 + self.x**2 + self.y**2)
     
     def __eq__(self, other: Any) -> bool:
         if (
@@ -682,6 +682,25 @@ class Wall(Particle):
         self.x += delta_x
         self.y += delta_y
         self.inclination = operations.standardized_inclination(self.inclination + delta_theta)
+    
+    def __repr__(self):
+        """string representation of the Wall object
+        """
+        return  f"Wall[inclination: {self.inclination}; center: ({self.x}, {self.y}); is_fixed: {self.is_fixed}]"
+
+    def __eq__(self, other):
+        if (
+            isinstance(other, Wall)
+            and abs(self.x - other.x) < 1e-10
+            and abs(self.y - other.y) < 1e-10
+            and abs(self.inclination - other.inclination) < 1e-10
+            and self.is_fixed == other.is_fixed
+        ):
+            return True
+        return False
+    
+    def __hash__(self) -> int:
+        return int(self.x**2 + self.y**2)
 
 
 class Container(object):
@@ -802,9 +821,9 @@ class Container(object):
         self.particles: List = []
         self.boxes: Dict = {i : defaultdict(list) for i in range(self.number_of_groups)}
         self.box_width, self.box_length = self._make_boxes()
-        self.nr: List = [self.width // w for w in self.box_width]
-        self.nc: List = [self.length // l for l in self.box_length]
-        self.walls: List = []
+        self.number_of_rows: List = [self.width // w for w in self.box_width]
+        self.number_of_columns: List = [self.length // l for l in self.box_length]
+        self.walls: List = self.setup_walls()
     
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -881,17 +900,6 @@ class Container(object):
                 width[-1] += 1
             while (reference_length % length[-1] != 0):
                 length[-1] += 1
-            # else:
-            #     width.append(width[-1] * (d['size_upper_bound'] // width[-1]
-            #                               + ((d['size_upper_bound'] / width[-1]) % 1 != 0)))
-            #     nr = self.width / width[-2]
-            #     while nr % (width[-1] / width[-2]) != 0:
-            #         width[-1] += width[-2]
-            #     length.append(length[-1] * (d['size_upper_bound'] // length[-1]
-            #                               + ((d['size_upper_bound'] / length[-1]) % 1 != 0)))
-            #     nr = self.length / length[-2]
-            #     while nr % (length[-1] / length[-2]) != 0:
-            #         length[-1] += length[-2]
         for w in width:
             if self.width // w <= 2:
                 raise RuntimeError(
