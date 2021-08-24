@@ -433,7 +433,22 @@ class TestSimpleSetups(unittest.TestCase):
         walls = [wall1, wall2, wall3, wall4]
         self.assertEqual(set(container.walls), set(walls))
     
-    
+    def test_number_of_clay_groups(self):
+        """testing the 'number_of_clay_groups' attribute of the
+        Container class
+        """
+        
+        container = base_classes.Container(
+            length = 100000,
+            width = 80000,
+            simulation_type = 'tt',
+            time_step = 1.8e-13,
+            particles_info = [self.quartz_sand1, self.kaolinite_clay1, self.kaolinite_clay2],
+            fluid_characteristics = None
+        )
+        self.assertEqual(container.number_of_clay_groups, 2)
+        
+
 class TestMechanicalContacts(unittest.TestCase):
     """test cases for mechanical contact detection operations for
     different types of particles

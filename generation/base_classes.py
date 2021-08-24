@@ -703,6 +703,20 @@ class Wall(Particle):
         return int(self.x**2 + self.y**2)
 
 
+def time_cache(method):
+    cached_res = None
+    last_time = None
+    def wrapper(self):
+        if (last_time is None) or (self.time != last_time):
+            res = method(self)
+            cached_res = res
+            last_time = self.time
+            return res
+        else:
+            return cached_res
+    return wrapper
+
+
 class Container(object):
     """create the container in which the simulation for different tests
     takes place
@@ -795,17 +809,26 @@ class Container(object):
             RuntimeError: when the given particles_info array is invalid
         """
         
+        #miscellaneous stuff
         if not simulation_type.upper() in self.valid_simulation_types:
             raise RuntimeError(
                 'invalid input for the simulation type; should be either of "TT", "DS", or "SS"'
                 )
         self.simulation_type = simulation_type.upper()
+        self.time_step = time_step
+        self.time = 0
+        self.fluid_characteristics = fluid_characteristics #do some validations here later
+        
+        #stuff about container's geometry
         if length <= 0 or width <= 0:
             raise RuntimeError(
                 'the given length and width of the container should be a positive number'
                 )
         self.length = length
         self.width = width
+        self.walls: List = self.setup_walls()
+        
+        #stuff about particles
         if not (self._validate_info(particles_info) is True):
             message = self._validate_info(particles_info)
             raise RuntimeError(
@@ -816,14 +839,15 @@ class Container(object):
             )
         self.particles_info = particles_info
         self.number_of_groups: int = len(particles_info)
-        self.mechanical_contacts: Type[defaultdict] = defaultdict(set)
-        self.ddl_contacts: Type[defaultdict] = defaultdict(set)
+        self.number_of_clay_groups = len([di for di in self.particles_info if di['type'] != 'quartz'])
         self.particles: List = []
-        self.boxes: Dict = {i : defaultdict(list) for i in range(self.number_of_groups)}
+        
+        #stuff about contacts
+        self.mechanical_contacts: Type[defaultdict] = defaultdict(set)
+        self.chemical_contacts: Type[defaultdict] = defaultdict(set)
         self.box_width, self.box_length = self._make_boxes()
         self.number_of_rows: List = [self.width // w for w in self.box_width]
         self.number_of_columns: List = [self.length // l for l in self.box_length]
-        self.walls: List = self.setup_walls()
     
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -912,6 +936,29 @@ class Container(object):
                     )
         return width, length
     
+    @property
+    @time_cache
+    def mechanical_boxes(self):
+        """a list of dictionaries whose indices denote the particle
+        size hierarchy and in each dictionary the keys are box numbers
+        in that hierarchy and the values are a list containing
+        particles that are in touch with that box
+        """
+
+        pass
+    
+    @property
+    @time_cache
+    def mechanical_boxes(self):
+        """a list of dictionaries whose indices denote the particle
+        size hierarchy and in each dictionary the keys are box numbers
+        in that hierarchy and the values are a list containing
+        clay particles whose circumcircle is in touch with the
+        corresponding box
+        """
+
+        pass
+    
     def generate(self) -> None:
         """generate the list of particles in-place regarding the given
         particles_info array to the Container class
@@ -965,7 +1012,7 @@ class Container(object):
                         self.boxes[index][box].append(new_particle)
                 return
     
-    def _particle_wall_contact_check(
+    def particle_wall_contact_check(
         self,
         particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
         hierarchy: int,
@@ -1006,13 +1053,14 @@ class Container(object):
                     res.append(operations.intersection(particle.shape, wall.shape))
         return res if res else None
     
-    def _single_particle_contact_check(
+    def single_particle_mechanical_contact_check(
         self,
-        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
+        particle: Union[Type[Kaolinite], Type[Montmorillonite], Type[Quartz], Type[Illite]],
         generation_phase: bool = True
         ) -> bool:
         """checking if the given particle is in contact with any other
-            particle
+            particle; it only returns True or False; the aim here is
+            not to quantify the contact
 
         Args:
             particle: the given particle to check if it's in contact
@@ -1026,7 +1074,7 @@ class Container(object):
         """
 
         for box in self.touching_boxes(particle.shape, particle.hierarchy):
-            for particle2 in self.boxes[particle.hierarchy][box]:
+            for particle2 in self.mechanical_boxes[particle.hierarchy][box]:
                 contact = operations.intersection(particle.shape, particle2.shape)
                 if contact:
                     if particle.num != particle2.num:
