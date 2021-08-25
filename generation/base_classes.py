@@ -843,12 +843,15 @@ class Container(object):
         self.particles: List = []
         
         #stuff about contacts
-        self.mechanical_contacts: Type[defaultdict] = defaultdict(set)
-        self.chemical_contacts: Type[defaultdict] = defaultdict(set)
+        self.mechanical_contacts: Type[defaultdict] = defaultdict(list)
+        self.chemical_contacts: Type[defaultdict] = defaultdict(list)
+        self.wall_contacts: List = []
         self.box_width, self.box_length = self._make_boxes()
         self.number_of_rows: List = [self.width // w for w in self.box_width]
         self.number_of_columns: List = [self.length // l for l in self.box_length]
-    
+        self.mechanical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+        self.chemical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
 
@@ -936,28 +939,31 @@ class Container(object):
                     )
         return width, length
     
-    @property
-    @time_cache
-    def mechanical_boxes(self):
-        """a list of dictionaries whose indices denote the particle
-        size hierarchy and in each dictionary the keys are box numbers
-        in that hierarchy and the values are a list containing
-        particles that are in touch with that box
+    def update_mechanical_boxes(self):
+        """updates the 'self.mechanical_boxes' attribute; this is
+        usually done after each update in particles' position
         """
-
-        pass
+        
+        res = [defaultdict(list) for _ in range(self.number_of_groups)]
+        for particle in self.particles:
+            for index in range(particle.hierarchy, self.number_of_groups):
+                    for box in self.touching_boxes(particle.shape, index):
+                        res[index][box].append(particle)
+        self.mechanical_boxes = res
     
-    @property
-    @time_cache
-    def mechanical_boxes(self):
-        """a list of dictionaries whose indices denote the particle
-        size hierarchy and in each dictionary the keys are box numbers
-        in that hierarchy and the values are a list containing
-        clay particles whose circumcircle is in touch with the
-        corresponding box
+    def update_chemical_boxes(self):
+        """updates the 'self.chemical_boxes' attribute; this is
+        usually done after each update in particles' position
         """
-
-        pass
+        
+        res = [defaultdict(list) for _ in range(self.number_of_groups)]
+        for particle in self.particles:
+            if not isinstance(particle, Clay):
+                continue
+            for index in range(particle.hierarchy, self.number_of_groups):
+                    for box in self.touching_boxes(particle.shape.circumcircle, index):
+                        res[index][box].append(particle)
+        self.mechanical_boxes = res
     
     def generate(self) -> None:
         """generate the list of particles in-place regarding the given
@@ -1009,7 +1015,7 @@ class Container(object):
                 self.particles.append(new_particle)
                 for index in range(new_particle.hierarchy, self.number_of_groups):
                     for box in self.touching_boxes(new_particle.shape, index):
-                        self.boxes[index][box].append(new_particle)
+                        self.mechanical_boxes[index][box].append(new_particle)
                 return
     
     def particle_wall_contact_check(
@@ -1018,7 +1024,9 @@ class Container(object):
         hierarchy: int,
         ) -> bool:
         """checks if the given particle is in contact with any of the
-        boundaries
+        boundary walls; it is only used in generation phase, so the
+        additional distance of the particles from the wall in this
+        phase is also considered here
         
         Args:
             particle (Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]]):
@@ -1087,18 +1095,20 @@ class Container(object):
             return
         return False
         
-    def update_mechanical_contact_list(self) -> None:
-        """recreating the self.mechanical_contacts dictionary
+    def update_mechanical_contacts_dictionary(self) -> None:
+        """updates the 'self.mechanical_contacts' dictionary
         """
         
-        self.boxes = {i : defaultdict(list) for i in range(self.number_of_groups)}
-        self.mechanical_contacts = defaultdict(set)
-        self.particles = sorted(self.particles, key = lambda x: x.hierarchy)
-        for particle in self.particles:
-            self._single_particle_contact_check(particle, generation_phase = False)
+        pass
     
-    def update_aor_contact_list(self) -> None:
-        """recreates the self.ddl_contacts dictionary
+    def update_chemical_contacts_dictionary(self) -> None:
+        """updates the 'self.chemical_contacts' dictionary
+        """
+        
+        pass
+    
+    def update_wall_contacts_list(self):
+        """updates the 'self.wall_contacts' list
         """
         
         pass

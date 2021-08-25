@@ -451,10 +451,152 @@ class TestSimpleSetups(unittest.TestCase):
 
 class TestMechanicalContacts(unittest.TestCase):
     """test cases for mechanical contact detection operations for
-    different types of particles
+    different types of particles; contact lists for contacting
+    particles with walls are also tested; stuff like tolerance and
+    having multiple particle size hierarchies have been considered
+    while writing these test cases
     """
     
-    pass
+    #instantiate a couple of particles in here
+    
+    def test_touching_boxes1(self):
+        """testing the "touching_boxes" method of the Container class
+        given an instance of the Line class as its 'particle_shape'
+        parameter
+        """
+        
+        pass
+    
+    def test_touching_boxes2(self):
+        """testing the "touching_boxes" method of the Container class
+        given an instance of the Circle class as its 'particle_shape'
+        parameter
+        """
+        
+        pass
+    
+    def test_touching_boxes3(self):
+        """testing the "touching_boxes" method of the Container class
+        given an instance of the Rectangle class as its 'particle_shape'
+        parameter
+        """
+        
+        pass
+    
+    def test_update_mechanical_boxes1(self):
+        """testing the "update_mechanical_boxes" method of the Container
+        class appending some particles to the "particles" attribute of
+        the container instance, while instantiated given only one
+        particle group
+        """
+
+        pass
+    
+    def test_update_mechanical_boxes2(self):
+        """testing the "update_mechanical_boxes" method of the Container
+        class appending some particles to the "particles" attribute of
+        the container instance, while instantiated given two particle
+        groups
+        """
+
+        pass
+    
+    def test_update_mechanical_boxes3(self):
+        """testing the "update_mechanical_boxes" method of the Container
+        class appending some particles to the "particles" attribute of
+        the container instance, while instantiated given three particle
+        groups
+        """
+
+        pass
+    
+    def test_single_particle_mechanical_contact_check1(self):
+        """testing the "single_particle_mechanical_contact_check"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given only one particle group
+        """
+
+        pass
+    
+    def test_single_particle_mechanical_contact_check2(self):
+        """testing the "single_particle_mechanical_contact_check"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given two particle groups
+        """
+
+        pass
+    
+    def test_single_particle_mechanical_contact_check3(self):
+        """testing the "single_particle_mechanical_contact_check"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given three particle groups
+        """
+
+        pass
+    
+    def test_update_mechanical_contacts_dictionary1(self):
+        """testing the "update_mechanical_contacts_dictionary"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given only one particle group
+        """
+        
+        pass
+    
+    def test_update_mechanical_contacts_dictionary2(self):
+        """testing the "update_mechanical_contacts_dictionary"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given two particle groups
+        """
+        
+        pass
+    
+    def test_update_mechanical_contacts_dictionary3(self):
+        """testing the "update_mechanical_contacts_dictionary"
+        method of the Container class appending some particles to the
+        "particles" attribute of the container instance, while
+        instantiated given three particle groups
+        """
+        
+        pass
+    
+    def test_particle_wall_contact_check(self):
+        """testing the "particle_wall_contact_check" method of the
+        Container class
+        """
+        
+        pass
+    
+    def test_update_wall_contacts_list1(self):
+        """testing the "update_wall_contacts_list" method of the
+        Container class appending some particles to the "particles"
+        attribute of the container instance, while instantiated given
+        only one particle group
+        """
+        
+        pass
+    
+    def test_update_wall_contacts_list2(self):
+        """testing the "update_wall_contacts_list" method of the
+        Container class appending some particles to the "particles"
+        attribute of the container instance, while instantiated given
+        two particle groups
+        """
+        
+        pass
+    
+    def test_update_wall_contacts_list3(self):
+        """testing the "update_wall_contacts_list" method of the
+        Container class appending some particles to the "particles"
+        attribute of the container instance, while instantiated given
+        three particle groups
+        """
+        
+        pass
 
 
 class TestDDLandVDVcontancts(unittest.TestCase):
