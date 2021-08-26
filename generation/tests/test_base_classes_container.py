@@ -457,7 +457,44 @@ class TestMechanicalContacts(unittest.TestCase):
     while writing these test cases
     """
     
-    #instantiate a couple of particles in here
+    #particle info dictionaries used in test cases in this class
+    kaolinite_clay1 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 2000,
+        'size_lower_bound': 1000,
+        'quantity': 500
+    }
+    kaolinite_clay2 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 3000,
+        'size_lower_bound': 2000,
+        'quantity': 500
+    }
+    quartz_sand1 = {
+        'type': 'quartz',
+        'size_upper_bound': 10000,
+        'size_lower_bound': 8000,
+        'quantity': 50
+    }
+    
+    #particles to be appended to the container for test cases
+    quartz1 = base_classes.Quartz(
+        x = 10000, y = 10000, diameter = 8500
+    )
+    quartz2 = base_classes.Quartz(
+        x = 50000, y = 10000, diameter = 9000
+    )
+    quartz3 = base_classes.Quartz(
+        x = 30000, y = 25000, diameter = 9000
+    )
+    quartz4 = base_classes.Quartz(
+        x = 60000, y = 40000, diameter = 9000
+    )
+    quartz5 = base_classes.Quartz(
+        x = 30000, y = 50000, diameter = 8500
+    )
+    
+    
     
     def test_touching_boxes1(self):
         """testing the "touching_boxes" method of the Container class

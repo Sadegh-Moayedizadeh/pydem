@@ -436,7 +436,7 @@ class Quartz(Sand):
         """initialize the montmorillonite particle
 
         Args:
-            length (float): the diameter of the sand particle
+            diameter (float): the diameter of the sand particle
             x (float): x coordinate of the particle in nanometers
             y (float): y coordinate of the particle in nanometers
             inclination (float): the inclination of the particle in 
