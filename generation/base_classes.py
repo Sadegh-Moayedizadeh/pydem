@@ -367,7 +367,7 @@ class Kaolinite(Clay):
         formula (str): general formula for kaolinite particles
     """
     
-    length_bounds: Tuple[int, int] = (4000, 12000) # in nanometer; may change
+    length_bounds: Tuple[int, int] = (1000, 12000) # in nanometer; may change
     width_bounds: Tuple[int, int] = (1, 3) # in nanometer; may change
     cec: float = 5 # according to M.Khabazian and A.Mirghasemi, 2018
     ssa: float = 20 # in square meters per gram; ///
@@ -425,7 +425,7 @@ class Quartz(Sand):
         formula (str): the general formula of the quartz particles
     """
 
-    diameter_bounds: Tuple[int, int] = (0, 100)
+    diameter_bounds: Tuple[int, int] = (0, 1000000)
     normal_contact_stiffness: float = 2
     shear_contact_stiffness: float = 2
     density: float = 2.65e-33
@@ -1116,7 +1116,8 @@ class Container(object):
     def touching_boxes(
         self,
         particle_shape: Type[Union[shapes.LineSegment, shapes.Rectangle, shapes.Circle]],
-        index: int
+        index: int,
+        nb: int
         ) -> List:
         """finds the boxes in touch with the given particle in the
         specified size hierarchy
@@ -1125,6 +1126,8 @@ class Container(object):
             particle (Particle): the particle for which to calculate
                 the boxes in contact with            
             index (int): the size hieratchy
+            nb (int): number of the box inside which the particle's
+                center is located
 
         Returns:
             list: an array containing the number of boxes in touch
@@ -1132,9 +1135,8 @@ class Container(object):
         """
         
         res = []
-        nb = particle.box_num(self.nc[index], self.length, self.width)
-        row = nb // self.nc[index]
-        column = nb % self.nr[index]
+        row = nb // self.number_of_columns[index]
+        column = nb % self.number_of_rows[index]
         
         # lower box
         if row > 0:
@@ -1146,11 +1148,11 @@ class Container(object):
                 ((column + 1) * self.box_length[index]),
                 (row * self.box_width[index])
                 )
-            corner3 = shapes.Point(
+            corner4 = shapes.Point(
                 (column * self.box_length[index]),
                 ((row - 1) * self.box_width[index])
                 )
-            corner4 = shapes.Point(
+            corner3 = shapes.Point(
                 ((column + 1) * self.box_length[index]),
                 ((row - 1) * self.box_width[index])
                 )
@@ -1159,7 +1161,7 @@ class Container(object):
                 res.append(nb - self.nc[index])
 
         # upper box
-        if row < (self.nr[index] - 1):
+        if row < (self.number_of_rows[index] - 1):
             corner1 = shapes.Point(
                 (column * self.box_length[index]),
                 ((row + 1) * self.box_width[index])
@@ -1178,7 +1180,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb + self.nc[index])
+                res.append(nb + self.number_of_columns[index])
 
         # left box
         if column > 0:
@@ -1203,7 +1205,7 @@ class Container(object):
                 res.append(nb - 1)
 
         # right box
-        if column < (self.nc[index] - 1):
+        if column < (self.number_of_columns[index] - 1):
             corner1 = shapes.Point(
                 ((column + 1) * self.box_length[index]),
                 (row * self.box_width[index])
@@ -1225,7 +1227,7 @@ class Container(object):
                 res.append(nb + 1)
 
         # upper left box
-        if row < (self.nr[index] - 1) and column > 0:
+        if row < (self.number_of_rows[index] - 1) and column > 0:
             corner1 = shapes.Point(
                 ((column - 1) * self.box_length[index]),
                 ((row + 1) * self.box_width[index])
@@ -1247,7 +1249,7 @@ class Container(object):
                 res.append(nb + self.nc[index] - 1)
 
         # upper right box
-        if row < (self.nr[index] - 1) and column < (self.nc[index] - 1):
+        if row < (self.number_of_rows[index] - 1) and column < (self.number_of_columns[index] - 1):
             corner1 = shapes.Point(
                 ((column + 1) * self.box_length[index]),
                 ((row + 1) * self.box_width[index])
@@ -1291,7 +1293,7 @@ class Container(object):
                 res.append(nb - self.nc[index] - 1)
 
         # lower right box
-        if row > 0 and column < (self.nc[index] - 1):
+        if row > 0 and column < (self.number_of_columns[index] - 1):
             corner1 = shapes.Point(
                 ((column + 1) * self.box_length[index]),
                 ((row - 1) * self.box_width[index])
@@ -1311,7 +1313,7 @@ class Container(object):
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
                 res.append(nb - self.nc[index] + 1)
-
+        res.append(nb)
         return res
     
     def setup(self):

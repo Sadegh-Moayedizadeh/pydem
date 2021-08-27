@@ -580,19 +580,19 @@ class TestMechanicalContacts(unittest.TestCase):
     container = base_classes.Container(
         length = 100000,
         width = 100000,
-        particles_info = [self.kaolinite_clay1, self.kaolinite_clay2, self.quartz_sand1],
+        particles_info = [kaolinite_clay1, kaolinite_clay2, quartz_sand1],
         time_step = 0.01,
         simulation_type = 'tt',
         fluid_characteristics = None
     )
     container.particles.extend([
-        self.quartz1, self.quartz2, self.quartz3, self.quartz4, self.quartz5,
-        self.quartz6, self.quartz7, self.quartz8, self.quartz8, self.quartz9,
-        self.quartz10, self.quartz11, self.quartz12, self.quartz13, self.quartz14,
-        self.quartz15, self.kaolinite1_1, self.kaolinite1_2, self.kaolinite1_3,
-        self.kaolinite1_4, self.kaolinite1_5, self.kaolinite1_6, self.kaolinite1_7,
-        self.kaolinite2_1, self.kaolinite2_2, self.kaolinite2_3, self.kaolinite2_4,
-        self.kaolinite2_5, self.kaolinite2_6, self.kaolinite2_7, self.kaolinite2_8
+        quartz1, quartz2, quartz3, quartz4, quartz5,
+        quartz6, quartz7, quartz8, quartz8, quartz9,
+        quartz10, quartz11, quartz12, quartz13, quartz14,
+        quartz15, kaolinite1_1, kaolinite1_2, kaolinite1_3,
+        kaolinite1_4, kaolinite1_5, kaolinite1_6, kaolinite1_7,
+        kaolinite2_1, kaolinite2_2, kaolinite2_3, kaolinite2_4,
+        kaolinite2_5, kaolinite2_6, kaolinite2_7, kaolinite2_8
     ])
     
     
@@ -602,7 +602,12 @@ class TestMechanicalContacts(unittest.TestCase):
         parameter
         """
         
-        pass
+        end1 = shapes.Point(17000, 27000)
+        end2 = shapes.Point(14500, 21000)
+        line = shapes.LineSegment(end1, end2)
+        exp = [103, 82, 83]
+        res = self.container.touching_boxes(particle_shape = line, index = 1, nb = 83)
+        self.assertEqual(set(res), set(exp))
     
     def test_touching_boxes2(self):
         """testing the "touching_boxes" method of the Container class
