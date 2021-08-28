@@ -1121,10 +1121,26 @@ class Container(object):
         return False
         
     def update_mechanical_contacts_dictionary(self) -> None:
-        """updates the 'self.mechanical_contacts' dictionary
+        """updates the 'self.mechanical_contacts' dictionary; note that
+        the "mechanical_boxes" and "mechanical_boxes_reversed" arrays
+        should be updated before calling this method
         """
         
-        pass
+        res = defaultdict(list)
+        for particle in self.particles:
+            h = particle.hierarchy
+            for i in range(h, self.number_of_groups):
+                for box in self.mechanical_boxes_reversed[i][particle]:
+                    for particle2 in self.mechanical_boxes[i][box]:
+                        if (
+                            operations.intersection(particle.shape, particle2.shape)
+                            or operations.is_inside(particle.shape, particle2.shape)
+                            or operations.is_inside(particle2.shape, particle.shape)
+                        ):
+                            if particle2 != particle and not(particle2 in res[particle]):
+                                res[particle].append(particle2)
+                            
+        self.mechanical_contacts = res
     
     def update_chemical_contacts_dictionary(self) -> None:
         """updates the 'self.chemical_contacts' dictionary

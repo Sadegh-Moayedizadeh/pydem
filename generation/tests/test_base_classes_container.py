@@ -906,7 +906,28 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given only one particle group
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz7,
+                self.quartz8,
+                self.quartz9,
+                self.quartz12,
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        self.assertEqual(container.mechanical_contacts[self.quartz7], [self.quartz9, self.quartz8])
+        self.assertEqual(container.mechanical_contacts[self.quartz8], [self.quartz7])
+        self.assertEqual(container.mechanical_contacts[self.quartz9], [self.quartz7])
+        self.assertEqual(container.mechanical_contacts[self.quartz12], [])
     
     def test_update_mechanical_contacts_dictionary2(self):
         """testing the "update_mechanical_contacts_dictionary"
@@ -915,7 +936,32 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given two particle groups
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz2,
+                self.kaolinite2_5,
+                self.quartz12,
+                self.kaolinite2_2,
+                self.quartz7,
+                self.kaolinite2_8
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        self.assertEqual(container.mechanical_contacts[self.quartz2], [self.kaolinite2_5])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite2_5], [self.quartz2])
+        self.assertEqual(container.mechanical_contacts[self.quartz12], [self.kaolinite2_2])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite2_2], [self.quartz12])
+        self.assertEqual(container.mechanical_contacts[self.quartz7], [])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite2_8], [])
     
     def test_update_mechanical_contacts_dictionary3(self):
         """testing the "update_mechanical_contacts_dictionary"
@@ -924,7 +970,40 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given three particle groups
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.kaolinite2_8,
+                self.kaolinite1_6,
+                self.kaolinite2_4,
+                self.kaolinite2_3,
+                self.quartz1,
+                self.kaolinite2_7,
+                self.kaolinite1_5,
+                self.quartz10,
+                self.quartz11,
+                self.quartz3,
+                self.quartz5,
+                self.quartz15,
+                self.kaolinite1_7
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        self.assertEqual(container.mechanical_contacts[self.kaolinite2_8], [self.kaolinite1_6])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite1_6], [self.kaolinite2_8])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite2_4], [self.kaolinite2_3])
+        self.assertEqual(container.mechanical_contacts[self.kaolinite1_5], [self.quartz1, self.kaolinite2_7])
+        self.assertEqual(container.mechanical_contacts[self.quartz10], [self.quartz11])
+        self.assertEqual(container.mechanical_contacts[self.quartz11], [self.quartz10])
+        self.assertEqual(container.mechanical_contacts[self.quartz5], [self.quartz15, self.kaolinite1_7])
     
     def test_particle_wall_contact_check(self):
         """testing the "particle_wall_contact_check" method of the
