@@ -564,7 +564,7 @@ class TestMechanicalContacts(unittest.TestCase):
         x = 35000, y = 15000, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
     ) #intersects with kaolinite2_3
     kaolinite2_5 = base_classes.Kaolinite(
-        x = 48000, y = 8000, length = 2500, thickness = 2, inclination = np.math.pi/4, hierarchy = 1
+        x = 47500, y = 7500, length = 2500, thickness = 2, inclination = np.math.pi/4, hierarchy = 1
     ) #intersects with quartz2
     kaolinite2_6 = base_classes.Kaolinite(
         x = 12000, y = 8000, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
@@ -573,7 +573,7 @@ class TestMechanicalContacts(unittest.TestCase):
         x = 7550, y = 7550, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
     ) #intersects with kaolinite1_5
     kaolinite2_8 = base_classes.Kaolinite(
-        x = 25550, y = 15550, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
+        x = 25050, y = 15050, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
     ) #intersects with kaolinite1_6
     
     #container instance to run the tests on
@@ -780,7 +780,51 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given two particle groups
         """
 
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz2,
+                self.kaolinite2_5,
+                self.quartz13,
+                self.quartz12,
+                self.kaolinite2_2,
+                self.quartz7,
+                self.quartz8,
+                self.kaolinite2_8
+            ]
+        )
+        container.update_mechanical_boxes()
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz2)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_5)
+        )
+        self.assertFalse(
+            container.single_particle_mechanical_contact_check(self.quartz13)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz12)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_2)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz7)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz8)
+        )
+        self.assertFalse(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_8)
+        )
     
     def test_single_particle_mechanical_contact_check3(self):
         """testing the "single_particle_mechanical_contact_check"
@@ -789,7 +833,71 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given three particle groups
         """
 
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.kaolinite2_8,
+                self.kaolinite1_6,
+                self.kaolinite2_4,
+                self.kaolinite2_3,
+                self.quartz1,
+                self.kaolinite2_7,
+                self.kaolinite1_5,
+                self.quartz10,
+                self.quartz11,
+                self.quartz3,
+                self.kaolinite1_3,
+                self.quartz14,
+                self.kaolinite1_1
+            ]
+        )
+        container.update_mechanical_boxes()
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_8)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite1_6)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_4)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_3)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite2_7)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite1_5)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz1)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz10)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz11)
+        )
+        self.assertFalse(
+            container.single_particle_mechanical_contact_check(self.quartz3)
+        )
+        self.assertFalse(
+            container.single_particle_mechanical_contact_check(self.kaolinite1_3)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz14)
+        )
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.kaolinite1_1)
+        )
     
     def test_update_mechanical_contacts_dictionary1(self):
         """testing the "update_mechanical_contacts_dictionary"

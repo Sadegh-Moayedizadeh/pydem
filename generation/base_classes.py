@@ -854,6 +854,8 @@ class Container(object):
         self.number_of_columns: List = [self.length // l for l in self.box_length]
         self.mechanical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
         self.chemical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+        self.mechanical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+        self.chemical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
 
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -948,13 +950,15 @@ class Container(object):
         """
         
         #this is not efficient, but there seems to be no better way; multithread seems necessary here
-        res = [defaultdict(list) for _ in range(self.number_of_groups)]
+        res1 = [defaultdict(list) for _ in range(self.number_of_groups)]
+        res2 = [defaultdict(list) for _ in range(self.number_of_groups)]
         for particle in self.particles:
             h = particle.hierarchy
             nb = particle.box_num(self.number_of_columns[h], self.box_length[h], self.box_width[h])
             boxes = self.touching_boxes(particle.shape, h, nb)
             for box in boxes:
-                res[h][box].append(particle)
+                res1[h][box].append(particle)
+                res2[h][particle].append(box)
                 x0 = (box % self.number_of_columns[h]) * self.box_length[h]
                 y0 = (box // self.number_of_columns[h]) * self.box_width[h]
                 for index in range(h+1, self.number_of_groups):
@@ -971,18 +975,10 @@ class Container(object):
                                 or operations.intersection(rec, particle.shape)
                             ):
                                 new_box_num = x//self.box_length[index]+self.number_of_columns[index]*y//self.box_width[index]
-                                res[index][new_box_num].append(particle)
-        self.mechanical_boxes = res
-        #
-        
-        # for particle in self.particles:
-        #     for index in range(particle.hierarchy, self.number_of_groups):
-        #         for box in self.touching_boxes(
-        #             particle.shape, index,
-        #             particle.box_num(self.number_of_columns[index], self.box_length[index], self.box_width[index])
-        #             ):
-        #             res[index][box].append(particle)
-        # self.mechanical_boxes = res
+                                res1[index][new_box_num].append(particle)
+                                res2[index][particle].append(new_box_num)
+        self.mechanical_boxes = res1
+        self.mechanical_boxes_reversed = res2
     
     def update_chemical_boxes(self):
         """updates the 'self.chemical_boxes' attribute; this is
@@ -1112,19 +1108,16 @@ class Container(object):
         """
         
         h = particle.hierarchy
-        nb = particle.box_num(
-            self.number_of_columns[h], self.box_length[h], self.box_width[h]
-            )
-        for box in self.touching_boxes(particle.shape, h, nb):
-            for particle2 in self.mechanical_boxes[h][box]:
-                contact = operations.intersection(particle.shape, particle2.shape)
-                if (
-                    operations.intersection(particle.shape, particle2.shape)
-                    or operations.is_inside(particle.shape, particle2.shape)
-                    or operations.is_inside(particle2.shape, particle.shape)
-                ):
-                    if particle.num != particle2.num:
-                        return True
+        for i in range(h, self.number_of_groups):
+            for box in self.mechanical_boxes_reversed[i][particle]:
+                for particle2 in self.mechanical_boxes[i][box]:
+                    if (
+                        operations.intersection(particle.shape, particle2.shape)
+                        or operations.is_inside(particle.shape, particle2.shape)
+                        or operations.is_inside(particle2.shape, particle.shape)
+                    ):
+                        if particle.num != particle2.num:
+                            return True
         return False
         
     def update_mechanical_contacts_dictionary(self) -> None:
