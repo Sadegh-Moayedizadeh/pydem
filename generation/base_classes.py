@@ -83,7 +83,10 @@ class Particle(object):
         else:
             self.num = Particle.last_num
             Particle.last_num += 1
-        self.hierarchy = -1
+        if 'hierarchy' in kwargs.keys():
+            self.hierarchy = kwargs['hierarchy']
+        else:
+            self.hierarchy = None
 
     # def __new__(cls, name: str, bases: Tuple, attrs: Dict) -> None:
     #     cls.last_num += 1
@@ -944,12 +947,42 @@ class Container(object):
         usually done after each update in particles' position
         """
         
+        #this is not efficient, but there seems to be no better way; multithread seems necessary here
         res = [defaultdict(list) for _ in range(self.number_of_groups)]
         for particle in self.particles:
-            for index in range(particle.hierarchy, self.number_of_groups):
-                    for box in self.touching_boxes(particle.shape, index):
-                        res[index][box].append(particle)
+            h = particle.hierarchy
+            nb = particle.box_num(self.number_of_columns[h], self.box_length[h], self.box_width[h])
+            boxes = self.touching_boxes(particle.shape, h, nb)
+            for box in boxes:
+                res[h][box].append(particle)
+                x0 = (box % self.number_of_columns[h]) * self.box_length[h]
+                y0 = (box // self.number_of_columns[h]) * self.box_width[h]
+                for index in range(h+1, self.number_of_groups):
+                    delta_x = self.box_length[index]
+                    delta_y = self.box_width[index]
+                    for x in range(x0, x0 + self.box_length[h], delta_x):
+                        for y in range(y0, y0 + self.box_width[h], delta_y):
+                            end1 = shapes.Point(x, y)
+                            end2 = shapes.Point(x+delta_x, y+delta_y)
+                            line = shapes.LineSegment(end1, end2)
+                            rec = shapes.Rectangle.from_diagonal(line)
+                            if (
+                                operations.is_inside(rec, particle.shape)
+                                or operations.intersection(rec, particle.shape)
+                            ):
+                                new_box_num = x//self.box_length[index]+self.number_of_columns[index]*y//self.box_width[index]
+                                res[index][new_box_num].append(particle)
         self.mechanical_boxes = res
+        #
+        
+        # for particle in self.particles:
+        #     for index in range(particle.hierarchy, self.number_of_groups):
+        #         for box in self.touching_boxes(
+        #             particle.shape, index,
+        #             particle.box_num(self.number_of_columns[index], self.box_length[index], self.box_width[index])
+        #             ):
+        #             res[index][box].append(particle)
+        # self.mechanical_boxes = res
     
     def update_chemical_boxes(self):
         """updates the 'self.chemical_boxes' attribute; this is
@@ -1158,7 +1191,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb - self.nc[index])
+                res.append(nb - self.number_of_columns[index])
 
         # upper box
         if row < (self.number_of_rows[index] - 1):
@@ -1246,7 +1279,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb + self.nc[index] - 1)
+                res.append(nb + self.number_of_columns[index] - 1)
 
         # upper right box
         if row < (self.number_of_rows[index] - 1) and column < (self.number_of_columns[index] - 1):
@@ -1268,7 +1301,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb + self.nc[index] + 1)
+                res.append(nb + self.number_of_columns[index] + 1)
 
         # lower left box
         if column > 0 and row > 0:
@@ -1290,7 +1323,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb - self.nc[index] - 1)
+                res.append(nb - self.number_of_columns[index] - 1)
 
         # lower right box
         if row > 0 and column < (self.number_of_columns[index] - 1):
@@ -1312,7 +1345,7 @@ class Container(object):
                 )
             box = shapes.Rectangle(corner1, corner2, corner3, corner4)
             if operations.intersection(particle_shape, box):
-                res.append(nb - self.nc[index] + 1)
+                res.append(nb - self.number_of_columns[index] + 1)
         res.append(nb)
         return res
     
