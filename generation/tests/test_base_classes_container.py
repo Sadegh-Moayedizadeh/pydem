@@ -744,7 +744,34 @@ class TestMechanicalContacts(unittest.TestCase):
         instantiated given only one particle group
         """
 
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz7,
+                self.quartz8,
+                self.quartz12,
+                self.quartz10,
+                self.quartz11,
+            ]
+        )
+        container.update_mechanical_boxes()
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz7))
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz8))
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz10))
+        self.assertTrue(
+            container.single_particle_mechanical_contact_check(self.quartz11))
+        self.assertFalse(
+            container.single_particle_mechanical_contact_check(self.quartz12))
     
     def test_single_particle_mechanical_contact_check2(self):
         """testing the "single_particle_mechanical_contact_check"

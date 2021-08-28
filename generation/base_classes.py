@@ -1097,7 +1097,6 @@ class Container(object):
     def single_particle_mechanical_contact_check(
         self,
         particle: Union[Type[Kaolinite], Type[Montmorillonite], Type[Quartz], Type[Illite]],
-        generation_phase: bool = True
         ) -> bool:
         """checking if the given particle is in contact with any other
             particle; it only returns True or False; the aim here is
@@ -1106,26 +1105,26 @@ class Container(object):
         Args:
             particle: the given particle to check if it's in contact
                 with any other particle
-            generation_phase (bool): specifying if the container is in
-                the generation phase or not
 
         Returns:
             bool: True of False indicating the contacting situation of
                 the given particle
         """
-
-        for box in self.touching_boxes(particle.shape, particle.hierarchy):
-            for particle2 in self.mechanical_boxes[particle.hierarchy][box]:
+        
+        h = particle.hierarchy
+        nb = particle.box_num(
+            self.number_of_columns[h], self.box_length[h], self.box_width[h]
+            )
+        for box in self.touching_boxes(particle.shape, h, nb):
+            for particle2 in self.mechanical_boxes[h][box]:
                 contact = operations.intersection(particle.shape, particle2.shape)
-                if contact:
+                if (
+                    operations.intersection(particle.shape, particle2.shape)
+                    or operations.is_inside(particle.shape, particle2.shape)
+                    or operations.is_inside(particle2.shape, particle.shape)
+                ):
                     if particle.num != particle2.num:
-                        if not generation_phase:
-                            self.mechanical_contacts[particle].add[(particle2, contact)]
-                            self.mechanical_contacts[particle2].add[(particle, contact)]
-                        else:
-                            return True
-        if not generation_phase:
-            return
+                        return True
         return False
         
     def update_mechanical_contacts_dictionary(self) -> None:
