@@ -449,12 +449,14 @@ class TestSimpleSetups(unittest.TestCase):
         self.assertEqual(container.number_of_clay_groups, 2)
         
 
-class TestMechanicalContacts(unittest.TestCase):
+class TestContacts(unittest.TestCase):
     """test cases for mechanical contact detection operations for
     different types of particles; contact lists for contacting
     particles with walls are also tested; stuff like tolerance and
     having multiple particle size hierarchies have been considered
-    while writing these test cases
+    while writing these test cases; also test cases included for
+    chemical contact detection since its process is similar to
+    mechanical contacts
     """
     
     #particle info dictionaries used in test cases in this class
@@ -1117,13 +1119,19 @@ class TestMechanicalContacts(unittest.TestCase):
             container.wall_contacts, [self.quartz6, self.quartz16, self.kaolinite2_9, self.kaolinite1_4]
             )
 
-
-class TestChemicalContancts(unittest.TestCase):
-    """testing the ddl and van der vaals contact detection between two
-    clay particles
-    """
+    def test_update_chemical_boxes(self):
+        """testing the 'update_chemical_boxes' method of the Container
+        class
+        """
+        
+        pass
     
-    pass
+    def test_update_chemical_contacts_dictionary(self):
+        """testing the  'update_chemical_contacts_dictionary' method of
+        the Container class
+        """
+        
+        pass
 
 
 class TestParticleGeneration(unittest.TestCase):

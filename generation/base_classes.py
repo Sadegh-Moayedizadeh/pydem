@@ -994,7 +994,7 @@ class Container(object):
                         res[index][box].append(particle)
         self.mechanical_boxes = res
     
-    def generate(self) -> None:
+    def generate_particles(self) -> None:
         """generate the list of particles in-place regarding the given
         particles_info array to the Container class
         """
@@ -1388,7 +1388,83 @@ class Container(object):
         """
         
         pass
+    
+    def update_boundary_conditions(self, displacement: float) -> None:
+        """updates the boundary conditions of the container object
+        given the amount of displacement needs to be taken by the
+        moving boundaries; the particle-wall contact forces will
+        also be calculated here
 
+        Args:
+            displacement (float): the amount of displacement needs to
+                be taken by the moving boundaries; for triaxial test
+                (TT) it will be the delta_y movement of the upper
+                boundary in nanometers, in direct shear test it will be
+                the delta_x movement of the upper part of the container
+                in nanometers, and in simple shear test it will be the
+                delta_theta rotation of the left and right walls in
+                radian
+        """
+        
+        pass
+    
+    def add_particle_wall_contact_forces(self):
+        """updates the force vector of any particle that is in contact
+        with a boundary wall
+        """
+        
+        pass
+    
+    def add_mechanical_forces(self, particle):
+        """calculates machanical forces acting on the given particle
+        and adds them to the particle's force vector components; the
+        cases of mechanical forces between particle of the same type,
+        particles of different types, forces between particles
+        and boundaries are not covered here
+        """
+        
+        pass
+    
+    def add_ddl_forces(self, particle):
+        """calculates ddl forces acting on the given particle and adds
+        them to the particle's force vector components
+        """
+        
+        pass
+
+    def add_vdv_forces(self, partice):
+        """calculates the van der valse forces acting on the given
+        particle and adds them to the particle's force vector components
+        """
+
+        pass
+    
+    def add_gravitational_forces(self, particle):
+        """calculates the gravitational forces acting on the given
+        particle and adds them to its force vector components
+        """
+        
+        pass
+    
+    def update_particle_forces(self, particle):
+        """updates the particle's force vector
+        """
+
+        if isinstance(particle, Clay):
+            self.add_mechanical_forces(particle)
+            self.add_vdv_forces(particle)
+            self.add_ddl_forces(particle)
+        elif isinstance(particle, Sand):
+            self.add_mechanical_forces(particle)
+            self.add_gravitational_forces(particle)
+    
+    def update_locations(self, strain_rate):
+        """updates the boundary conditions and perform a relaxation
+        phase
+        """
+        
+        pass
+    
     @property
     def overal_stress(self):
         """calculates the overal stress between the particles in the
@@ -1406,29 +1482,10 @@ class Container(object):
             return (self.width - self.moving_wall.y) / (self.width)
         # do this also for other simulation types
         return 0
-
-    def update(self, strain_rate):
-        """updates the boundary conditions and perform a relaxation
-        phase
-        """
-        
-        pass
     
-    def calculate_mechanical_forces(self, particle):
-        """calculates machanical forces acting on the given particle
-        """
-        
-        pass
-    
-    def calculate_ddl_forces(self, particle):
-        """calculates ddl forces acting on the given particle
-        """
-        
-        pass
-
-    def calculate_vv_forces(self, partice):
-        """calculates the van der valse forces acting on the given
-        particle
+    @property
+    def void_ratio(self):
+        """calculates the void ratio of the whole container
         """
 
         pass
