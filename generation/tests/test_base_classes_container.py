@@ -575,6 +575,9 @@ class TestMechanicalContacts(unittest.TestCase):
     kaolinite2_8 = base_classes.Kaolinite(
         x = 25050, y = 15050, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
     ) #intersects with kaolinite1_6
+    kaolinite2_9 = base_classes.Kaolinite(
+        x = 99999, y = 15050, length = 2500, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
+    ) #intersects with the right wall
     
     #container instance to run the tests on
     container = base_classes.Container(
@@ -1032,7 +1035,25 @@ class TestMechanicalContacts(unittest.TestCase):
         only one particle group
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz6,
+                self.quartz16,
+                self.quartz1,
+                self.quartz2,
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        self.assertEqual(container.wall_contacts, [self.quartz6, self.quartz16])
     
     def test_update_wall_contacts_list2(self):
         """testing the "update_wall_contacts_list" method of the
@@ -1041,7 +1062,27 @@ class TestMechanicalContacts(unittest.TestCase):
         two particle groups
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz6,
+                self.quartz16,
+                self.quartz1,
+                self.quartz2,
+                self.kaolinite2_9,
+                self.kaolinite2_1,
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        self.assertEqual(container.wall_contacts, [self.quartz6, self.quartz16, self.kaolinite2_9])
     
     def test_update_wall_contacts_list3(self):
         """testing the "update_wall_contacts_list" method of the
@@ -1050,7 +1091,31 @@ class TestMechanicalContacts(unittest.TestCase):
         three particle groups
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz6,
+                self.quartz16,
+                self.quartz1,
+                self.quartz2,
+                self.kaolinite2_9,
+                self.kaolinite2_1,
+                self.kaolinite1_4,
+                self.kaolinite1_1
+            ]
+        )
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        self.assertEqual(
+            container.wall_contacts, [self.quartz6, self.quartz16, self.kaolinite2_9, self.kaolinite1_4]
+            )
 
 
 class TestChemicalContancts(unittest.TestCase):

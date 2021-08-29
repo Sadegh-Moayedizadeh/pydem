@@ -1131,10 +1131,51 @@ class Container(object):
         pass
     
     def update_wall_contacts_list(self):
-        """updates the 'self.wall_contacts' list
+        """updates the 'self.wall_contacts' list; note that the
+        "mechanical_boxes" should be already updated
         """
         
-        pass
+        res = []
+        for i in range(self.number_of_groups):
+            nc = self.number_of_columns[i]
+            nr = self.number_of_rows[i]
+            #lower wall
+            for box in range(0, nc, 1):
+                for particle in self.mechanical_boxes[i][box]:
+                    if(
+                        particle.hierarchy == i
+                        and operations.intersection(particle.shape, self.walls[3].shape)
+                        and not (particle in res)
+                        ):
+                        res.append(particle)
+            #left wall
+            for box in range(0, nc*nr, nc):
+                for particle in self.mechanical_boxes[i][box]:
+                    if(
+                        particle.hierarchy == i
+                        and operations.intersection(particle.shape, self.walls[0].shape)
+                        and not (particle in res)
+                        ):
+                        res.append(particle)
+            #upper wall
+            for box in range(nc*(nr-1), nc*nr, 1):
+                for particle in self.mechanical_boxes[i][box]:
+                    if(
+                        particle.hierarchy == i
+                        and operations.intersection(particle.shape, self.walls[1].shape)
+                        and not (particle in res)
+                        ):
+                        res.append(particle)
+            #right wall
+            for box in range(nc-1, nc*nr, nc):
+                for particle in self.mechanical_boxes[i][box]:
+                    if(
+                        particle.hierarchy == i
+                        and operations.intersection(particle.shape, self.walls[2].shape)
+                        and not (particle in res)
+                        ):
+                        res.append(particle)
+        self.wall_contacts = res
     
     def touching_boxes(
         self,
