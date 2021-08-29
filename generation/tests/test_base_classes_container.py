@@ -1010,7 +1010,20 @@ class TestMechanicalContacts(unittest.TestCase):
         Container class
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        line = shapes.LineSegment(shapes.Point(0, 0), shapes.Point(0, 100000))
+        self.assertTrue(container.particle_wall_contact_check(self.quartz6.shape))
+        self.assertTrue(container.particle_wall_contact_check(self.quartz16.shape))
+        self.assertFalse(container.particle_wall_contact_check(self.quartz1.shape))
+        self.assertTrue(container.particle_wall_contact_check(self.kaolinite1_4.shape))
+        self.assertFalse(container.particle_wall_contact_check(self.kaolinite1_2.shape))
     
     def test_update_wall_contacts_list1(self):
         """testing the "update_wall_contacts_list" method of the
@@ -1040,7 +1053,7 @@ class TestMechanicalContacts(unittest.TestCase):
         pass
 
 
-class TestDDLandVDVcontancts(unittest.TestCase):
+class TestChemicalContancts(unittest.TestCase):
     """testing the ddl and van der vaals contact detection between two
     clay particles
     """
@@ -1064,7 +1077,7 @@ class TestMechanicalForces(unittest.TestCase):
     pass
 
 
-class TestDDLandVDVforces(unittest.TestCase):
+class TestChemicalForces(unittest.TestCase):
     """testing the ddl and van der vaals forces calculated for clay
     particles
     """

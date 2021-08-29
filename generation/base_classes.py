@@ -1049,8 +1049,7 @@ class Container(object):
     
     def particle_wall_contact_check(
         self,
-        particle: Type[Union[Kaolinite, Montmorillonite, Quartz, Illite]],
-        hierarchy: int,
+        particle_shape
         ) -> bool:
         """checks if the given particle is in contact with any of the
         boundary walls; it is only used in generation phase, so the
@@ -1068,27 +1067,10 @@ class Container(object):
                 the given particle and any of the boundaries
         """
         
-        nb = particle.box_num(self.nc[hierarchy], self.length, self.width)
-        row = nb // self.nc[hierarchy]
-        column = nb % self.nr[hierarchy]
-        res = []
-        if row == 0:
-            for wall in self.walls:
-                if wall.y == 0 and wall.inclination == 0:
-                    res.append(operations.intersection(particle.shape, wall.shape))
-        if row == (self.nr[hierarchy] - 1):
-            for wall in self.walls:
-                if wall.y != 0 and wall.inclination == 0:
-                    res.append(operations.intersection(particle.shape, wall.shape))
-        if column == 0:
-            for wall in self.walls:
-                if wall.x == 0 and wall.inclination == np.math.pi / 2:
-                    res.append(operations.intersection(particle.shape, wall.shape))
-        if column == row < (self.nc[hierarchy] - 1):
-            for wall in self.walls:
-                if wall.x != 0 and wall.inclination == np.math.pi / 2:
-                    res.append(operations.intersection(particle.shape, wall.shape))
-        return res if res else None
+        for wall in self.walls:
+            if operations.intersection(particle_shape, wall.shape):
+                return True
+        return False
     
     def single_particle_mechanical_contact_check(
         self,

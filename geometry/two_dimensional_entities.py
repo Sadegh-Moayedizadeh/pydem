@@ -928,6 +928,14 @@ class LineSegment(object):
         y1 = (point.y) - (np.sin(inclination)) * (size / 2)
         x2 = (point.x) + (np.cos(inclination)) * (size / 2)
         y2 = (point.y) + (np.sin(inclination)) * (size / 2)
+        if abs(x1 - round(x1)) < 1e-10:
+            x1 = round(x1)
+        if abs(x2 - round(x2)) < 1e-10:
+            x2 = round(x2)
+        if abs(y1 - round(y1)) < 1e-10:
+            y1 = round(y1)
+        if abs(y2 - round(y2)) < 1e-10:
+            y2 = round(y2)
         end1 = Point(x1, y1)
         end2 = Point(x2, y2)
         return cls(end1, end2)
