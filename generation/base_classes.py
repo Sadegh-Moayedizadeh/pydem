@@ -996,7 +996,7 @@ class Container(object):
     
     def generate_particles(self) -> None:
         """generate the list of particles in-place regarding the given
-        particles_info array to the Container class
+        particles_info array of the Container class
         """
         
         total_quantity = sum(d['quantity'] for d in self.particles_info)
@@ -1034,10 +1034,10 @@ class Container(object):
                 inclination = random.uniform(0, 2*np.pi),
                 hierarchy = index
             )
-            if self._single_particle_contact_check(new_particle):
+            if self.single_particle_mechanical_contact_check(new_particle):
                 del new_particle
                 trials += 1
-            elif self._particle_wall_contact_check(new_particle, hierarchy = index):
+            elif self.particle_wall_contact_check(new_particle.shape):
                 del new_particle
                 trials += 1
             else:
