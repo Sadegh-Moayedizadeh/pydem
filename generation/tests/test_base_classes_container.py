@@ -481,52 +481,52 @@ class TestContacts(unittest.TestCase):
     
     #quatrz particles to be appended to the container for test cases
     quartz1 = base_classes.Quartz(
-        x = 10000, y = 10000, diameter = 8500, hierarchy = 0
+        x = 10000, y = 10000, length = 8500, hierarchy = 0
     ) #touches 4 boxes, intersects with kaolinite2_6 and kaolinite1_5
     quartz2 = base_classes.Quartz(
-        x = 50000, y = 10000, diameter = 9000, hierarchy = 0
+        x = 50000, y = 10000, length = 9000, hierarchy = 0
     ) #touches 4 boxes, intersects with kaolinite2_5
     quartz3 = base_classes.Quartz(
-        x = 30000, y = 25000, diameter = 9000, hierarchy = 0
+        x = 30000, y = 25000, length = 9000, hierarchy = 0
     ) #touches 2 boxes, doesn't have any intersections
     quartz4 = base_classes.Quartz(
-        x = 60000, y = 40000, diameter = 9000, hierarchy = 0
+        x = 60000, y = 40000, length = 9000, hierarchy = 0
     ) #touches 4 boxes, doesn't have any intersections
     quartz5 = base_classes.Quartz(
-        x = 30000, y = 50000, diameter = 8500, hierarchy = 0
+        x = 30000, y = 50000, length = 8500, hierarchy = 0
     ) #touches 4 boxes, intersects with quartz15
     quartz6 = base_classes.Quartz(
-        x = 82000, y = 1000, diameter = 8500, hierarchy = 0
+        x = 82000, y = 1000, length = 8500, hierarchy = 0
     ) #intersects with the lower wall and touches two boxes
     quartz7 = base_classes.Quartz(
-        x = 20000, y = 60000, diameter = 8500, hierarchy = 0
+        x = 20000, y = 60000, length = 8500, hierarchy = 0
     ) #touches 4 boxes, intersects with quartz8 and quartz9
     quartz8 = base_classes.Quartz(
-        x = 25000, y = 65000, diameter = 8500, hierarchy = 0
+        x = 25000, y = 65000, length = 8500, hierarchy = 0
     ) #touches one box, intersects with quartz7
     quartz9 = base_classes.Quartz(
-        x = 15000, y = 65000, diameter = 8500, hierarchy = 0
+        x = 15000, y = 65000, length = 8500, hierarchy = 0
     ) #touches one box, intersects with quartz7
     quartz10 = base_classes.Quartz(
-        x = 80000, y = 50000, diameter = 8500, hierarchy = 0
+        x = 80000, y = 50000, length = 8500, hierarchy = 0
     ) #touches 4 boxes, wraps around quartz11
     quartz11 = base_classes.Quartz(
-        x = 80000, y = 50000, diameter = 8100, hierarchy = 0
+        x = 80000, y = 50000, length = 8100, hierarchy = 0
     ) #touches 4 boxes, located inside quartz10
     quartz12 = base_classes.Quartz(
-        x = 75000, y = 30000, diameter = 8500, hierarchy = 0
+        x = 75000, y = 30000, length = 8500, hierarchy = 0
     ) #touches two boxes, kaolinite2_2 is located completely inside this particle
     quartz13 = base_classes.Quartz(
-        x = 55000, y = 55000, diameter = 8500, hierarchy = 0
+        x = 55000, y = 55000, length = 8500, hierarchy = 0
     ) #touches only one box, intersects with kaolinite2_1
     quartz14 = base_classes.Quartz(
-        x = 40000, y = 40000, diameter = 8500, hierarchy = 0
+        x = 40000, y = 40000, length = 8500, hierarchy = 0
     ) #touches 4 boxes, kaolinite1_1 is located completely inside this particle
     quartz15 = base_classes.Quartz(
-        x = 25000, y = 45000, diameter = 8500, hierarchy = 0
+        x = 25000, y = 45000, length = 8500, hierarchy = 0
     ) #touches only one box, intersects with quartz5
     quartz16 = base_classes.Quartz(
-        x = 0, y = 35000, diameter = 8500, hierarchy = 0
+        x = 0, y = 35000, length = 8500, hierarchy = 0
     ) #touches only one box, intersects with the left wall
     
     #first group of kaolinite particles to be appended to the container for test cases
@@ -1139,7 +1139,76 @@ class TestParticleGeneration(unittest.TestCase):
     container takes place flawlessly
     """
     
-    pass
+    def test_no_contacts1(self):
+        """testing particle generation given one group of particles
+        making sure that no particle is in contact with any other
+        particle or the wall
+        """
+        
+        pass
+
+    def test_no_contacts2(self):
+        """testing particle generation given two groups of particles
+        making sure that no particle is in contact with any other
+        particle or the wall
+        """
+        
+        pass
+    
+    def test_no_contacts3(self):
+        """testing particle generation given three groups of particles
+        making sure that no particle is in contact with any other
+        particle or the wall
+        """
+        
+        pass
+    
+    def test_homogenity1(self):
+        """testing particle generation making sure that the generated
+        particles are distributed in the container homogenously given
+        one group of particles
+        """
+
+        pass
+    
+    def test_homogenity2(self):
+        """testing particle generation making sure that the generated
+        particles are distributed in the container homogenously given
+        two groups of particles
+        """
+
+        pass
+    
+    def test_homogenity3(self):
+        """testing particle generation making sure that the generated
+        particles are distributed in the container homogenously given
+        three groups of particles
+        """
+
+        pass
+    
+    def test_void_ratio1(self):
+        """testing particle generation making sure that a certain void
+        ratio is achieved in the container given one group of particels
+        """
+
+        pass
+    
+    def test_void_ratio2(self):
+        """testing particle generation making sure that a certain void
+        ratio is achieved in the container given two groups of
+        particels
+        """
+
+        pass
+    
+    def test_void_ratio3(self):
+        """testing particle generation making sure that a certain void
+        ratio is achieved in the container given three groups of
+        particels
+        """
+
+        pass    
 
 
 class TestMechanicalForces(unittest.TestCase):
@@ -1158,7 +1227,7 @@ class TestChemicalForces(unittest.TestCase):
     pass
 
 
-class TestUpdates(unittest.TestCase):
+class TestUpdateLocations(unittest.TestCase):
     """test cases to see if the container and particle's conditions are
     updated correctly after a relaxation phase
     """

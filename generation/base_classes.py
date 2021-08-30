@@ -307,16 +307,16 @@ class Sand(Particle):
         """
        
         try:
-            if kwargs['diameter'] < self.diameter_bounds[0]:
+            if kwargs['length'] < self.diameter_bounds[0]:
                 raise RuntimeError('the given diameter is lower than expected')
-            elif kwargs['diameter'] > self.diameter_bounds[1]:
+            elif kwargs['length'] > self.diameter_bounds[1]:
                 raise RuntimeError('the given diameter is higher than expected')
         except AttributeError:
             pass
-        self.diameter = kwargs.pop('diameter')
+        self.length = kwargs.pop('length')
         x, y = kwargs['x'], kwargs['y']
         kwargs['inclination'] = 0
-        self.shape = shapes.Circle(shapes.Point(x, y), self.diameter)
+        self.shape = shapes.Circle(shapes.Point(x, y), self.length)
         super().__init__(*args, **kwargs)
     
     def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
@@ -949,36 +949,52 @@ class Container(object):
         usually done after each update in particles' position
         """
         
-        #this is not efficient, but there seems to be no better way; multithread seems necessary here
-        res1 = [defaultdict(list) for _ in range(self.number_of_groups)]
-        res2 = [defaultdict(list) for _ in range(self.number_of_groups)]
+        #new solution
+        
+        res = [defaultdict(list) for _ in range(self.number_of_groups)]
         for particle in self.particles:
             h = particle.hierarchy
-            nb = particle.box_num(self.number_of_columns[h], self.box_length[h], self.box_width[h])
-            boxes = self.touching_boxes(particle.shape, h, nb)
-            for box in boxes:
-                res1[h][box].append(particle)
-                res2[h][particle].append(box)
-                x0 = (box % self.number_of_columns[h]) * self.box_length[h]
-                y0 = (box // self.number_of_columns[h]) * self.box_width[h]
-                for index in range(h+1, self.number_of_groups):
-                    delta_x = self.box_length[index]
-                    delta_y = self.box_width[index]
-                    for x in range(x0, x0 + self.box_length[h], delta_x):
-                        for y in range(y0, y0 + self.box_width[h], delta_y):
-                            end1 = shapes.Point(x, y)
-                            end2 = shapes.Point(x+delta_x, y+delta_y)
-                            line = shapes.LineSegment(end1, end2)
-                            rec = shapes.Rectangle.from_diagonal(line)
-                            if (
-                                operations.is_inside(rec, particle.shape)
-                                or operations.intersection(rec, particle.shape)
-                            ):
-                                new_box_num = x//self.box_length[index]+self.number_of_columns[index]*y//self.box_width[index]
-                                res1[index][new_box_num].append(particle)
-                                res2[index][particle].append(new_box_num)
-        self.mechanical_boxes = res1
-        self.mechanical_boxes_reversed = res2
+            nb = particle.box_num(
+                self.number_of_columns[h],
+                self.box_length[h],
+                self.box_width[h]
+                )
+            for box in self.touching_boxes(particle.shape, h, nb):
+                res[h][box].append(particle)
+        self.mechanical_boxes = res
+        
+        #
+        
+        #this is not efficient, but there seems to be no better way; multithread seems necessary here
+        # res1 = [defaultdict(list) for _ in range(self.number_of_groups)]
+        # res2 = [defaultdict(list) for _ in range(self.number_of_groups)]
+        # for particle in self.particles:
+        #     h = particle.hierarchy
+        #     nb = particle.box_num(self.number_of_columns[h], self.box_length[h], self.box_width[h])
+        #     boxes = self.touching_boxes(particle.shape, h, nb)
+        #     for box in boxes:
+        #         res1[h][box].append(particle)
+        #         res2[h][particle].append(box)
+        #         x0 = (box % self.number_of_columns[h]) * self.box_length[h]
+        #         y0 = (box // self.number_of_columns[h]) * self.box_width[h]
+        #         for index in range(h+1, self.number_of_groups):
+        #             delta_x = self.box_length[index]
+        #             delta_y = self.box_width[index]
+        #             for x in range(x0, x0 + self.box_length[h], delta_x):
+        #                 for y in range(y0, y0 + self.box_width[h], delta_y):
+        #                     end1 = shapes.Point(x, y)
+        #                     end2 = shapes.Point(x+delta_x, y+delta_y)
+        #                     line = shapes.LineSegment(end1, end2)
+        #                     rec = shapes.Rectangle.from_diagonal(line)
+        #                     if (
+        #                         operations.is_inside(rec, particle.shape)
+        #                         or operations.intersection(rec, particle.shape)
+        #                     ):
+        #                         new_box_num = x//self.box_length[index]+self.number_of_columns[index]*y//self.box_width[index]
+        #                         res1[index][new_box_num].append(particle)
+        #                         res2[index][particle].append(new_box_num)
+        # self.mechanical_boxes = res1
+        # self.mechanical_boxes_reversed = res2
     
     def update_chemical_boxes(self):
         """updates the 'self.chemical_boxes' attribute; this is
@@ -1034,17 +1050,20 @@ class Container(object):
                 inclination = random.uniform(0, 2*np.pi),
                 hierarchy = index
             )
-            if self.single_particle_mechanical_contact_check(new_particle):
-                del new_particle
-                trials += 1
-            elif self.particle_wall_contact_check(new_particle.shape):
+            if (
+                self.single_particle_mechanical_contact_check(new_particle)
+                or self.particle_wall_contact_check(new_particle.shape)
+            ):
                 del new_particle
                 trials += 1
             else:
                 self.particles.append(new_particle)
-                for index in range(new_particle.hierarchy, self.number_of_groups):
-                    for box in self.touching_boxes(new_particle.shape, index):
-                        self.mechanical_boxes[index][box].append(new_particle)
+                h = particle.hierarchy
+                nb = particle.box_num(
+                    self.number_of_columns[h], self.box_length[h], self.box_width[h]
+                    )
+                for box in self.touching_boxes(new_particle.shape, h, nb):
+                    self.mechanical_boxes[index][box].append(new_particle)
                 return
     
     def particle_wall_contact_check(
@@ -1089,9 +1108,16 @@ class Container(object):
                 the given particle
         """
         
+        #new solution
+        
         h = particle.hierarchy
-        for i in range(h, self.number_of_groups):
-            for box in self.mechanical_boxes_reversed[i][particle]:
+        for i in range(0, h+1):
+            nb = particle.box_num(
+                self.number_of_columns[i],
+                self.box_length[i],
+                self.box_width[i]
+                )
+            for box in self.touching_boxes(particle.shape, i, nb):
                 for particle2 in self.mechanical_boxes[i][box]:
                     if (
                         operations.intersection(particle.shape, particle2.shape)
@@ -1102,27 +1128,70 @@ class Container(object):
                             return True
         return False
         
+        #
+        
+        # h = particle.hierarchy
+        # for i in range(h, self.number_of_groups):
+        #     for box in self.mechanical_boxes_reversed[i][particle]:
+        #         for particle2 in self.mechanical_boxes[i][box]:
+        #             if (
+        #                 operations.intersection(particle.shape, particle2.shape)
+        #                 or operations.is_inside(particle.shape, particle2.shape)
+        #                 or operations.is_inside(particle2.shape, particle.shape)
+        #             ):
+        #                 if particle.num != particle2.num:
+        #                     return True
+        # return False
+        
     def update_mechanical_contacts_dictionary(self) -> None:
         """updates the 'self.mechanical_contacts' dictionary; note that
         the "mechanical_boxes" and "mechanical_boxes_reversed" arrays
         should be updated before calling this method
         """
         
+        #new solution
+        
         res = defaultdict(list)
         for particle in self.particles:
             h = particle.hierarchy
-            for i in range(h, self.number_of_groups):
-                for box in self.mechanical_boxes_reversed[i][particle]:
+            for i in range(0, h+1):
+                nb = particle.box_num(
+                    self.number_of_columns[i],
+                    self.box_length[i],
+                    self.box_width[i]
+                )
+                for box in self.touching_boxes(particle.shape, i, nb):
                     for particle2 in self.mechanical_boxes[i][box]:
                         if (
-                            operations.intersection(particle.shape, particle2.shape)
-                            or operations.is_inside(particle.shape, particle2.shape)
-                            or operations.is_inside(particle2.shape, particle.shape)
+                            (
+                                operations.intersection(particle.shape, particle2.shape)
+                                or operations.is_inside(particle.shape, particle2.shape)
+                                or operations.is_inside(particle2.shape, particle.shape)
+                            )
+                            and particle2 != particle
                         ):
-                            if particle2 != particle and not(particle2 in res[particle]):
+                            if not (particle2 in res[particle]):
                                 res[particle].append(particle2)
-                            
+                            if not (particle in res[particle2]):
+                                res[particle2].append(particle)
         self.mechanical_contacts = res
+        #
+        
+        # res = defaultdict(list)
+        # for particle in self.particles:
+        #     h = particle.hierarchy
+        #     for i in range(h, self.number_of_groups):
+        #         for box in self.mechanical_boxes_reversed[i][particle]:
+        #             for particle2 in self.mechanical_boxes[i][box]:
+        #                 if (
+        #                     operations.intersection(particle.shape, particle2.shape)
+        #                     or operations.is_inside(particle.shape, particle2.shape)
+        #                     or operations.is_inside(particle2.shape, particle.shape)
+        #                 ):
+        #                     if particle2 != particle and not(particle2 in res[particle]):
+        #                         res[particle].append(particle2)
+                            
+        # self.mechanical_contacts = res
     
     def update_chemical_contacts_dictionary(self) -> None:
         """updates the 'self.chemical_contacts' dictionary
