@@ -223,7 +223,9 @@ def standardized_inclination(inc: float) -> float:
         inc = inc - (np.math.pi)
     return inc
     
-
+@overload(
+    "<class 'geometry.two_dimensional_entities.Circle'>",
+    "<class 'geometry.two_dimensional_entities.Circle'>")
 def intersection_area(
     circle1: 'Type[shapes.Circle]',
     circle2: 'Type[shapes.Circle]'
@@ -262,6 +264,43 @@ def intersection_area(
     s_area1 = circle1.area * (angle1 / (2 * (np.math.pi)))
     s_area2 = circle2.area * (angle2 / (2 * (np.math.pi)))
     return (s_area1 + s_area2) - (t_area1 + t_area2)
+
+
+@overload(
+    "<class 'geometry.two_dimensional_entities.Rectangle'>",
+    "<class 'geometry.two_dimensional_entities.Rectangle'>")
+def intersection_area(
+    circle1: 'Type[shapes.Rectangle]',
+    circle2: 'Type[shapes.Rectangle]'
+    ) -> float:
+    """finding the area of intersection between two Rectangle instances;
+    it only works when rectangles have only horizental and vertical
+    edges and the first given rectangle is smaller than the second one
+
+    Args:
+        entity1 (Type[shapes.Rectangle]): the first given Rectangle
+        entity2 (Type[shapes.Rectangle]): the second given Rectangle
+
+    Returns:
+        float: the common area between two intersecting circles
+    """
+    
+    if is_inside(entity1, entity2):
+        return entity1.area
+    if entity1 == entity2:
+        return entity1.area
+    inter = intersection(entity1, entity2)
+    if not inter:
+        return 0
+    if (
+        len(inter) == 2
+        and isinstance(inter[0], shapes.Point)
+        and isinstance(inter[1], shapes.Point)
+    ):
+        line = shapes.LineSegment(inter[0], inter[1])
+        rec = shapes.Rectangle.from_diagonal(line)
+        return rec.area
+    
 
 
 @overload(

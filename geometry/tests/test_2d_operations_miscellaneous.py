@@ -616,5 +616,12 @@ class TestStandardizedInclination(unittest.TestCase):
         self.assertEqual(operations.standardized_inclination(inc), res)
 
 
+class TestIntersectionArea(unittest.TestCase):
+    """test cases for 'intersection_area' method
+    """
+    
+    pass
+
+
 if __name__ == '__main__':
     unittest.main()
