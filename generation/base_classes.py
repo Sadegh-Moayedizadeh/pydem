@@ -26,6 +26,47 @@ from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
 
 
+def time_cache(method):
+    cached_res = None
+    last_time = None
+    def wrapper(self):
+        if (last_time is None) or (self.time != last_time):
+            res = method(self)
+            cached_res = res
+            last_time = self.time
+            return res
+        else:
+            return cached_res
+    return wrapper
+
+
+class RandomLocation(object):
+    """class to help generate random locations for particles in a
+    container's generation phase
+    """
+
+    def __init__(self, x0, y0, x1, y1):
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+
+    def generate(self, particle_type: Type[Particle]) -> Tuple[float, float, float]:
+        """generates x and y coordinates and an inclination for the
+        given particle type in a way that the derived system is as
+        uniform as possible
+        """
+        
+        pass
+
+    def reduce_chance(self, shape) -> None:
+        """reduces the chance of generating particles close to the
+        geometrical characteristics of the given particle
+        """
+        
+        pass
+
+
 class Particle(object):
     """Base class to create soil particles
     
@@ -704,20 +745,6 @@ class Wall(Particle):
     
     def __hash__(self) -> int:
         return int(self.x**2 + self.y**2)
-
-
-def time_cache(method):
-    cached_res = None
-    last_time = None
-    def wrapper(self):
-        if (last_time is None) or (self.time != last_time):
-            res = method(self)
-            cached_res = res
-            last_time = self.time
-            return res
-        else:
-            return cached_res
-    return wrapper
 
 
 class Container(object):
