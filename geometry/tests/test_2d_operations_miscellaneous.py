@@ -620,7 +620,163 @@ class TestIntersectionArea(unittest.TestCase):
     """test cases for 'intersection_area' method
     """
     
-    pass
+    def test_rectangles_being_apart(self):
+        """testing the 'intersection_area' function where the two given
+        rectangles are fully apart
+        """
+        
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(10, 0)
+        v6 = shapes.Point(11, 0)
+        v7 = shapes.Point(11, 1)
+        v8 = shapes.Point(10, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 0)
+
+    def test_ractangle_inside_the_other(self):
+        """testing the 'intersection_are' function where the first
+        given rectangle is located fully inside the second one
+        """
+
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(-10, -10)
+        v6 = shapes.Point(10, -10)
+        v7 = shapes.Point(10, 10)
+        v8 = shapes.Point(-10, 10)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+
+    def test_rectangles_intersect_on_the_corner(self):
+        """testing the 'intersection_area' method where the two given
+        rectangles are intersecting each other on two different edges
+        on the corner of each other
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 2)
+        v4 = shapes.Point(-1, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(0, -5)
+        v6 = shapes.Point(5, -5)
+        v7 = shapes.Point(5, 1)
+        v8 = shapes.Point(0, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+
+    def test_rectangles_with_overlapping_edges1(self):
+        """testing the 'intersection_area' method where the two given
+        rectangles having one overlapping edge but with no common area
+        """
+        
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(-1, -5)
+        v6 = shapes.Point(0, -5)
+        v7 = shapes.Point(0, 5)
+        v8 = shapes.Point(-1, 5)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 0)
+    
+    def test_rectangles_with_overlapping_edges2(self):
+        """testing the 'intersection_area' method where the two given
+        rectangles having one overlapping edge but and with the second
+        one being inside the first one
+        """
+        
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, -5)
+        v6 = shapes.Point(0, -5)
+        v7 = shapes.Point(0, 5)
+        v8 = shapes.Point(3, 5)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+    
+    def test_rectaingles_intersect_on_one_edge(self):
+        """testing the 'intersection_area' function where the two given
+        rectangles intersect in two points on the same edge of the
+        bigger rectangle
+        """
+        
+        v1 = shapes.Point(-1, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(-1, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, -5)
+        v6 = shapes.Point(0, -5)
+        v7 = shapes.Point(0, 5)
+        v8 = shapes.Point(3, 5)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+    
+    def test_rectangles_with_two_overlapping_edges(self):
+        """testing the 'intersection_area' function where the first
+        given rectangle is located inside the second one and two of its
+        edges overlaps with that rectangle
+        """
+
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, -5)
+        v6 = shapes.Point(0, -5)
+        v7 = shapes.Point(0, 1)
+        v8 = shapes.Point(3, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+    
+    def test_rectangles_overlapping_parallel_edges(self):
+        """testing the 'intersection_area' function where the given
+        rectangles have their parallel edges overlapping each other
+        """
+        
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 1)
+        v4 = shapes.Point(0, 1)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, 0)
+        v6 = shapes.Point(0, 0)
+        v7 = shapes.Point(0, 1)
+        v8 = shapes.Point(3, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
+    
+    def test_rectangles_overlapping_one_edge_and_intersecting(self):
+        """testing the 'intersection_area' function where the given
+        rectangles overlap each other on one edge and intersect each
+        other in one other point
+        """
+        
+        v1 = shapes.Point(0, 0)
+        v2 = shapes.Point(1, 0)
+        v3 = shapes.Point(1, 2)
+        v4 = shapes.Point(0, 2)
+        rec1 = shapes.Rectangle(v1, v2, v3, v4)
+        v5 = shapes.Point(3, -2)
+        v6 = shapes.Point(0, -2)
+        v7 = shapes.Point(0, 1)
+        v8 = shapes.Point(3, 1)
+        rec2 = shapes.Rectangle(v5, v6, v7, v8)
+        self.assertEqual(operations.intersection_area(rec1, rec2), 1)
 
 
 if __name__ == '__main__':
