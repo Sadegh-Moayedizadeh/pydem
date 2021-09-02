@@ -290,18 +290,35 @@ def intersection_area(
     if entity1 == entity2:
         return entity1.area
     inter = intersection(entity1, entity2)
-    if not inter:
+    if not inter or isinstance(inter, shapes.Point):
         return 0
-    if (
-        len(inter) == 2
-        and isinstance(inter[0], shapes.Point)
-        and isinstance(inter[1], shapes.Point)
-    ):
-        line = shapes.LineSegment(inter[0], inter[1])
-        rec = shapes.Rectangle.from_diagonal(line)
-        return rec.area
+    if isinstance(inter, shapes.LineSegment):
+        for point in entity1.vertices:
+            if is_inside(point, entity2):
+                return entity1.area
+        return 0
+    if len(inter) == 2:
+        if isinstance(inter[0], shapes.Point) and isinstance(inter[1], shapes.Point):
+            v = [inter[0], inter[1]]
+            for point in entity1.vertices:
+                if is_inside(point, entity2):
+                    v.append(point)
+            for point in entity2.vertices:
+                if is_inside(point, entity1):
+                    v.append(point)
+            v = sorted(v, key = lambda p: (p.x, p.y))
+            v[2], v[3] = v[3], v[2]
+            rec = shapes.Rectangle(*v)
+            return rec.area
+        elif isinstance(iner[0, shapes.LineSegment]) and isinstance(inter[1], shapes.LineSegment):
+            if intersection(inter[0], inter[1]):
+                return inter[0].length, inter[1].length
+            return inter[0].length * distance(inter[0], inter[1])
+        else:
+            if isinstance(inter[0], shapes.LineSegment):
+                inter[0], inter[1] = inter[1], inter[0]
+            return distance(inter[0], inter[1]) * inter[1].length
     
-
 
 @overload(
     "<class 'geometry.two_dimensional_entities.Point'>",
