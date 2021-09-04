@@ -1139,6 +1139,13 @@ class TestParticleGeneration(unittest.TestCase):
     container takes place flawlessly
     """
     
+    def test_reduce_generation_chance(self):
+        """testing the 'reduce_generation_chance' method of the
+        Container class
+        """
+
+        pass
+    
     def test_no_contacts1(self):
         """testing particle generation given one group of particles
         making sure that no particle is in contact with any other

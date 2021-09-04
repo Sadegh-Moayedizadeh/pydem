@@ -40,33 +40,6 @@ def time_cache(method):
     return wrapper
 
 
-class RandomLocation(object):
-    """class to help generate random locations for particles in a
-    container's generation phase
-    """
-
-    def __init__(self, x0, y0, x1, y1):
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
-
-    def generate(self, particle_type: Type[Particle]) -> Tuple[float, float, float]:
-        """generates x and y coordinates and an inclination for the
-        given particle type in a way that the derived system is as
-        uniform as possible
-        """
-        
-        pass
-
-    def reduce_chance(self, shape) -> None:
-        """reduces the chance of generating particles close to the
-        geometrical characteristics of the given particle
-        """
-        
-        pass
-
-
 class Particle(object):
     """Base class to create soil particles
     
@@ -883,6 +856,11 @@ class Container(object):
         self.chemical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
         self.mechanical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
         self.chemical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+        
+        #stuff about generation phase
+        big_box_numbers = [i for i in range(self.number_of_rows[0] * self.number_of_columns[0])]
+        random.shuffle(big_box_numbers)
+        self.generation_boxes = {k:0 for k in big_box_numbers}
 
     def _validate_info(self, info: List[Dict]) -> bool:
         """validate the array passed in as the particles info
@@ -1067,14 +1045,15 @@ class Container(object):
         while True:
             if trials > 50:
                 raise RuntimeError('the container is too dense')
+            x, y, inc = self.generate_random_location()
             new_particle = particle_type(
-                x = random.uniform(0, self.length),
-                y = random.uniform(0, self.width),
+                x = x,
+                y = y,
                 length = random.uniform(
                     self.particles_info[index]['size_lower_bound'],
                     self.particles_info[index]['size_upper_bound'],
                     ),
-                inclination = random.uniform(0, 2*np.pi),
+                inclination = inc,
                 hierarchy = index
             )
             if (
@@ -1091,7 +1070,32 @@ class Container(object):
                     )
                 for box in self.touching_boxes(new_particle.shape, h, nb):
                     self.mechanical_boxes[index][box].append(new_particle)
+                self.reduce_generation_chance(new_particle)
                 return
+    
+    def reduce_generation_chance(self, particle):
+        """reduces the generation chance of a new particle inside boxes
+        in which the given particle is located by changing the values
+        of the 'generation_boxes' dictionary and then sorting that
+        dictionary
+        """
+        
+        if isinstance(particle, Clay):
+            shape = shapes.Rectangle.from_diagonal(particle.midline)
+        elif isinstance(particle, Sand):
+            pass
+        nb = particle.box_num(self.number_of_columns[0], self.box_length[0], self.box_width[0])
+        for box in self.touching_boxes(shape, particle.hierarchy, nb):
+            pass
+    
+    def generate_random_location(self):
+        """generates random values for 'x' and 'y' coordinates and the
+        inclination of a new particle based on the 'generation_boxes'
+        dictionary
+        """
+
+        box = list(self.generation_boxes.keys())[0]
+        pass
     
     def particle_wall_contact_check(
         self,
