@@ -270,8 +270,8 @@ def intersection_area(
     "<class 'geometry.two_dimensional_entities.Rectangle'>",
     "<class 'geometry.two_dimensional_entities.Rectangle'>")
 def intersection_area(
-    circle1: 'Type[shapes.Rectangle]',
-    circle2: 'Type[shapes.Rectangle]'
+    entity1: 'Type[shapes.Rectangle]',
+    entity2: 'Type[shapes.Rectangle]'
     ) -> float:
     """finding the area of intersection between two Rectangle instances;
     it only works when rectangles have only horizental and vertical
@@ -310,9 +310,9 @@ def intersection_area(
             v[2], v[3] = v[3], v[2]
             rec = shapes.Rectangle(*v)
             return rec.area
-        elif isinstance(iner[0, shapes.LineSegment]) and isinstance(inter[1], shapes.LineSegment):
+        elif isinstance(inter[0], shapes.LineSegment) and isinstance(inter[1], shapes.LineSegment):
             if intersection(inter[0], inter[1]):
-                return inter[0].length, inter[1].length
+                return inter[0].length * inter[1].length
             return inter[0].length * distance(inter[0], inter[1])
         else:
             if isinstance(inter[0], shapes.LineSegment):
