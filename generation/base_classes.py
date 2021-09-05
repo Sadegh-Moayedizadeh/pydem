@@ -1083,10 +1083,25 @@ class Container(object):
         if isinstance(particle, Clay):
             shape = shapes.Rectangle.from_diagonal(particle.midline)
         elif isinstance(particle, Sand):
-            pass
+            circle = particle.shape
+            v1 = shapes.Point(circle.center.x - circle.radius, circle.center.y - circle.radius)
+            v2 = shapes.Point(circle.center.x + circle.radius, circle.center.y - circle.radius)
+            v3 = shapes.Point(circle.center.x + circle.radius, circle.center.y + circle.radius)
+            v4 = shapes.Point(circle.center.x - circle.radius, circle.center.y + circle.radius)
+            shape = shapes.Rectangle(v1, v2, v3, v4)
         nb = particle.box_num(self.number_of_columns[0], self.box_length[0], self.box_width[0])
-        for box in self.touching_boxes(shape, particle.hierarchy, nb):
-            pass
+        for box in self.touching_boxes(shape, 0, nb):
+            x0 = (box % self.number_of_columns[0]) * self.box_length[0]
+            y0 = (box // self.number_of_columns[0]) * self.box_width[0]
+            v1 = shapes.Point(x0, y0)
+            v2 = shapes.Point(x0 + self.box_length[0], y0)
+            v3 = shapes.Point(x0 + self.box_length[0], y0 + self.box_width[0])
+            v4 = shapes.Point(x0, y0 + self.box_width[0])
+            rec = shapes.Rectangle(v1, v2, v3, v4)
+            ratio = (operations.intersection_area(shape, rec)) / (rec.area)
+            self.generation_boxes[box] += ratio
+        li = list(self.generation_boxes.items())
+        self.generation_boxes = {k:v for k, v in sorted(li, key = lambda x: x[1])}
     
     def generate_random_location(self):
         """generates random values for 'x' and 'y' coordinates and the
@@ -1095,7 +1110,14 @@ class Container(object):
         """
 
         box = list(self.generation_boxes.keys())[0]
-        pass
+        x0 = (box % self.number_of_columns[0]) * self.box_length[0]
+        y0 = (box // self.number_of_columns[0]) * self.box_width[0]
+        x1 = x0 + self.box_length[0]
+        y1 = y0 + self.box_width[0]
+        x = random.ranrange(x0, x1)
+        y = random.randrange(y0, y1)
+        inc = random.randrange(0, np.math.pi)
+        return x, y, inc
     
     def particle_wall_contact_check(
         self,

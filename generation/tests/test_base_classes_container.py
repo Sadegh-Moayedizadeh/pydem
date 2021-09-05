@@ -1139,12 +1139,58 @@ class TestParticleGeneration(unittest.TestCase):
     container takes place flawlessly
     """
     
+    #particle info dictionaries used in test cases in this class
+    kaolinite_clay1 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 2000,
+        'size_lower_bound': 1000,
+        'quantity': 500
+    }
+    kaolinite_clay2 = {
+        'type': 'kaolinite',
+        'size_upper_bound': 3000,
+        'size_lower_bound': 2000,
+        'quantity': 500
+    }
+    quartz_sand1 = {
+        'type': 'quartz',
+        'size_upper_bound': 10000,
+        'size_lower_bound': 8000,
+        'quantity': 50
+    }
+    
     def test_reduce_generation_chance(self):
         """testing the 'reduce_generation_chance' method of the
         Container class
         """
 
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        particle1 = base_classes.Quartz(
+            x = 5000, y = 5000, length = 10000, hierarchy = 0
+        )
+        particle2 = base_classes.Quartz(
+            x = 20000, y = 30000, length = 10000, hierarchy = 0
+        )
+        particle3 = base_classes.Kaolinite(
+            x = 10000, y = 20000, length = 2000*np.sqrt(2), thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
+        )
+        container.reduce_generation_chance(particle1)
+        container.reduce_generation_chance(particle2)
+        container.reduce_generation_chance(particle3)
+        self.assertEqual(container.generation_boxes[0], 1)
+        self.assertEqual(container.generation_boxes[10], 0.01)
+        self.assertEqual(container.generation_boxes[21], 0.26)
+        self.assertEqual(container.generation_boxes[31], 0.25)
+        self.assertEqual(container.generation_boxes[32], 0.25)
+        self.assertEqual(list(container.generation_boxes.keys())[-1], 0)
+        self.assertEqual(list(container.generation_boxes.keys())[-2], 21)
     
     def test_no_contacts1(self):
         """testing particle generation given one group of particles
@@ -1152,6 +1198,14 @@ class TestParticleGeneration(unittest.TestCase):
         particle or the wall
         """
         
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
         pass
 
     def test_no_contacts2(self):

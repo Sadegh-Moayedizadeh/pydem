@@ -707,7 +707,7 @@ class TestIntersectionArea(unittest.TestCase):
         rec2 = shapes.Rectangle(v5, v6, v7, v8)
         self.assertEqual(operations.intersection_area(rec1, rec2), 1)
     
-    def test_rectaingles_intersect_on_one_edge(self):
+    def test_rectangles_intersect_on_one_edge(self):
         """testing the 'intersection_area' function where the two given
         rectangles intersect in two points on the same edge of the
         bigger rectangle

@@ -2,6 +2,7 @@
 dimentional geometrical entities
 """
 
+import sys
 import numpy as np
 from collections import defaultdict
 from typing import Any, Type, Tuple, Union
@@ -299,17 +300,11 @@ def intersection_area(
         return 0
     if len(inter) == 2:
         if isinstance(inter[0], shapes.Point) and isinstance(inter[1], shapes.Point):
-            v = [inter[0], inter[1]]
-            for point in entity1.vertices:
-                if is_inside(point, entity2):
-                    v.append(point)
-            for point in entity2.vertices:
-                if is_inside(point, entity1):
-                    v.append(point)
-            v = sorted(v, key = lambda p: (p.x, p.y))
-            v[2], v[3] = v[3], v[2]
-            rec = shapes.Rectangle(*v)
-            return rec.area
+            x = [v.x for v in entity1.vertices] + [v.x for v in entity2.vertices]
+            x = sorted(list(set(x)))
+            y = [v.y for v in entity1.vertices] + [v.y for v in entity2.vertices]
+            y = sorted(list(set(y)))
+            return abs(x[1] - x[2]) * abs(y[1] - y[2])
         elif isinstance(inter[0], shapes.LineSegment) and isinstance(inter[1], shapes.LineSegment):
             if intersection(inter[0], inter[1]):
                 return inter[0].length * inter[1].length
