@@ -1201,7 +1201,7 @@ class TestParticleGeneration(unittest.TestCase):
         container = base_classes.Container(
         length = 100000,
         width = 100000,
-        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        particles_info = [self.quartz_sand1],
         time_step = 0.01,
         simulation_type = 'tt',
         fluid_characteristics = None
