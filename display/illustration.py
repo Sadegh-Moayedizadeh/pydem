@@ -17,7 +17,7 @@ class Illustration(object):
     """class to illustrate the DEM simulation
     """
     
-    clay_color = (196, 69, 69)
+    clay_color = (161, 93, 93)
     sand_color = (75, 204, 112)
     container_color = (163, 250, 255)
     wall_color = (28, 30, 31)
@@ -29,16 +29,30 @@ class Illustration(object):
         
         self.container = container
     
+    def _convert_x(self, x: float) -> float:
+        """converts the given x coordinate to a value that fits into
+        the illustrated container
+        """
+
+        return (0.025) * (self.container.length) + (x) * (0.1)
+    
+    def _convert_y(self, y: float) -> float:
+        """converts the given y coordinate to a value that fits into
+        the illustrated container
+        """
+
+        return ((0.025) * (self.container.width)) + ((0.15) * (self.container.width) - (y) * (0.1))
+    
     def set_shapes(self, screen):
         """sets up the shapes to be displayed
         """
         
-        for wall in container.walls:
+        for wall in self.container.walls:
             pygame.draw.line(
                 screen,
                 self.wall_color,
-                (wall.shape.end1.x, wall.shape.end1.y),
-                (wall.shape.end2.x, wall.shape.end2.y),
+                (self._convert_x(wall.shape.end1.x), self._convert_y(wall.shape.end1.y)),
+                (self._convert_x(wall.shape.end2.x), self._convert_y(wall.shape.end2.y)),
                 width = 5,
             )
         for particle in self.container.particles:
@@ -46,16 +60,16 @@ class Illustration(object):
                 pygame.draw.line(
                     screen,
                     self.clay_color,
-                    (particle.midline.end1.x, particle.midline.end1.y),
-                    (particle.midline.end2.x, particle.midline.end2.y),
+                    (self._convert_x(particle.midline.end1.x), self._convert_y(particle.midline.end1.y)),
+                    (self._convert_x(particle.midline.end2.x), self._convert_y(particle.midline.end2.y)),
                     particle.thickness,
                     )
             elif isinstance(particle, base_classes.Sand):
                 pygame.draw.circle(
                     screen,
                     self.sand_color,
-                    (particle.center.x, particle.center.y),
-                    paritcle.radius
+                    (self._convert_x(particle.center.x), self._convert_y(particle.center.y)),
+                    paritcle.radius * 0.1
                 )
     
     def display(self):
@@ -63,11 +77,11 @@ class Illustration(object):
         """
         
         pygame.init()
-        screen = pygame.display.set_mode((1500, 1500)) #fix sizes
+        screen = pygame.display.set_mode((int(0.15*self.container.length), int(0.15*self.container.width))) #fix sizes
         screen.fill(self.background_color)
-        container_surface = pygame.Surface([1000, 1000])
+        container_surface = pygame.Surface([self.container.length//10, self.container.width//10])
         container_surface.fill(self.container_color)
-        screen.blit(container_surface, (250, 250))
+        screen.blit(container_surface, (int(0.025*self.container.length), int(0.025*self.container.width)))
         
         pygame.display.set_caption('2D DEM simulation of tiaxial test on sand-clay mixtures')
         # font = pygame.font.Font('CrimsonText-Regular.ttf', 32)
@@ -82,8 +96,3 @@ class Illustration(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
-                pygame.display.flip()
-
-
-ill = Illustration(0)
-ill.display()
