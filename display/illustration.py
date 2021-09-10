@@ -13,8 +13,9 @@ from typing import Type, Union, Tuple, List, Set, Dict, Any
 import pathlib
 
 
-class Illustration(object):
-    """class to illustrate the DEM simulation
+class IllustrationPG(object):
+    """class to illustrate the DEM simulation using the "pygame"
+    libarary package
     """
     
     clay_color = (161, 93, 93)
@@ -96,3 +97,42 @@ class Illustration(object):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
+
+
+class IllustrationMPL(object):
+    """class to illustrate the DEM simulation using the "matplotlib"
+    libarary package
+    """
+    
+    def __init__(self, container):
+        """initialize the illustration instance
+        """
+        
+        self.container = container
+    
+    def _convert_x(self):
+        """converts the x coordinate of the given entity in a way that
+        fits into the container illustration created by this class
+        """
+
+        pass
+
+    def _convert_y(self):
+        """converts the x coordinate of the given entity in a way that
+        fits into the container illustration created by this class
+        """
+        
+        pass
+    
+    def set_shapes(self):
+        """sets up the shapes of the all the particles and boundaries
+        in the model
+        """
+        
+        pass
+    
+    def display(self):
+        """displays the illustration of the DEM model
+        """
+
+        pass
