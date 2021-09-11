@@ -11,6 +11,8 @@ from generation import base_classes
 import numpy as np
 from typing import Type, Union, Tuple, List, Set, Dict, Any
 import pathlib
+from matplotlib.patches import Rectangle, Circle
+from matplotlib import pyplot as plt
 
 
 class IllustrationPG(object):
@@ -110,29 +112,52 @@ class IllustrationMPL(object):
         
         self.container = container
     
-    def _convert_x(self):
+    def _convert_x(self, x):
         """converts the x coordinate of the given entity in a way that
         fits into the container illustration created by this class
         """
 
-        pass
+        return x / 100 + 250
 
-    def _convert_y(self):
+    def _convert_y(self, y):
         """converts the x coordinate of the given entity in a way that
         fits into the container illustration created by this class
         """
         
-        pass
+        return y/100 + 250
     
     def set_shapes(self):
         """sets up the shapes of the all the particles and boundaries
         in the model
         """
         
-        pass
+        for particle in self.container.particles:
+            if isinstance(particle, base_classes.Sand):
+                shape = Circle(
+                    (self._convert_x(particle.shape.center.x), self._convert_y(particle.shape.center.y)),
+                    particle.shape.radius / 100,
+                    color = 'green'
+                    )
+                plt.gca().add_patch(shape)
+            if isinstance(particle, base_classes.Clay):
+                x1 = self._convert_x(particle.midline.end1.x)
+                y1 = self._convert_x(particle.midline.end1.y)
+                x2 = self._convert_x(particle.midline.end2.x)
+                y2 = self._convert_x(particle.midline.end2.y)
+                plt.plot((x1, y1), (x2, y2), color = 'red')
     
     def display(self):
         """displays the illustration of the DEM model
         """
 
-        pass
+        plt.title('2D DEM simulation of tiaxial test on sand-clay mixtures')
+        x = np.arange(0, 1500, 1)
+        y = 0.01*x
+        plt.plot(x, y, color = 'white')
+        x = np.arange(0, 1500, 1)
+        y = 0.01*x + 1485
+        plt.plot(x, y, color = 'white')
+        rect = Rectangle((250, 250), 1000, 1000, fill = False)
+        plt.gca().add_patch(rect)
+        self.set_shapes()
+        plt.show()

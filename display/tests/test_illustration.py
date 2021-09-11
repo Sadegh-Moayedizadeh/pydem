@@ -9,6 +9,7 @@ from display import illustration
 import os
 import sys
 import unittest
+import numpy as np
 
 kaolinite_clay1 = {
     'type': 'kaolinite',
@@ -39,7 +40,10 @@ container = base_classes.Container(
 particle1 = base_classes.Quartz(
     x = 5000, y = 5000, length = 10000, hierarchy = 0
 )
-# container.particles.append(particle1)
+particle2 = base_classes.Kaolinite(
+    x = 53000, y = 53000, length = 5000, thickness = 2, inclination = -1*np.math.pi/4, hierarchy = 1
+)
+container.particles.extend([particle1, particle2])
 
-ill = illustration.Illustration(container)
+ill = illustration.IllustrationMPL(container)
 ill.display()
