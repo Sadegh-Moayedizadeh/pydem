@@ -1040,7 +1040,7 @@ class Container(object):
                 generation of a new particle sounds impossible
         """
         
-        particle_type = self.type_reference(self.particles_info[index]['type'])
+        particle_type = self.type_reference[self.particles_info[index]['type']]
         trials = 0
         while True:
             if trials > 50:
@@ -1114,7 +1114,7 @@ class Container(object):
         y0 = (box // self.number_of_columns[0]) * self.box_width[0]
         x1 = x0 + self.box_length[0]
         y1 = y0 + self.box_width[0]
-        x = random.ranrange(x0, x1)
+        x = random.randrange(x0, x1)
         y = random.randrange(y0, y1)
         inc = random.randrange(0, np.math.pi)
         return x, y, inc

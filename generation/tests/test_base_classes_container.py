@@ -1206,7 +1206,10 @@ class TestParticleGeneration(unittest.TestCase):
         simulation_type = 'tt',
         fluid_characteristics = None
         )
-        pass
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
 
     def test_no_contacts2(self):
         """testing particle generation given two groups of particles
