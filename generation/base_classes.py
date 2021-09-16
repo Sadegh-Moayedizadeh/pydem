@@ -756,6 +756,7 @@ class Container(object):
         }
     valid_simulation_types = ['TT', 'DS', 'SS']
     temprature: int = 293 # in Kelvin; According to M.Khabazian and A.Mirghasemi, 2018
+    gravitational_acceleration = 9.81
     
     def __init__(
         self,
@@ -1529,7 +1530,10 @@ class Container(object):
                 radian
         """
         
-        pass
+        if self.simulation_type == 'TT':
+            for wall in self.walls:
+                if not wall.is_fixed:
+                    wall.move(delta_y = displacement)
     
     def add_particle_wall_contact_forces(self):
         """updates the force vector of any particle that is in contact
@@ -1567,7 +1571,7 @@ class Container(object):
         particle and adds them to its force vector components
         """
         
-        pass
+        particle.force[1] += particle.mass * self.gravitational_acceleration
     
     def update_particle_forces(self, particle):
         """updates the particle's force vector

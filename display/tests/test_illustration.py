@@ -21,7 +21,7 @@ kaolinite_clay2 = {
     'type': 'kaolinite',
     'size_upper_bound': 3000,
     'size_lower_bound': 2000,
-    'quantity': 100
+    'quantity': 20
 }
 quartz_sand1 = {
     'type': 'quartz',
@@ -32,7 +32,7 @@ quartz_sand1 = {
 container = base_classes.Container(
     length = 100000,
     width = 100000,
-    particles_info = [quartz_sand1, kaolinite_clay2],
+    particles_info = [kaolinite_clay2],
     time_step = 0.01,
     simulation_type = 'tt',
     fluid_characteristics = None
@@ -49,7 +49,7 @@ particle3 = base_classes.Kaolinite(
 particle4 = base_classes.Kaolinite(
     x = 5000, y = 5000, length = 5000, thickness = 2, inclination = -1*np.math.pi/2, hierarchy = 1
 )
-container.particles.extend([particle2, particle3, particle4])
-# container.generate_particles()
+# container.particles.extend([particle2, particle3, particle4])
+container.generate_particles()
 ill = illustration.IllustrationMPL(container)
 ill.display()
