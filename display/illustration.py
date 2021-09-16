@@ -124,7 +124,7 @@ class IllustrationMPL(object):
         fits into the container illustration created by this class
         """
         
-        return y/100 + 250
+        return y / 100 + 250
     
     def set_shapes(self):
         """sets up the shapes of the all the particles and boundaries
@@ -136,7 +136,8 @@ class IllustrationMPL(object):
                 shape = Circle(
                     (self._convert_x(particle.shape.center.x), self._convert_y(particle.shape.center.y)),
                     particle.shape.radius / 100,
-                    color = 'green'
+                    color = 'green',
+                    fill = False
                     )
                 plt.gca().add_patch(shape)
             if isinstance(particle, base_classes.Clay):

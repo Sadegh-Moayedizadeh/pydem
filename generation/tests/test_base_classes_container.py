@@ -10,6 +10,7 @@ from typing import Type, Union, Any
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
 import sys
+# from display import illustraion
 
 
 class TestValidations(unittest.TestCase):
@@ -1156,7 +1157,7 @@ class TestParticleGeneration(unittest.TestCase):
         'type': 'quartz',
         'size_upper_bound': 10000,
         'size_lower_bound': 8000,
-        'quantity': 50
+        'quantity': 35
     }
     
     def test_reduce_generation_chance(self):
@@ -1210,6 +1211,7 @@ class TestParticleGeneration(unittest.TestCase):
         container.update_mechanical_boxes()
         container.update_wall_contacts_list()
         container.update_mechanical_contacts_dictionary()
+        self.assertEqual(len(container.mechanical_contacts.keys()), 0)
 
     def test_no_contacts2(self):
         """testing particle generation given two groups of particles
@@ -1217,7 +1219,23 @@ class TestParticleGeneration(unittest.TestCase):
         particle or the wall
         """
         
-        pass
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc = {k:v for k,v in self.kaolinite_clay1.items()}
+        qs['quantity'] = 30
+        kc['quantity'] = 100
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [qs, kc],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
+        self.assertEqual(len(container.mechanical_contacts.keys()), 0)
     
     def test_no_contacts3(self):
         """testing particle generation given three groups of particles
@@ -1225,7 +1243,25 @@ class TestParticleGeneration(unittest.TestCase):
         particle or the wall
         """
         
-        pass
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc1 = {k:v for k,v in self.kaolinite_clay1.items()}
+        kc2 = {k:v for k,v in self.kaolinite_clay2.items()}
+        qs['quantity'] = 30
+        kc1['quantity'] = 80
+        kc2['quantity'] = 80
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [qs, kc1, kc2],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
+        self.assertEqual(len(container.mechanical_contacts.keys()), 0)
     
     def test_homogenity1(self):
         """testing particle generation making sure that the generated
@@ -1233,7 +1269,18 @@ class TestParticleGeneration(unittest.TestCase):
         one group of particles
         """
 
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
     
     def test_homogenity2(self):
         """testing particle generation making sure that the generated
@@ -1241,7 +1288,22 @@ class TestParticleGeneration(unittest.TestCase):
         two groups of particles
         """
 
-        pass
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc = {k:v for k,v in self.kaolinite_clay1.items()}
+        qs['quantity'] = 30
+        kc['quantity'] = 100
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [qs, kc],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
     
     def test_homogenity3(self):
         """testing particle generation making sure that the generated
@@ -1249,7 +1311,24 @@ class TestParticleGeneration(unittest.TestCase):
         three groups of particles
         """
 
-        pass
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc1 = {k:v for k,v in self.kaolinite_clay1.items()}
+        kc2 = {k:v for k,v in self.kaolinite_clay2.items()}
+        qs['quantity'] = 30
+        kc1['quantity'] = 80
+        kc2['quantity'] = 80
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [qs, kc1, kc2],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        container.update_mechanical_boxes()
+        container.update_wall_contacts_list()
+        container.update_mechanical_contacts_dictionary()
     
     def test_void_ratio1(self):
         """testing particle generation making sure that a certain void

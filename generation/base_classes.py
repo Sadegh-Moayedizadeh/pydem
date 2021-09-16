@@ -1053,6 +1053,7 @@ class Container(object):
                     self.particles_info[index]['size_lower_bound'],
                     self.particles_info[index]['size_upper_bound'],
                     ),
+                thickness = 2,
                 inclination = inc,
                 hierarchy = index
             )
@@ -1064,8 +1065,8 @@ class Container(object):
                 trials += 1
             else:
                 self.particles.append(new_particle)
-                h = particle.hierarchy
-                nb = particle.box_num(
+                h = new_particle.hierarchy
+                nb = new_particle.box_num(
                     self.number_of_columns[h], self.box_length[h], self.box_width[h]
                     )
                 for box in self.touching_boxes(new_particle.shape, h, nb):
@@ -1114,9 +1115,9 @@ class Container(object):
         y0 = (box // self.number_of_columns[0]) * self.box_width[0]
         x1 = x0 + self.box_length[0]
         y1 = y0 + self.box_width[0]
-        x = random.randrange(x0, x1)
-        y = random.randrange(y0, y1)
-        inc = random.randrange(0, np.math.pi)
+        x = random.uniform(x0, x1)
+        y = random.uniform(y0, y1)
+        inc = random.uniform(0, np.math.pi)
         return x, y, inc
     
     def particle_wall_contact_check(
