@@ -712,8 +712,8 @@ class TestContacts(unittest.TestCase):
         self.assertEqual(len(container.mechanical_boxes), 2)
         self.assertEqual(container.mechanical_boxes[0][0], [self.quartz1])
         self.assertEqual(container.mechanical_boxes[0][10], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][42], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][22], [self.quartz1, self.kaolinite2_6])
+        self.assertEqual(container.mechanical_boxes[1][42], [])
+        self.assertEqual(container.mechanical_boxes[1][22], [self.kaolinite2_6])
     
     def test_update_mechanical_boxes4(self):
         """testing the "update_mechanical_boxes" method of the Container
@@ -736,10 +736,10 @@ class TestContacts(unittest.TestCase):
         container.update_mechanical_boxes()
         self.assertEqual(len(container.mechanical_boxes), 3)
         self.assertEqual(container.mechanical_boxes[0][11], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][41], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][21], [self.quartz1, self.kaolinite2_7])
+        self.assertEqual(container.mechanical_boxes[1][41], [])
+        self.assertEqual(container.mechanical_boxes[1][21], [self.kaolinite2_7])
         self.assertEqual(
-            container.mechanical_boxes[2][123], [self.quartz1, self.kaolinite2_7, self.kaolinite1_5]
+            container.mechanical_boxes[2][123], [self.kaolinite1_5]
             )
         
     
@@ -808,16 +808,10 @@ class TestContacts(unittest.TestCase):
         )
         container.update_mechanical_boxes()
         self.assertTrue(
-            container.single_particle_mechanical_contact_check(self.quartz2)
-        )
-        self.assertTrue(
             container.single_particle_mechanical_contact_check(self.kaolinite2_5)
         )
         self.assertFalse(
             container.single_particle_mechanical_contact_check(self.quartz13)
-        )
-        self.assertTrue(
-            container.single_particle_mechanical_contact_check(self.quartz12)
         )
         self.assertTrue(
             container.single_particle_mechanical_contact_check(self.kaolinite2_2)
@@ -866,9 +860,6 @@ class TestContacts(unittest.TestCase):
         )
         container.update_mechanical_boxes()
         self.assertTrue(
-            container.single_particle_mechanical_contact_check(self.kaolinite2_8)
-        )
-        self.assertTrue(
             container.single_particle_mechanical_contact_check(self.kaolinite1_6)
         )
         self.assertTrue(
@@ -884,9 +875,6 @@ class TestContacts(unittest.TestCase):
             container.single_particle_mechanical_contact_check(self.kaolinite1_5)
         )
         self.assertTrue(
-            container.single_particle_mechanical_contact_check(self.quartz1)
-        )
-        self.assertTrue(
             container.single_particle_mechanical_contact_check(self.quartz10)
         )
         self.assertTrue(
@@ -897,9 +885,6 @@ class TestContacts(unittest.TestCase):
         )
         self.assertFalse(
             container.single_particle_mechanical_contact_check(self.kaolinite1_3)
-        )
-        self.assertTrue(
-            container.single_particle_mechanical_contact_check(self.quartz14)
         )
         self.assertTrue(
             container.single_particle_mechanical_contact_check(self.kaolinite1_1)

@@ -1117,7 +1117,10 @@ class Container(object):
         ) -> bool:
         """checking if the given particle is in contact with any other
             particle; it only returns True or False; the aim here is
-            not to quantify the contact
+            not to quantify the contact; this method only checks
+            contacts with particles with the same or lower hierarchy
+            since in the generation phase bigger particles are produced
+            first
 
         Args:
             particle: the given particle to check if it's in contact
