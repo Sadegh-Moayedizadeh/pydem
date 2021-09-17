@@ -1281,6 +1281,7 @@ class TestParticleGeneration(unittest.TestCase):
         container.update_mechanical_boxes()
         container.update_wall_contacts_list()
         container.update_mechanical_contacts_dictionary()
+        pass
     
     def test_homogenity2(self):
         """testing particle generation making sure that the generated
@@ -1304,6 +1305,7 @@ class TestParticleGeneration(unittest.TestCase):
         container.update_mechanical_boxes()
         container.update_wall_contacts_list()
         container.update_mechanical_contacts_dictionary()
+        pass
     
     def test_homogenity3(self):
         """testing particle generation making sure that the generated
@@ -1329,6 +1331,32 @@ class TestParticleGeneration(unittest.TestCase):
         container.update_mechanical_boxes()
         container.update_wall_contacts_list()
         container.update_mechanical_contacts_dictionary()
+        pass
+    
+    def test_quantity1(self):
+        """testing if the 'generate_particles' method of the container
+        class generates the right number of particles given one group
+        of particles
+        """
+        
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        self.assertEqual(len(container.particles), 35)
+    
+    def test_quantity2(self):
+        """testing if the 'generate_particles' method of the container
+        class generates the right amount of particles overal and also
+        regarding each particle type given two particle groups
+        """
+        
+        pass
     
     def test_void_ratio1(self):
         """testing particle generation making sure that a certain void

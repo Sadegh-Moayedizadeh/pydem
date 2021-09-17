@@ -955,8 +955,6 @@ class Container(object):
         usually done after each update in particles' position
         """
         
-        #new solution
-        
         res = [defaultdict(list) for _ in range(self.number_of_groups)]
         for particle in self.particles:
             h = particle.hierarchy
@@ -968,39 +966,6 @@ class Container(object):
             for box in self.touching_boxes(particle.shape, h, nb):
                 res[h][box].append(particle)
         self.mechanical_boxes = res
-        
-        #
-        
-        #this is not efficient, but there seems to be no better way; multithread seems necessary here
-        # res1 = [defaultdict(list) for _ in range(self.number_of_groups)]
-        # res2 = [defaultdict(list) for _ in range(self.number_of_groups)]
-        # for particle in self.particles:
-        #     h = particle.hierarchy
-        #     nb = particle.box_num(self.number_of_columns[h], self.box_length[h], self.box_width[h])
-        #     boxes = self.touching_boxes(particle.shape, h, nb)
-        #     for box in boxes:
-        #         res1[h][box].append(particle)
-        #         res2[h][particle].append(box)
-        #         x0 = (box % self.number_of_columns[h]) * self.box_length[h]
-        #         y0 = (box // self.number_of_columns[h]) * self.box_width[h]
-        #         for index in range(h+1, self.number_of_groups):
-        #             delta_x = self.box_length[index]
-        #             delta_y = self.box_width[index]
-        #             for x in range(x0, x0 + self.box_length[h], delta_x):
-        #                 for y in range(y0, y0 + self.box_width[h], delta_y):
-        #                     end1 = shapes.Point(x, y)
-        #                     end2 = shapes.Point(x+delta_x, y+delta_y)
-        #                     line = shapes.LineSegment(end1, end2)
-        #                     rec = shapes.Rectangle.from_diagonal(line)
-        #                     if (
-        #                         operations.is_inside(rec, particle.shape)
-        #                         or operations.intersection(rec, particle.shape)
-        #                     ):
-        #                         new_box_num = x//self.box_length[index]+self.number_of_columns[index]*y//self.box_width[index]
-        #                         res1[index][new_box_num].append(particle)
-        #                         res2[index][particle].append(new_box_num)
-        # self.mechanical_boxes = res1
-        # self.mechanical_boxes_reversed = res2
     
     def update_chemical_boxes(self):
         """updates the 'self.chemical_boxes' attribute; this is
@@ -1540,7 +1505,10 @@ class Container(object):
         with a boundary wall
         """
         
-        pass
+        self.update_wall_contacts_list()
+        for particla in self.wall_contacts:
+            for wall in self.walls:
+                pass
     
     def add_mechanical_forces(self, particle):
         """calculates machanical forces acting on the given particle
