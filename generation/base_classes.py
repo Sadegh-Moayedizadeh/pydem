@@ -1128,8 +1128,6 @@ class Container(object):
                 the given particle
         """
         
-        #new solution
-        
         h = particle.hierarchy
         for i in range(0, h+1):
             nb = particle.box_num(
@@ -1148,28 +1146,11 @@ class Container(object):
                             return True
         return False
         
-        #
-        
-        # h = particle.hierarchy
-        # for i in range(h, self.number_of_groups):
-        #     for box in self.mechanical_boxes_reversed[i][particle]:
-        #         for particle2 in self.mechanical_boxes[i][box]:
-        #             if (
-        #                 operations.intersection(particle.shape, particle2.shape)
-        #                 or operations.is_inside(particle.shape, particle2.shape)
-        #                 or operations.is_inside(particle2.shape, particle.shape)
-        #             ):
-        #                 if particle.num != particle2.num:
-        #                     return True
-        # return False
-        
     def update_mechanical_contacts_dictionary(self) -> None:
         """updates the 'self.mechanical_contacts' dictionary; note that
         the "mechanical_boxes" and "mechanical_boxes_reversed" arrays
         should be updated before calling this method
         """
-        
-        #new solution
         
         res = defaultdict(list)
         for particle in self.particles:
@@ -1195,23 +1176,6 @@ class Container(object):
                             if not (particle in res[particle2]):
                                 res[particle2].append(particle)
         self.mechanical_contacts = res
-        #
-        
-        # res = defaultdict(list)
-        # for particle in self.particles:
-        #     h = particle.hierarchy
-        #     for i in range(h, self.number_of_groups):
-        #         for box in self.mechanical_boxes_reversed[i][particle]:
-        #             for particle2 in self.mechanical_boxes[i][box]:
-        #                 if (
-        #                     operations.intersection(particle.shape, particle2.shape)
-        #                     or operations.is_inside(particle.shape, particle2.shape)
-        #                     or operations.is_inside(particle2.shape, particle.shape)
-        #                 ):
-        #                     if particle2 != particle and not(particle2 in res[particle]):
-        #                         res[particle].append(particle2)
-                            
-        # self.mechanical_contacts = res
     
     def update_chemical_contacts_dictionary(self) -> None:
         """updates the 'self.chemical_contacts' dictionary

@@ -687,8 +687,8 @@ class TestContacts(unittest.TestCase):
         self.assertEqual(len(container.mechanical_boxes), 2)
         self.assertEqual(container.mechanical_boxes[0][0], [self.quartz1])
         self.assertEqual(container.mechanical_boxes[0][11], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][204], [self.quartz1])
-        self.assertEqual(container.mechanical_boxes[1][155], [self.quartz1, self.kaolinite2_6])
+        self.assertEqual(container.mechanical_boxes[1][204], [])
+        self.assertEqual(container.mechanical_boxes[1][155], [self.kaolinite2_6])
     
     def test_update_mechanical_boxes3(self):
         """testing the "update_mechanical_boxes" method of the Container
@@ -1356,8 +1356,42 @@ class TestParticleGeneration(unittest.TestCase):
         regarding each particle type given two particle groups
         """
         
-        pass
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc = {k:v for k,v in self.kaolinite_clay1.items()}
+        qs['quantity'] = 30
+        kc['quantity'] = 100
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [qs, kc],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        self.assertEqual(len(container.particles), 130)
+        c = sum(isinstance(particle, base_classes.Clay) for particle in container.particles)
+        s = sum(isinstance(particle, base_classes.Sand) for particle in container.particles)
+        self.assertEqual(c, 100)
+        self.assertEqual(s, 30)
     
+    def test_dummy(self):
+        qs = {k:v for k,v in self.quartz_sand1.items()}
+        kc = {k:v for k,v in self.kaolinite_clay1.items()}
+        qs['quantity'] = 30
+        kc['quantity'] = 20
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [kc],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.generate_particles()
+        for particle in container.particles:
+            sys.stdout.write(str(particle.midpoint) + '\n')
+
     def test_void_ratio1(self):
         """testing particle generation making sure that a certain void
         ratio is achieved in the container given one group of particels

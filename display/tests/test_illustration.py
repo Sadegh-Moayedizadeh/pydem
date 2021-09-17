@@ -47,9 +47,9 @@ particle3 = base_classes.Kaolinite(
     x = 50000, y = 50000, length = 5000, thickness = 2, inclination = np.math.pi/4, hierarchy = 1
 )
 particle4 = base_classes.Kaolinite(
-    x = 5000, y = 5000, length = 5000, thickness = 2, inclination = -1*np.math.pi/2, hierarchy = 1
+    x = 5000, y = 5000, length = 9000, thickness = 2, inclination = -1*np.math.pi/2, hierarchy = 1
 )
-# container.particles.extend([particle2, particle3, particle4])
-container.generate_particles()
+container.particles.extend([particle2, particle3, particle4])
+# container.generate_particles()
 ill = illustration.IllustrationMPL(container)
 ill.display()

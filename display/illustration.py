@@ -137,7 +137,6 @@ class IllustrationMPL(object):
                     (self._convert_x(particle.shape.center.x), self._convert_y(particle.shape.center.y)),
                     particle.shape.radius / 100,
                     color = 'green',
-                    fill = False
                     )
                 plt.gca().add_patch(shape)
             if isinstance(particle, base_classes.Clay):
