@@ -1110,15 +1110,53 @@ class TestContacts(unittest.TestCase):
         class
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz6,
+                self.quartz16,
+                self.kaolinite2_8,
+                self.kaolinite1_6,
+                self.kaolinite1_4,
+                self.kaolinite1_1
+            ]
+        )
+        container.update_chemical_boxes()
     
     def test_update_chemical_contacts_dictionary(self):
         """testing the  'update_chemical_contacts_dictionary' method of
         the Container class
         """
         
-        pass
-
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand1, self.kaolinite_clay2, self.kaolinite_clay1],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [
+                self.quartz6,
+                self.quartz16,
+                self.kaolinite2_8,
+                self.kaolinite1_6,
+                self.kaolinite1_4,
+                self.kaolinite1_1
+            ]
+        )
+        container.update_chemical_boxes()
+        container.update_chemical_contacts_dictionary()
+        self.assertEqual(container.chemical_contacts[self.kaolinite2_8], [self.kaolinite1_6])
+        
 
 class TestParticleGeneration(unittest.TestCase):
     """test cases to see if the particle generation phase in the

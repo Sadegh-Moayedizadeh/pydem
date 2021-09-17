@@ -854,9 +854,7 @@ class Container(object):
         self.number_of_rows: List = [self.width // w for w in self.box_width]
         self.number_of_columns: List = [self.length // l for l in self.box_length]
         self.mechanical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
-        self.chemical_boxes: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
-        self.mechanical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
-        self.chemical_boxes_reversed: List[Dict] = [defaultdict(list) for i in range(self.number_of_groups)]
+        self.chemical_boxes: Dict = defaultdict(list)
         
         #stuff about generation phase
         big_box_numbers = [i for i in range(self.number_of_rows[0] * self.number_of_columns[0])]
@@ -972,14 +970,24 @@ class Container(object):
         usually done after each update in particles' position
         """
         
-        res = [defaultdict(list) for _ in range(self.number_of_groups)]
+        res = defaultdict(list)
+        for i in range(len(self.particles_info)):
+            if self.particles_info[i]['type'] == 'kaolinite':
+                index = i
+                break
+        else:
+            return
         for particle in self.particles:
             if not isinstance(particle, Clay):
                 continue
-            for index in range(particle.hierarchy, self.number_of_groups):
-                    for box in self.touching_boxes(particle.shape.circumcircle, index):
-                        res[index][box].append(particle)
-        self.mechanical_boxes = res
+            nb = particle.box_num(
+                self.number_of_columns[index],
+                self.box_length[index],
+                self.box_width[index]
+                )
+            for box in self.touching_boxes(particle.midline.circumcircle, index, nb):
+                res[box].append(particle)
+        self.chemical_boxes = res
     
     def generate_particles(self) -> None:
         """generate the list of particles in-place regarding the given
@@ -1184,7 +1192,32 @@ class Container(object):
         """updates the 'self.chemical_contacts' dictionary
         """
         
-        pass
+        res = defaultdict(list)
+        for i in range(len(self.particles_info)):
+            if self.particles_info[i]['type'] == 'kaolinite':
+                index = i
+                break
+        else:
+            return
+        for particle in self.particles:
+            if not isinstance(particle, Clay):
+                continue
+            nb = particle.box_num(
+                self.number_of_columns[index],
+                self.box_length[index],
+                self.box_width[index]
+                )
+            for box in self.touching_boxes(particle.midline.circumcircle, index, nb):
+                for particle2 in self.chemical_boxes[box]:
+                    if (
+                        (operations.intersection(particle.midline.circumcircle, particle2.midline.circumcircle)
+                        or operations.is_inside(particle.midline.circumcircle, particle2.midline.circumcircle)
+                        or operations.is_inside(particle2.midline.circumcircle, particle.midline.circumcircle))
+                        and particle != particle2
+                        and not(particle2 in res[particle])
+                    ):
+                        res[particle].append(particle2)
+        self.chemical_contacts = res
     
     def update_wall_contacts_list(self):
         """updates the 'self.wall_contacts' list; note that the
