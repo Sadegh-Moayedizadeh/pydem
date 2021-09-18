@@ -1527,13 +1527,36 @@ class Container(object):
         
         pass
 
-    def add_vdv_forces(self, partice):
+    def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
         particle and adds them to the particle's force vector components
         """
 
-        pass
-    
+        for particle2 in self.chemical_contacts[particle]:
+            A = particle.hammaker_constant
+            W = particle.thickness
+            c = 49.363 # in nanometer
+            gama = 0.5*operations.angle_in_between(particle.midline, particle2.midline)
+            d1, d2 = 1, 1 # in nanometer
+            L2 = particle2.length
+            D = operations.distance(particle.midline, particle2.midline)
+            x1 = D
+            x2 = D + d1
+            x3 = D + d1 + L2*np.sin(0.5*gama)
+            x4 = D + L2*np.sin(0.5*gama)
+            x5 = D + d1 + d2*np.sin(0.5*gama)
+            x6 = D + d2*np.sin(0.5*gama)
+            x7 = D + d2*np.sin(0.5*gama) + L2*np.sin(0.5*gama)
+            x8 = D + d1 + d2*np.sin(0.5*gama) + L2*np.sin(0.5*gama)
+            X = [x1, x2, x3, x4, x5, x6, x7, x8]
+            F = (
+                (A*W)/(6*(np.math.pi)*(np.sin(2*gama)))*
+                sum(
+                    ((-1)**i)*(4/(c*x) - 1/(x**2) - (12*((x + c)**2)/(c**4))*np.log((x + c)/x)) for i,x in enumerate(X)
+                    )
+            )
+            # add the force to the particle in the proper alignment
+
     def add_gravitational_forces(self, particle):
         """calculates the gravitational forces acting on the given
         particle and adds them to its force vector components
