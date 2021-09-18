@@ -1525,7 +1525,23 @@ class Container(object):
         them to the particle's force vector components
         """
         
-        pass
+        #put it in a loop for contacting particels
+        k = particle.Boltzman_constant
+        t = self.temprature
+        v = self.fluid_characteristics['cation_valance']
+        e = 1.38e23 #charge of an electron in J/K
+        n = self.fluid_characteristics['cation_concentration']
+        epsilon = self.fluid_characteristics['dielectric_constant']
+        K = np.sqrt((8*np.math.pi*n*(v**2)*(e**2))/(epsilon*k*t))
+        phi = particle.electric_potential
+        z = (v*e*phi)/(k*t)
+        D = operations.distance(particle.midline, particle2.midline)
+        d = D #ask about this
+        u = 4 * np.log(
+            (np.exp(z/4) + 1 + (np.exp(z/4) - 1) * exp(-1*K*d)) /
+            (np.exp(z/4) + 1 - (np.exp(z/4) - 1) * exp(-1*K*d)))
+        P = 2*n*k*t*(np.cosh(u) - 1)
+        #incomplete
 
     def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
