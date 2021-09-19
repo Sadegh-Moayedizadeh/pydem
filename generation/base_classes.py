@@ -1535,13 +1535,31 @@ class Container(object):
         K = np.sqrt((8*np.math.pi*n*(v**2)*(e**2))/(epsilon*k*t))
         phi = particle.electric_potential
         z = (v*e*phi)/(k*t)
-        D = operations.distance(particle.midline, particle2.midline)
-        d = D #ask about this
         u = 4 * np.log(
             (np.exp(z/4) + 1 + (np.exp(z/4) - 1) * exp(-1*K*d)) /
             (np.exp(z/4) + 1 - (np.exp(z/4) - 1) * exp(-1*K*d)))
         P = 2*n*k*t*(np.cosh(u) - 1)
-        #incomplete
+        for particle2 in self.chemical_contacts[particle]:
+            #to calculate 'D', 'd', and 'L'
+            line1 = particle.midline.infinite()
+            line2 = particle2.midline.infinite()
+            bisec = operations.bisector(line1, line2)
+            norm1 = operations.normal(particle.midline.end1, bisec)
+            norm2 = operations.normal(particle.midline.end2, bisec)
+            norm3 = operations.normal(particle2.midline.end1, bisec)
+            norm4 = operations.normal(particle2.midline.end2, bisec)
+            vertices = []
+            for norm in [norm1, norm2, norm3, norm4]:
+                if (
+                    operations.intersection(norm, particle.midline)
+                    and operations.intersection(norm, particle2.midline)
+                ):
+                    vertices.append(operations.intersection(norm, particle.midline))
+                    vertices.append(operations.intersection(norm, particle2.midline))
+                    if len(vertices) == 4:
+                        break
+            vertices[2], vertices[3] = vertices[3], vertices[2]
+            pol = shapes.Polygon(*vertices)
 
     def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
