@@ -1531,15 +1531,10 @@ class Container(object):
         e = 1.38e23 #charge of an electron in J/K
         n = self.fluid_characteristics['cation_concentration']
         epsilon = self.fluid_characteristics['dielectric_constant']
-        K = np.sqrt((8*np.math.pi*n*(v**2)*(e**2))/(epsilon*k*t))
         phi = particle.electric_potential
-        z = (v*e*phi)/(k*t)
-        u = 4 * np.log(
-            (np.exp(z/4) + 1 + (np.exp(z/4) - 1) * exp(-1*K*d)) /
-            (np.exp(z/4) + 1 - (np.exp(z/4) - 1) * exp(-1*K*d)))
-        P = 2*n*k*t*(np.cosh(u) - 1)
+        #calculate 'D', 'd', and 'L' for each particle pair and calculating
+        #the ddl for acitng on 'particle' for each one
         for particle2 in self.chemical_contacts[particle]:
-            #to calculate 'D', 'd', and 'L'
             line1 = particle.midline.infinite()
             line2 = particle2.midline.infinite()
             bisec = operations.bisector(line1, line2)
@@ -1559,6 +1554,39 @@ class Container(object):
                         break
             vertices[2], vertices[3] = vertices[3], vertices[2]
             pol = shapes.Polygon(*vertices)
+            #fixing ddl area for midiary particles
+            for particle3 in self.chemical_contacts[particle]:
+                if (
+                    (particle2 != particle3)
+                    and operations.intersection(particle3, pol)
+                ):
+                    pass
+            D = min(
+                edge.length for edge in pol.edges if not(
+                    (operations.intersection(edge.end1, line1))^(operations.intersection(edge.end2, line2))
+                )
+            )
+            d = D
+            for edge in pol:
+                if (operations.intersection(edge.end1, line1)
+                    and operations.intersection(edge.end2, line1)):
+                    L = edge.length
+                    break
+            #calculating the ddl force for the pair
+            K = np.sqrt((8*np.math.pi*n*(v**2)*(e**2))/(epsilon*k*t))
+            z = (v*e*phi)/(k*t)
+            u = 4 * np.log(
+                (np.exp(z/4) + 1 + (np.exp(z/4) - 1) * exp(-1*K*d)) /
+                (np.exp(z/4) + 1 - (np.exp(z/4) - 1) * exp(-1*K*d)))
+            P = 2*n*k*t*(np.cosh(u) - 1)
+            bl = 0.001*phi**2.9 + 1.2
+            al = 0.007*phi**3.1 + (7e-7)*phi**7.7 - 0.3
+            bf = -0.725*(phi**(-0.85))*np.log(L) + 2.3 - 0.18*phi
+            af = 0.005*(L**2.5)*(phi**(-0.6*np.log(L) + 3.1))
+            Il = 1 / (1 + al**bl)
+            If = 1 / (1 + af**bf)
+            
+            
     
     def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
