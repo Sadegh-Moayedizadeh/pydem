@@ -1525,7 +1525,6 @@ class Container(object):
         them to the particle's force vector components
         """
         
-        #put it in a loop for contacting particels
         k = particle.Boltzman_constant
         t = self.temprature
         v = self.fluid_characteristics['cation_valance']
@@ -1560,7 +1559,7 @@ class Container(object):
                         break
             vertices[2], vertices[3] = vertices[3], vertices[2]
             pol = shapes.Polygon(*vertices)
-
+    
     def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
         particle and adds them to the particle's force vector components
