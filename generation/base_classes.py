@@ -1525,6 +1525,7 @@ class Container(object):
         them to the particle's force vector components
         """
         
+        #constant parameters
         k = particle.Boltzman_constant
         t = self.temprature
         v = self.fluid_characteristics['cation_valance']
@@ -1532,6 +1533,7 @@ class Container(object):
         n = self.fluid_characteristics['cation_concentration']
         epsilon = self.fluid_characteristics['dielectric_constant']
         phi = particle.electric_potential
+        
         #calculate 'D', 'd', and 'L' for each particle pair and calculating
         #the ddl for acitng on 'particle' for each one
         for particle2 in self.chemical_contacts[particle]:
@@ -1554,6 +1556,7 @@ class Container(object):
                         break
             vertices[2], vertices[3] = vertices[3], vertices[2]
             pol = shapes.Polygon(*vertices)
+            
             #fixing ddl area for midiary particles
             for particle3 in self.chemical_contacts[particle]:
                 if (
@@ -1572,6 +1575,7 @@ class Container(object):
                     and operations.intersection(edge.end2, line1)):
                     L = edge.length
                     break
+            
             #calculating the ddl force for the pair
             K = np.sqrt((8*np.math.pi*n*(v**2)*(e**2))/(epsilon*k*t))
             z = (v*e*phi)/(k*t)
@@ -1585,14 +1589,21 @@ class Container(object):
             af = 0.005*(L**2.5)*(phi**(-0.6*np.log(L) + 3.1))
             Il = 1 / (1 + al**bl)
             If = 1 / (1 + af**bf)
-            
-            
+            F = If * (P*np.exp(-1*K*D))
+            I = 0.5 * (Il) * (L*np.cos(2*gama))
+            angle = operations.angle_in_between(norm1, line1)
+            inc = operations.standardized_inclination(norm1.inclination)
+            M = F * np.sin(angle) * I
+            Fx = F * np.cos(inc)
+            Fy = F * np.sin(inc)
+            particle.forces = (particle.forces[0]+Fx, particle.forces[1]+Fy, particle.forces[2]+M)
     
     def add_vdv_forces(self, particle):
         """calculates the van der valse forces acting on the given
         particle and adds them to the particle's force vector components
         """
 
+        #calculating the vdv force for each pair
         for particle2 in self.chemical_contacts[particle]:
             A = particle.hammaker_constant
             W = particle.thickness
@@ -1616,7 +1627,16 @@ class Container(object):
                     ((-1)**i)*(4/(c*x) - 1/(x**2) - (12*((x + c)**2)/(c**4))*np.log((x + c)/x)) for i,x in enumerate(X)
                     )
             )
-            # add the force to the particle in the proper alignment
+            
+            #adding the force to the particle in the proper alignment
+            line1 = particle.midline.infinite()
+            line2 = particle2.midline.infinite()
+            bisec = operations.bisector(line1, line2)
+            norm1 = operations.normal(particle.midline.end1, bisec)
+            inc = operations.standardized_inclination(norm1.inclination)
+            Fx = F * np.cos(inc)
+            Fy = F * np.sin(inc)
+            particle.forces = (particle.forces[0]+Fx, particle.forces[1]+Fy, particle.forces[2])
 
     def add_gravitational_forces(self, particle):
         """calculates the gravitational forces acting on the given
