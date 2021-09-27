@@ -1518,7 +1518,8 @@ class Container(object):
         and boundaries are not covered here
         """
         
-        pass
+        for particle2 in self.mechanical_contacts:
+            pass
     
     def add_ddl_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds

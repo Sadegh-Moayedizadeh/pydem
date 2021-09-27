@@ -1439,20 +1439,171 @@ class TestParticleGeneration(unittest.TestCase):
         pass    
 
 
-class TestMechanicalForces(unittest.TestCase):
-    """test cases for mechanical forces calculated between different
-    types of particles
+class TestForces(unittest.TestCase):
+    """test cases for calculation of all sorts of forces acting on an
+    arbitrary particle
     """
     
-    pass
-
-
-class TestChemicalForces(unittest.TestCase):
-    """testing the ddl and van der vaals forces calculated for clay
-    particles
-    """
+    #define some particles here
     
-    pass
+    def test_mechanical_contact_forces1(self):
+        """testing the calculation of mechanical forces acting on the
+        given particle where there are two clay particles overlapping
+        each other
+        """
+        
+        pass
+
+    def test_mechanical_contact_forces2(self):
+        """testing the calculation of mechanical forces acting on the
+        given particle where there are two sand particles in contact
+        with each other
+        """
+        
+        pass
+
+    def test_mechanical_contact_forces3(self):
+        """testing the calculation of mechanical forces acting on the
+        given clay particle contacting with a sand particle
+        """
+        
+        pass
+    
+    def test_mechanical_contact_forces4(self):
+        """testing the calculation of mechanical forces acting on the
+        given sand particle contacting with a clay particle
+        """
+        
+        pass
+    
+    def test_mechanical_contact_forces5(self):
+        """testing the calculation of mechanical forces acting on the
+        given clay particle in contact with two other clay particles
+        """
+        
+        pass
+    
+    def test_mechanical_contact_forces6(self):
+        """testing the calculation of mechanical forces acting on the
+        given clay particle in contact with one clay and one sand
+        particle
+        """
+        
+        pass
+    
+    def test_wall_contact_forces1(self):
+        """testing the calculation of wall contact forces acting on a
+        clay particle
+        """
+        
+        pass
+    
+    def test_wall_contact_forces2(self):
+        """testing the calculation of wall contact forces acting on a
+        sand particle
+        """
+        
+        pass
+    
+    def test_wall_contact_forces3(self):
+        """testing the calculation of wall contact forces acting on a
+        sand particle in contact with two walls in the corner
+        """
+        
+        pass
+    
+    def test_vdw_forces(self):
+        """testing the calculation of van der waals forces acting on a
+        given clay particle; since the geometrical conditions don't
+        really matter in this case this one test seems to be enough
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces1(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where the second particle is not located
+        in front of the first one but it's pretty close
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces2(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where the second particle's alignment is
+        in a way that its extension is orthogonal to the first particle
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces3(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there are two other particles in
+        chemical contact with the first one but with non-intersecting
+        areas of repulsion
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces4(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where the other particle is intersecting
+        the first one
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces5(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle in a
+        way that it only intersects the perimeter of the repulsion area
+        from the outside
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces6(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle that
+        fully intersects with the area of repulsion of the other pair
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces7(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle that 
+        intersects with both the area of repulsion and one of the
+        particles
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces8(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle that
+        intersects with one of the other particles and one of the
+        edges of the repulsion area at the same time
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces9(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle located
+        fully inside the area of repulsion
+        """
+        
+        pass
+    
+    def test_ddl_repulsion_forces10(self):
+        """testing the calculation of ddl repultion forces acting on
+        a given clay particle where there is a mediary particle that
+        passes through the area of repulsion in a way that the other
+        two particles are no longer facing each other
+        """
+        
+        pass
 
 
 class TestUpdateLocations(unittest.TestCase):
