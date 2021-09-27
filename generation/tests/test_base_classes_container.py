@@ -1444,7 +1444,30 @@ class TestForces(unittest.TestCase):
     arbitrary particle
     """
     
-    #define some particles here
+    #particle groups to create a container instance
+    kaolinite_clay = {
+        'type': 'kaolinite',
+        'size_upper_bound': 3000,
+        'size_lower_bound': 1000,
+        'quantity': 500
+    }
+    quartz_sand = {
+        'type': 'quartz',
+        'size_upper_bound': 10000,
+        'size_lower_bound': 8000,
+        'quantity': 35
+    }
+    
+    #particles used in this test class
+    quartz1 = base_classes.Quartz(
+        x = 0, y = 35000, length = 8500, hierarchy = 0
+    )
+    kaolinite1 = base_classes.Kaolinite(
+        x = 50000, y = 50000, length = 2000, thickness = 2, inclination = 0, hierarchy = 1
+    )
+    kaolinite2 = base_classes.Kaolinite(
+        x = 50000, y = 49000, length = 2000, thickness = 2, inclination = np.math.pi/4, hierarchy = 1
+    )
     
     def test_mechanical_contact_forces1(self):
         """testing the calculation of mechanical forces acting on the
@@ -1452,7 +1475,27 @@ class TestForces(unittest.TestCase):
         each other
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand, self.kaolinite_clay],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend([self.kaolinite1, self.kaolinite2])
+        res1 = container.mechanical_contact_forces(self.kaolinite1)
+        f1 = (1 - 0.5*np.sqrt(2)) * (containere.clay_clay_contact_stiffness)
+        fx1 = f1*np.cos(np.math.pi/4)
+        fy1 = f1*np.sin(np.math.pi/4)
+        m1 = fy1*0.5
+        self.assertEqual(res1, (fx1, fy1, m1))
+        res2 = container.mechanical_contact_forces(self.kaolinite2)
+        f2 = 0.5 * (container.clay_clay_contact_stiffness)
+        fx2 = f1*np.cos(np.math.pi/4)
+        fy2 = f1*np.sin(np.math.pi/4)
+        m2 = (0.5*np.sqrt(2)) * (fy2)
+        self.assertEqual(res2, (fx2, fy2, m2))
 
     def test_mechanical_contact_forces2(self):
         """testing the calculation of mechanical forces acting on the
