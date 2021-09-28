@@ -1460,13 +1460,19 @@ class TestForces(unittest.TestCase):
     
     #particles used in this test class
     quartz1 = base_classes.Quartz(
-        x = 0, y = 35000, length = 8500, hierarchy = 0
+        x = 80000, y = 80000, length = 9000, hierarchy = 0
+    )
+    quartz2 = base_classes.Quartz(
+        x = 84000, y = 84000, length = 9000, hierarchy = 0
     )
     kaolinite1 = base_classes.Kaolinite(
         x = 50000, y = 50000, length = 2000, thickness = 2, inclination = 0, hierarchy = 1
     )
     kaolinite2 = base_classes.Kaolinite(
         x = 50000, y = 49000, length = 2000, thickness = 2, inclination = np.math.pi/4, hierarchy = 1
+    )
+    kaolinite3 = base_classes.Kaolinite(
+        x = 49500, y = 50500, length = 2000, thickness = 2, inclination = np.math.pi/2, hierarchy = 1
     )
     
     def test_mechanical_contact_forces1(self):
@@ -1503,7 +1509,19 @@ class TestForces(unittest.TestCase):
         with each other
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand, self.kaolinite_clay],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [self.quartz1, self.quartz2]
+            )
+        res = container.mechanical_contact_forces(self.quartz1)
+        #expected result needs to be added
 
     def test_mechanical_contact_forces3(self):
         """testing the calculation of mechanical forces acting on the
@@ -1524,7 +1542,27 @@ class TestForces(unittest.TestCase):
         given clay particle in contact with two other clay particles
         """
         
-        pass
+        container = base_classes.Container(
+        length = 100000,
+        width = 100000,
+        particles_info = [self.quartz_sand, self.kaolinite_clay],
+        time_step = 0.01,
+        simulation_type = 'tt',
+        fluid_characteristics = None
+        )
+        container.particles.extend(
+            [self.kaolinite1, self.kaolinite2, self.kaolinite3]
+            )
+        res = container.mechanical_contact_forces(self.kaolinite1)
+        f1 = (1 - 0.5*np.sqrt(2)) * (containere.clay_clay_contact_stiffness)
+        fx1 = f1*np.cos(np.math.pi/4)
+        fy1 = f1*np.sin(np.math.pi/4)
+        m1 = fy1*0.5
+        f2 = (0.5) * (container.clay_clay_contact_stiffness)
+        fx2 = 0
+        fy2 = f2
+        m2 = -1*f2*0.5
+        self.assertEqual(res, (fx1+fx2, fy1+fy2, m1+m2))
     
     def test_mechanical_contact_forces6(self):
         """testing the calculation of mechanical forces acting on the
