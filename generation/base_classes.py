@@ -1519,7 +1519,53 @@ class Container(object):
         """
         
         for particle2 in self.mechanical_contacts:
-            pass
+            if isinstance(particle, Sand) and isinstance(particle2, Clay):
+                delta = operations.intersection_length(
+                    particle2.midline, particle.shape
+                    )
+                intersection_point = operations.intersection(
+                    particle2.midline,
+                    particle.shape
+                )
+                radius_line = shapes.LineSegment(
+                    intersection_point,
+                    particle.shape.center
+                )
+                theta = operations.angle_in_between(
+                    particle2.midline,
+                    radius_line
+                )
+                gama = particle2.midline.inclination
+                fn = (delta) * (np.sin(theta)) * (self.sand_clay_contact_stiffness)
+                m = (fn) * (particle2.shape.radius)
+                fx = delta * np.cos(gama)
+                fy = delta * np.sin(gama)
+                return (fx, fy, m)
+            elif isinstance(particle, Sand) and isinstance(particle2, Clay):
+                area = operations.intersection_area(
+                    particle.shape,
+                    particle2.shape
+                )
+                f = (area) * (self.clay_clay_contact_stiffness)
+                intersection_points = operations.intersection(
+                    particle.shape,
+                    particle2.shape
+                )
+                intersection_midline = shapes.LineSegment(
+                    intersection_points[0],
+                    intersection_points[1]
+                )
+                gama = operations.standardized_inclination(
+                    intersection_midline.inclination
+                    )
+                fx = f * (np.cos(gama))
+                fy = f * (np.sin(gama))
+                m = 0 #doesn't really matter with circular shape
+                return (fx, fy, 0)
+
+        #just a draft
+        
+        
     
     def add_ddl_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds
