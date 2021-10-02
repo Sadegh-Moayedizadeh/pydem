@@ -1518,6 +1518,7 @@ class Container(object):
         and boundaries are not covered here
         """
         
+        #do sth about alignment of forces
         for particle2 in self.mechanical_contacts:
             if isinstance(particle, Sand) and isinstance(particle2, Clay):
                 delta = operations.intersection_length(
@@ -1562,11 +1563,11 @@ class Container(object):
                 fy = f * (np.sin(gama))
                 m = 0 #doesn't really matter with circular shape
                 return (fx, fy, 0)
+            elif isinstance(particle, Clay) and isinstance(particle2, Clay):
+                pass
+            elif isinstance(particle, Clay) and isinstance(particle2, Sand):
+                pass
 
-        #just a draft
-        
-        
-    
     def add_ddl_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds
         them to the particle's force vector components
