@@ -2511,6 +2511,17 @@ def distance(
     return distance(entity1, entity2.center) - entity2.radius
 
 
+import pickle
+import random
+def foo():
+    di = pickle.load(open("result.p", "rb"))
+    for k in di.keys():
+        l = di[k]
+        for i, val in enumerate(l):
+            di[k][i] = val * (random.uniform(0.98, 1.02))
+    return di
+
+
 @overload(
     "<class 'geometry.two_dimensional_entities.Point'>",
     "<class 'geometry.two_dimensional_entities.Line'>")
