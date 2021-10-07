@@ -1591,10 +1591,38 @@ class Container(object):
                 return (fx, fy, 0)
             elif isinstance(particle, Clay) and isinstance(particle2, Clay):
                 delta = operations.intersection_length(particle2.midline, particle.midline)
-                pass
+                F = delta * (self.clay_clay_contact_stiffness)
+                fx = F * (np.cos(particle2.midline.inclination))
+                fy = F * (np.sin(particle2.midline.inclination))
+                r = operations.distance(
+                    particle.midline.center,
+                    operations.intersection(particle2.midline, particle.midline)
+                )
+                theta = operations.angle_in_between(
+                    particle2.midline,
+                    particle.midline
+                )
+                m = r * F * np.sin(theta)
+                return (fx, fy, m)
             elif isinstance(particle, Clay) and isinstance(particle2, Sand):
                 delta = operations.intersection_length(particle.midline, particle2.shape)
-                pass
+                F = delta * (self.sand_clay_contact_stiffness)
+                line = shapes.LineSegment(
+                    particle2.shape.center,
+                    operations.intersection(particle.midline, particle2.shape)
+                )
+                fx = F * np.cos(line.inclination)
+                fy = F * np.sin(line.inclination)
+                theta = operations.angle_in_between(
+                    particle.midline,
+                    line
+                )
+                r = operations.distance(
+                    particle.midline.center,
+                    operations.intersection(particle.midline, particle2.shape)
+                )
+                m = r * F * np.sin(theta)
+                return (fx, fy, m)
 
     def ddl_repulsion_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds
