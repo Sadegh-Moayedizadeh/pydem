@@ -1506,9 +1506,35 @@ class Container(object):
         if not (particle in self.wall_contacts):
             return (0, 0, 0)
         if isinstance(particle, Sand):
-            pass
+            res = [0, 0, 0]
+            for wall in self.walls:
+                inter = operations.intersection(particle.shape, wall.shape)
+                if isinstance(inter, tuple):
+                    line = shapes.LineSegment(*inter)
+                    a1 = (line.length) * (operations.distance(particle.shape.center, line)) * 0.5
+                    angle = operations.angle_in_between(
+                        shapes.LineSegment(inter[0], particle.shape.center),
+                        shapes.LineSegment(inter[1], particle.shape.center)
+                        )
+                    a2 = (angle / (2*np.math.pi)) * (particle.shape.area)
+                    area = a2 - a1
+                    F = area * (self.sand_wall_contact_stiffness)
+                    if operations.standardized_inclination(wall.inclination) == 0:
+                        res[1] += F
+                    else:
+                        res[0] += F
+            return tuple(res)
         if isinstance(particle, Clay):
-            pass
+            res = [0, 0, 0]
+            for wall in self.walls:
+                if intersection(particle.midline, wall.shape):
+                    delta = operations.intersection_length(particle.midline, wall.shape)
+                    F = delta * (self.clay_wall_contact_stiffness)
+                    fx = F * np.cos(particle.midline.inclination)
+                    fy = F * np.sin(particle.midline.inclination)
+                    res[0] += fx
+                    res[1] += fy
+            return tuple(res)
     
     def mechanical_contact_forces(self, particle):
         """calculates machanical forces acting on the given particle
