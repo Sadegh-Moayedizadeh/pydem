@@ -757,6 +757,12 @@ class Container(object):
     valid_simulation_types = ['TT', 'DS', 'SS']
     temprature: int = 293 # in Kelvin; According to M.Khabazian and A.Mirghasemi, 2018
     gravitational_acceleration = 9.81
+    clay_clay_contact_stiffness = 0
+    sand_clay_contact_stiffness = 0
+    sand_sand_contact_stiffness = 0
+    sand_wall_contact_stiffness = 0
+    clay_wall_contact_stiffness = 0
+    
     
     def __init__(
         self,
@@ -1469,15 +1475,6 @@ class Container(object):
         res.append(nb)
         return res
     
-    def setup(self):
-        """sets up the container; actions takes here are generating
-        particles according the given info, generating the walls and
-        setting up the boundary conditions and performing a relaxation
-        phase
-        """
-        
-        pass
-    
     def update_boundary_conditions(self, displacement: float) -> None:
         """updates the boundary conditions of the container object
         given the amount of displacement needs to be taken by the
@@ -1499,18 +1496,21 @@ class Container(object):
             for wall in self.walls:
                 if not wall.is_fixed:
                     wall.move(delta_y = displacement)
+        #do this for other simulation types too
     
-    def add_particle_wall_contact_forces(self):
+    def wall_contact_forces(self, particle):
         """updates the force vector of any particle that is in contact
         with a boundary wall
         """
         
-        self.update_wall_contacts_list()
-        for particla in self.wall_contacts:
-            for wall in self.walls:
-                pass
+        if not (particle in self.wall_contacts):
+            return (0, 0, 0)
+        if isinstance(particle, Sand):
+            pass
+        if isinstance(particle, Clay):
+            pass
     
-    def add_mechanical_forces(self, particle):
+    def mechanical_contact_forces(self, particle):
         """calculates machanical forces acting on the given particle
         and adds them to the particle's force vector components; the
         cases of mechanical forces between particle of the same type,
@@ -1564,14 +1564,23 @@ class Container(object):
                 m = 0 #doesn't really matter with circular shape
                 return (fx, fy, 0)
             elif isinstance(particle, Clay) and isinstance(particle2, Clay):
+                delta = operations.intersection_length(particle2.midline, particle.midline)
                 pass
             elif isinstance(particle, Clay) and isinstance(particle2, Sand):
+                delta = operations.intersection_length(particle.midline, particle2.shape)
                 pass
 
-    def add_ddl_forces(self, particle):
+    def ddl_repulsion_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds
         them to the particle's force vector components
+
+        Args:
+            particle (Particle): the particle to calculate the
+                diffuse double layer forces acting upon
         """
+        
+        if not isinstance(particle, Clay):
+            return (0, 0, 0)
         
         #constant parameters
         k = particle.Boltzman_constant
@@ -1644,13 +1653,21 @@ class Container(object):
             M = F * np.sin(angle) * I
             Fx = F * np.cos(inc)
             Fy = F * np.sin(inc)
-            particle.forces = (particle.forces[0]+Fx, particle.forces[1]+Fy, particle.forces[2]+M)
+
+            return (Fx, Fy, M)
     
-    def add_vdv_forces(self, particle):
+    def vdw_forces(self, particle):
         """calculates the van der valse forces acting on the given
         particle and adds them to the particle's force vector components
+
+        Args:
+            particle (Particle): the particle to calculate the
+                van der waals forces acting upon
         """
 
+        if not isinstance(particle, Clay):
+            return (0, 0, 0)
+        
         #calculating the vdv force for each pair
         for particle2 in self.chemical_contacts[particle]:
             A = particle.hammaker_constant
@@ -1684,30 +1701,45 @@ class Container(object):
             inc = operations.standardized_inclination(norm1.inclination)
             Fx = F * np.cos(inc)
             Fy = F * np.sin(inc)
-            particle.forces = (particle.forces[0]+Fx, particle.forces[1]+Fy, particle.forces[2])
+            
+            return (Fx, Fy, 0)
 
-    def add_gravitational_forces(self, particle):
+    def gravitational_forces(self, particle):
         """calculates the gravitational forces acting on the given
         particle and adds them to its force vector components
+
+        Args:
+            particle (Particle): the particle to calculate the
+                gravitational forces acting upon
         """
         
-        particle.force[1] += particle.mass * self.gravitational_acceleration
+        if not isinstance(particle, Sand):
+            return (0, 0, 0)    
+        return (particle.mass * self.gravitational_acceleration, 0, 0)
     
     def update_particle_forces(self, particle):
         """updates the particle's force vector
         """
 
-        if isinstance(particle, Clay):
-            self.add_mechanical_forces(particle)
-            self.add_vdv_forces(particle)
-            self.add_ddl_forces(particle)
-        elif isinstance(particle, Sand):
-            self.add_mechanical_forces(particle)
-            self.add_gravitational_forces(particle)
+        F1 = self.wall_contact_forces(particle)
+        F2 = self.mechanical_contact_forces(particle)
+        F3 = self.ddl_repulsion_forces(particle)
+        F4 = self.vdw_forces(particle)
+        F5 = self.gravitational_forces(particle)
+        particle.forces = tuple(
+            [particle.forces[i] + F1[i] + F2[i] + F3[i] + F4[i] + F5[i] for i in range(3)]
+        )
+        return
     
     def update_locations(self, strain_rate):
         """updates the boundary conditions and perform a relaxation
         phase
+        """
+        
+        pass
+
+    def update(self):
+        """updates the container state
         """
         
         pass
