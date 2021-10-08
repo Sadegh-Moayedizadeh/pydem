@@ -762,6 +762,7 @@ class Container(object):
     sand_sand_contact_stiffness = 0
     sand_wall_contact_stiffness = 0
     clay_wall_contact_stiffness = 0
+    strain_rate = 0
     
     
     def __init__(
@@ -1796,7 +1797,19 @@ class Container(object):
         """updates the container state
         """
         
-        pass
+        self.update_chemical_boxes()
+        self.update_mechanical_boxes()
+        self.update_mechanical_contacts_dictionary()
+        self.update_chemical_contacts_dictionary()
+        self.update_wall_contacts_list()
+        
+        for particle in self.particles:
+            self.update_particle_forces(particle)
+        
+        self.update_locations(self.strain_rate)
+        for particle in self.particles:
+            particle.forces = (0, 0, 0)
+        self.time += self.time_step
     
     @property
     def overal_stress(self):
