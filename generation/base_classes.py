@@ -1786,12 +1786,54 @@ class Container(object):
         )
         return
     
-    def update_locations(self, strain_rate):
-        """updates the boundary conditions and perform a relaxation
-        phase
+    def update_velocity(self, particle):
+        """updates the velocity attribute for the given particle
         """
         
-        pass
+        D1 = 0 #incomplete
+        D2 = 0 #incomplete
+        alpha = self.angular_damping_proportion_coefficient
+        omega = self.angular_damping_resonance_coefficient
+        Vx = (
+            (
+                particle.velocity[0] * (1 - alpha*(self.time_step)/2)
+                + ((particle.forces[0] + D1)/(particle.mass)) * (self.time_step)
+            ) / (
+                1 + (alpha * (self.time_step)) / 2
+            )
+        )
+        Vy = (
+            (
+                particle.velocity[1] * (1 - alpha*(self.time_step)/2)
+                + ((particle.forces[1] + D2)/(particle.mass)) * (self.time_step)
+            ) / (
+                1 + (alpha * (self.time_step)) / 2
+            )
+        )
+        Vm = (
+            (
+                particle.velocity[2] * (1 - omega*alpha*(self.time_step)/2)
+                + ((particle.forces[2])/(particle.moment_of_inertia)) * (self.time_step)
+            ) / (
+                1 + (omega * alpha * (self.time_step)) / 2
+            )
+        )
+        particle.velocity = (Vx, Vy, Vm)
+        return
+    
+    def update_locations(self, particle):
+        """updates the boundary conditions and perform a relaxation
+        phase; the "update_velocity" method should be called beforehand
+        """
+        
+        x = particle.x + particle.velocity[0] * self.time_step
+        y = particle.y + particle.velocity[1] * self.time_step
+        inc = particle.inclination + particle.velocity[2] * self.time_step
+        inc = operations.standardized_inclination(inc)
+        particle.x = x
+        particle.y = y
+        particle.inclination = inc
+        return
 
     def update(self):
         """updates the container state
@@ -1804,10 +1846,10 @@ class Container(object):
         self.update_wall_contacts_list()
         
         for particle in self.particles:
-            self.update_particle_forces(particle)
-        
-        self.update_locations(self.strain_rate)
+            self.update_particle_forces(particle)       
         for particle in self.particles:
+            self.update_velocity(particle)
+            self.update_locations(particle)
             particle.forces = (0, 0, 0)
         self.time += self.time_step
     
