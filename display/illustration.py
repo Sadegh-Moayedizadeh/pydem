@@ -13,6 +13,7 @@ from typing import Type, Union, Tuple, List, Set, Dict, Any
 import pathlib
 from matplotlib.patches import Rectangle, Circle
 from matplotlib import pyplot as plt
+from matplotlib.lines import Line2D
 
 
 class IllustrationPG(object):
@@ -106,25 +107,29 @@ class IllustrationMPL(object):
     libarary package
     """
     
-    def __init__(self, container):
+    def __init__(self, container, title=None):
         """initialize the illustration instance
         """
         
         self.container = container
+        if title is None:
+            self.title = '2D DEM simulation of tiaxial test on sand-clay mixtures'
+        else:
+            self.title = title
     
     def _convert_x(self, x):
         """converts the x coordinate of the given entity in a way that
         fits into the container illustration created by this class
         """
 
-        return x / 100 + 250
+        return (x/100 + 250)
 
     def _convert_y(self, y):
         """converts the x coordinate of the given entity in a way that
         fits into the container illustration created by this class
         """
         
-        return y / 100 + 250
+        return (y/100 + 250)
     
     def set_shapes(self):
         """sets up the shapes of the all the particles and boundaries
@@ -141,16 +146,18 @@ class IllustrationMPL(object):
                 plt.gca().add_patch(shape)
             if isinstance(particle, base_classes.Clay):
                 x1 = self._convert_x(particle.midline.end1.x)
-                y1 = self._convert_x(particle.midline.end1.y)
+                y1 = self._convert_y(particle.midline.end1.y)
                 x2 = self._convert_x(particle.midline.end2.x)
-                y2 = self._convert_x(particle.midline.end2.y)
-                plt.plot((x1, y1), (x2, y2), color = 'red')
+                y2 = self._convert_y(particle.midline.end2.y)
+                x = [x1, x2]
+                y = [y1, y2]
+                shape = Line2D(x, y, color='red')
     
     def display(self):
         """displays the illustration of the DEM model
         """
 
-        plt.title('2D DEM simulation of tiaxial test on sand-clay mixtures')
+        plt.title(self.title)
         x = np.arange(0, 1500, 1)
         y = 0.01*x
         plt.plot(x, y, color = 'white')

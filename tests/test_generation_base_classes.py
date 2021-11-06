@@ -1,49 +1,46 @@
-"""Testing the base classes used in generation packaage
-"""
-
-from generation.base_classes import Montmorillonite, Quartz
 import unittest
+from generation.base_classes import Container, Kaolinite, Quartz
+from display.illustration import IllustrationMPL
+import logging
 
+logging.getLogger().setLevel(logging.INFO)
 
-class TestGenerals(unittest.TestCase):
-
-    instance = Montmorillonite(x=0, y=0, inclination=0, thickness=2, length=100)
-
-    def test_particle_number(self):
-        n1 = instance.num
-        new_instance1 = Montmorillonite(
-            x=100, y=100, inclination=0, thickness=2, length=100
+class TestParticleGeneration(unittest.TestCase):
+    
+    def setUp(self):
+        self.kaolinite_clay = {
+        'type': 'kaolinite',
+        'size_upper_bound': 3000,
+        'size_lower_bound': 1000,
+        'quantity': 20,
+        }
+        self.quartz_sand = {
+            'type': 'quartz',
+            'size_upper_bound': 10000,
+            'size_lower_bound': 8000,
+            'quantity': 2,
+        }
+        
+    
+    def test_sand_generation(self):
+        container = Container(
+            100000, 100000, [self.quartz_sand], 'tt', 0.01, {}
         )
-        n2 = new_instance1.num
-        del new_instance
-        new_instance2 = Montmorillonite(
-            x=100, y=100, inclination=0, thickness=2, length=100
+        container.generate_particles()
+        ill = IllustrationMPL(container, title='only sand')
+        ill.display()
+
+    def test_clay_generation(self):
+        container = Container(
+            100000, 100000, [self.kaolinite_clay], 'tt', 0.01, {}
         )
-        n3 = new_instance2.num
-        self.assertEqual(n2, n3)
+        container.generate_particles()
+        ill = IllustrationMPL(container, title='only clay')
+        ill.display()
 
-    def test_box_num(self):
+    def test_sand_clay_generation(self):
         pass
 
 
-class TestMontmorillonite(unittest.TestCase):
-    def test_thickness_bounds(self):
-        pass
-
-    def test_length_bounds(self):
-        pass
-
-    def test_mass(self):
-        pass
-
-
-class TestQuartz(unittest.TestCase):
-    def test_diameter_bounds(self):
-        pass
-
-    def test_mass(self):
-        pass
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
