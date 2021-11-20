@@ -1027,6 +1027,7 @@ class Container(object):
             if trials > 50:
                 raise RuntimeError('the container is too dense')
             x, y, inc = self.generate_random_location()
+            # alternative random generator
             new_particle = particle_type(
                 x = x,
                 y = y,

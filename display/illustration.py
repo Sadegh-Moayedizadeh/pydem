@@ -145,13 +145,12 @@ class IllustrationMPL(object):
                     )
                 plt.gca().add_patch(shape)
             if isinstance(particle, base_classes.Clay):
-                x1 = self._convert_x(particle.midline.end1.x)
-                y1 = self._convert_y(particle.midline.end1.y)
-                x2 = self._convert_x(particle.midline.end2.x)
-                y2 = self._convert_y(particle.midline.end2.y)
-                x = [x1, x2]
-                y = [y1, y2]
-                shape = Line2D(x, y, color='red')
+                x0 = self._convert_x(particle.midline.end1.x)
+                y0 = self._convert_y(particle.midline.end1.y)
+                x1 = self._convert_x(particle.midline.end2.x)
+                x = np.arange(x0, x1, .01)
+                m = particle.midline.slope
+                plt.plot(x, m*(x-x0)+y0, color='red')
     
     def display(self):
         """displays the illustration of the DEM model
