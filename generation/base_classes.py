@@ -1027,7 +1027,6 @@ class Container(object):
             if trials > 50:
                 raise RuntimeError('the container is too dense')
             x, y, inc = self.generate_random_location()
-            # alternative random generator
             new_particle = particle_type(
                 x = x,
                 y = y,
@@ -1860,7 +1859,8 @@ class Container(object):
         container
         """
         
-        pass
+        overal_force = sum(particle.force[1] for particle in self.particles)
+        return (overal_force) / self.length
 
     @property
     def overal_strain(self):
@@ -1877,4 +1877,6 @@ class Container(object):
         """calculates the void ratio of the whole container
         """
 
-        pass
+        particle_area = sum(particle.shape.area for particle in self.particles)
+        container_area = self.length * self.moving_wall.y
+        return (container_area - particle_area) / particle_area

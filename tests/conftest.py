@@ -7,7 +7,7 @@ def kaolinite_dict():
         'type': 'kaolinite',
         'size_upper_bound': 3000,
         'size_lower_bound': 1000,
-        'quantity': 50,
+        'quantity': 100,
     }
     return di
 
