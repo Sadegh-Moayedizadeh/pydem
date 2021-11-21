@@ -1024,7 +1024,7 @@ class Container(object):
         particle_type = self.type_reference[self.particles_info[index]['type']]
         trials = 0
         while True:
-            if trials > 50:
+            if trials > 100:
                 raise RuntimeError('the container is too dense')
             x, y, inc = self.generate_random_location()
             new_particle = particle_type(

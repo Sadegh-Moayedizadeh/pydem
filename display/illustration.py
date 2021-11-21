@@ -112,6 +112,7 @@ class IllustrationMPL(object):
         """
         
         self.container = container
+        self.scale = self.container.length / 1000
         if title is None:
             self.title = '2D DEM simulation of tiaxial test on sand-clay mixtures'
         else:
@@ -122,14 +123,14 @@ class IllustrationMPL(object):
         fits into the container illustration created by this class
         """
 
-        return (x/100 + 250)
+        return (x/self.scale + 250)
 
     def _convert_y(self, y):
         """converts the x coordinate of the given entity in a way that
         fits into the container illustration created by this class
         """
         
-        return (y/100 + 250)
+        return (y/self.scale + 250)
     
     def set_shapes(self):
         """sets up the shapes of the all the particles and boundaries
@@ -157,13 +158,19 @@ class IllustrationMPL(object):
         """
 
         plt.title(self.title)
+        
+        #set the size of display window
         x = np.arange(0, 1500, 1)
         y = 0.01*x
         plt.plot(x, y, color = 'white')
         x = np.arange(0, 1500, 1)
         y = 0.01*x + 1485
         plt.plot(x, y, color = 'white')
+
+        #draw the container rectangle
         rect = Rectangle((250, 250), 1000, 1000, fill = False)
         plt.gca().add_patch(rect)
+        
         self.set_shapes()
+        
         plt.show()
