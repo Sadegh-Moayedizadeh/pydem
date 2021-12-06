@@ -14,6 +14,9 @@ Classes
         stuff to run simulations upon
 """
 
+from generation.particles import(
+    Quartz, Kaolinite, Montmorillonite, Illite, Wall, Clay, Sand
+) 
 import sys
 import multiprocessing
 import random
@@ -24,6 +27,11 @@ from generation.exceptions import SizeOutOfBound
 from functools import lru_cache
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
+import logging
+import pdb
+
+logging.getLogger().setLevel(logging.INFO)
+
 
 class Container(object):
     """create the container in which the simulation for different tests
@@ -849,7 +857,7 @@ class Container(object):
         particles of different types, forces between particles
         and boundaries are not covered here
         """
-        
+
         #do sth about alignment of forces
         for particle2 in self.mechanical_contacts:
             if isinstance(particle, Sand) and isinstance(particle2, Clay):
@@ -874,7 +882,7 @@ class Container(object):
                 fx = delta * np.cos(gama)
                 fy = delta * np.sin(gama)
                 return (fx, fy, m)
-            elif isinstance(particle, Sand) and isinstance(particle2, Clay):
+            elif isinstance(particle, Sand) and isinstance(particle2, Sand):
                 area = operations.intersection_area(
                     particle.shape,
                     particle2.shape
@@ -929,6 +937,7 @@ class Container(object):
                 )
                 m = r * F * np.sin(theta)
                 return (fx, fy, m)
+        return (0, 0, 0)
 
     def ddl_repulsion_forces(self, particle):
         """calculates ddl forces acting on the given particle and adds
@@ -1082,7 +1091,7 @@ class Container(object):
         """
 
         F1 = self.wall_contact_forces(particle)
-        F2 = self.mechanical_contact_forces(particle)
+        F2 = self.mechanical_contact_forces(particle) # returns None, fix it !!!!!!
         F3 = self.ddl_repulsion_forces(particle)
         F4 = self.vdw_forces(particle)
         F5 = self.gravitational_forces(particle)

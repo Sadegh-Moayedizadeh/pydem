@@ -14,7 +14,7 @@ class Simulation(object):
     
     def run(self):
         while True:
-            self.update_boundary_conditions()
+            self.container.update_boundary_conditions(displacement=1)
             is_relaxed = False
             while not is_relaxed:
                 self.container.update()
