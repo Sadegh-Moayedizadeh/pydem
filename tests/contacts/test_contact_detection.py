@@ -39,29 +39,53 @@ class TestIntersection:
 
 
 class TestContactDetection:
-    
-    @pytest.fixture(scope='class')
-    def container(self, quartz_dict, kaolinite_dict):
-        c = Container(
-        100000, 100000, [quartz_dict, kaolinite_dict], 'tt', 0.01, {}
-        )
-        return c
-
     def test_clay_clay_contact(
         self,
+        base_kaolinite_particle,
+        intersecting_kaolinite_with_kaolinite,
+        quartz_dict, kaolinite_dict
     ):
-        pass
+        container = Container(
+        100000, 100000, [quartz_dict, kaolinite_dict], 'tt', 0.01, {}
+        )
+        container.particles = [
+            base_kaolinite_particle, intersecting_kaolinite_with_kaolinite
+        ]
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        assert intersecting_kaolinite_with_kaolinite in container.mechanical_contacts[base_kaolinite_particle]
+        assert base_kaolinite_particle in container.mechanical_contacts[intersecting_kaolinite_with_kaolinite]
     
     def test_sand_sand_contact(
         self,
         base_quartz_particle,
         intersecting_quartz_with_quartz,
+        quartz_dict, kaolinite_dict
     ):
-        pass
+        container = Container(
+        100000, 100000, [quartz_dict, kaolinite_dict], 'tt', 0.01, {}
+        )
+        container.particles = [
+            base_quartz_particle, intersecting_quartz_with_quartz
+        ]
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        assert intersecting_quartz_with_quartz in container.mechanical_contacts[base_quartz_particle]
+        assert base_quartz_particle in container.mechanical_contacts[intersecting_quartz_with_quartz]
     
     def test_sand_clay_contact(
         self,
         base_quartz_particle,
         intersecting_kaolinite_with_quartz,
+        quartz_dict, kaolinite_dict
     ):
-        pass
+        container = Container(
+        100000, 100000, [quartz_dict, kaolinite_dict], 'tt', 0.01, {}
+        )
+        container.particles = [
+            base_quartz_particle, intersecting_kaolinite_with_quartz
+        ]
+        container.update_mechanical_boxes()
+        container.update_mechanical_contacts_dictionary()
+        assert intersecting_kaolinite_with_quartz in container.mechanical_contacts[base_quartz_particle]
+        assert base_quartz_particle in container.mechanical_contacts[intersecting_kaolinite_with_quartz]

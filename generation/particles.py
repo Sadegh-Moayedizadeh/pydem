@@ -196,7 +196,7 @@ class Clay(Particle):
         """the realistic 2D shape of the clay particle as a rectangle
         """
         
-        return shapes.Rectangle.from_midline(self.midline, self.thickness/2)
+        return self.midline
 
     @property
     def midline(self):

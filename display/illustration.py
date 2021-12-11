@@ -7,7 +7,8 @@ import os
 import pygame
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
-from generation import base_classes
+from generation.container import Container
+from generation.particles import Sand, Clay
 import numpy as np
 from typing import Type, Union, Tuple, List, Set, Dict, Any
 import pathlib
@@ -60,7 +61,7 @@ class IllustrationPG(object):
                 width = 5,
             )
         for particle in self.container.particles:
-            if isinstance(particle, base_classes.Clay):
+            if isinstance(particle, Clay):
                 pygame.draw.line(
                     screen,
                     self.clay_color,
@@ -68,7 +69,7 @@ class IllustrationPG(object):
                     (self._convert_x(particle.midline.end2.x), self._convert_y(particle.midline.end2.y)),
                     particle.thickness,
                     )
-            elif isinstance(particle, base_classes.Sand):
+            elif isinstance(particle, Sand):
                 pygame.draw.circle(
                     screen,
                     self.sand_color,
@@ -138,14 +139,14 @@ class IllustrationMPL(object):
         """
         
         for particle in self.container.particles:
-            if isinstance(particle, base_classes.Sand):
+            if isinstance(particle, Sand):
                 shape = Circle(
                     (self._convert_x(particle.shape.center.x), self._convert_y(particle.shape.center.y)),
                     particle.shape.radius / 100,
                     color = 'green',
                     )
                 plt.gca().add_patch(shape)
-            if isinstance(particle, base_classes.Clay):
+            if isinstance(particle, Clay):
                 x0 = self._convert_x(particle.midline.end1.x)
                 y0 = self._convert_y(particle.midline.end1.y)
                 x1 = self._convert_x(particle.midline.end2.x)
