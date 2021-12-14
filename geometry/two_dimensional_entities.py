@@ -2,12 +2,14 @@
 """
 
 
-from typing import Tuple, Any, Optional, Type, Union
-import numpy as np
-from itertools import count
-from collections import defaultdict
-from geometry import two_dimensional_operations as operations
 import sys
+from collections import defaultdict
+from itertools import count
+from typing import Any, Optional, Tuple, Type, Union
+
+import numpy as np
+
+from geometry import two_dimensional_operations as operations
 
 
 class Point(object):
@@ -97,15 +99,19 @@ class Point(object):
             instances
         """
 
-        if isinstance(other, Point) and abs(self.x - other.x) < 1e-10 and abs(self.y - other.y) < 1e-10:
+        if (
+            isinstance(other, Point)
+            and abs(self.x - other.x) < 1e-10
+            and abs(self.y - other.y) < 1e-10
+        ):
             return True
         return False
-    
+
     def __repr__(self):
-        return f'Point({self.x}, {self.y})'
-    
+        return f"Point({self.x}, {self.y})"
+
     def __hash__(self):
-        return int(self.x**2 + self.y**2)
+        return int(self.x ** 2 + self.y ** 2)
 
 
 class Polygon(object):
@@ -158,11 +164,11 @@ class Polygon(object):
             for edge2 in self.edges:
                 if edge1 != edge2 and operations.intersection(edge1, edge2):
                     inter = operations.intersection(edge1, edge2)
-                    if not(
-                        inter == edge1.end1 or
-                        inter == edge1.end2 or
-                        inter == edge2.end1 or
-                        inter == edge2.end2
+                    if not (
+                        inter == edge1.end1
+                        or inter == edge1.end2
+                        or inter == edge2.end1
+                        or inter == edge2.end2
                     ):
                         raise RuntimeError(
                             "the given vertices form a polygon with intersecting edges"
@@ -170,10 +176,7 @@ class Polygon(object):
 
     @classmethod
     def as_regular(
-        cls,
-        center: Type[Point],
-        diameter: float,
-        number_of_vertices: int
+        cls, center: Type[Point], diameter: float, number_of_vertices: int
     ) -> "Polygon":
         """Alternative constructor of Polygon instances which are
         regular, which means they can be circumscribed by a circle and
@@ -192,7 +195,7 @@ class Polygon(object):
         circumcircle = Circle(center, diameter)
         n = number_of_vertices
         points = [
-            circumcircle.get_point_on_perimeter(i*(2*np.math.pi/n))
+            circumcircle.get_point_on_perimeter(i * (2 * np.math.pi / n))
             for i in range(0, n)
         ]
         return cls(*points)
@@ -214,11 +217,11 @@ class Polygon(object):
         Returns:
             Type[Point]: the center of the current polygon instance
         """
-          
+
         x = sum(point.x for point in self.vertices) / len(self.vertices)
         y = sum(point.y for point in self.vertices) / len(self.vertices)
         return Point(x, y)
-    
+
     @property
     def edges(self) -> Any:
         """Create a tuple of edges of the Polygon as LineSegment
@@ -264,13 +267,15 @@ class Polygon(object):
             instances
         """
 
-        if isinstance(other, Polygon) and set(self.vertices) == set(other.vertices):
+        if isinstance(other, Polygon) and set(self.vertices) == set(
+            other.vertices
+        ):
             return True
         return False
-    
+
     def __repr__(self):
         vertices = [point.__repr__() for point in self.vertices]
-        return 'Polygon' + str(vertices)
+        return "Polygon" + str(vertices)
 
 
 class Rectangle(Polygon):
@@ -313,13 +318,21 @@ class Rectangle(Polygon):
         if n != 4:
             raise RuntimeError("you should enter exactly four vertices")
         for i in range(n):
-            if abs(abs(edges[i].inclination - edges[i - 1].inclination) - (np.math.pi / 2)) > 1e-10:
+            if (
+                abs(
+                    abs(edges[i].inclination - edges[i - 1].inclination)
+                    - (np.math.pi / 2)
+                )
+                > 1e-10
+            ):
                 raise RuntimeError(
                     "the given vertices do not form a rectangle with perpendecular edges"
                 )
 
     @classmethod
-    def from_midline(cls, midline: "LineSegment", tolerance: float) -> "Rectangle":
+    def from_midline(
+        cls, midline: "LineSegment", tolerance: float
+    ) -> "Rectangle":
         """An alternative constructor to create a Rectangle instance
         from a given midline and a tolerance from that line
 
@@ -396,7 +409,9 @@ class Rectangle(Polygon):
         end3 = self.edges[1].midpoint()
         end4 = self.edges[3].midpoint()
         line2 = LineSegment(end3, end4)
-        return (line1, line2) if (line1.end1.x > line2.end2.x) else (line2, line1)
+        return (
+            (line1, line2) if (line1.end1.x > line2.end2.x) else (line2, line1)
+        )
 
     @property
     def diagonals(self) -> Tuple["LineSegment"]:
@@ -424,7 +439,7 @@ class Rectangle(Polygon):
     #         the center of the Rectangle instance as a Point object
     #     """
 
-    #     return 
+    #     return
 
     @property
     def circumcircle(self) -> "Circle":
@@ -436,8 +451,10 @@ class Rectangle(Polygon):
         """
 
         return Circle(center=self.center, diameter=self.diagonals[0].length)
-    
-    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0):
+
+    def move(
+        self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0
+    ):
         """moving the Rectangle instance with the given derivatives
 
         Args:
@@ -448,17 +465,21 @@ class Rectangle(Polygon):
             delta_theta (float, optional): the amount of rotational
                 movement of the Rectangle instance; Defaults to 0.
         """
-        
+
         lines = self.midlines
         line = lines[0] if lines[0].length > lines[1].length else lines[1]
-        tol = self.edges[0].length/2 if self.edges[0].length < self.edges[1].length else self.edges[1].length/2
-        line.move(delta_x = delta_x, delta_y = delta_y, delta_theta = delta_theta)
+        tol = (
+            self.edges[0].length / 2
+            if self.edges[0].length < self.edges[1].length
+            else self.edges[1].length / 2
+        )
+        line.move(delta_x=delta_x, delta_y=delta_y, delta_theta=delta_theta)
         new_rec = Rectangle.from_midline(line, tol)
         self.vertices = new_rec.vertices
-   
+
     def __repr__(self):
         vertices = [point.__repr__() for point in self.vertices]
-        return 'Rectangle' + str(vertices)
+        return "Rectangle" + str(vertices)
 
 
 class Circle(object):
@@ -495,7 +516,9 @@ class Circle(object):
         self.center = center
         self.diameter = diameter
         if self.diameter <= 0:
-            raise RuntimeError("the given diameter should be a positive non-zero number")
+            raise RuntimeError(
+                "the given diameter should be a positive non-zero number"
+            )
 
     @property
     def area(self) -> float:
@@ -514,7 +537,8 @@ class Circle(object):
         Returns:
             float: the radius of the Circle instance
         """
-        return (self.diameter / 2)
+        return self.diameter / 2
+
     @property
     def perimeter(self) -> float:
         """calculate the perimeter of the Circle instance
@@ -539,7 +563,7 @@ class Circle(object):
         x = x0 + (r) * (np.cos(angle))
         y = y0 + (r) * (np.sin(angle))
         return Point(x, y)
-    
+
     def get_angle(self, point: Type[Point]) -> float:
         """calculate the angle of the given point on the perimeter of
         the circle instance in respect to the horizental diameter
@@ -551,9 +575,11 @@ class Circle(object):
             float: the angle of the point on circle between 0 and
                 2*np.math.pi radians
         """
-        
-        return (Line.from_points(self.center, point).inclination) % (2*np.math.pi)
-    
+
+        return (Line.from_points(self.center, point).inclination) % (
+            2 * np.math.pi
+        )
+
     def navigator(self, start: float, step: float, rounds: int) -> Type[Point]:
         """a generator that generates Point objects located on the
         Circle instance with the given starting angle, step to take to
@@ -616,9 +642,11 @@ class Circle(object):
         ):
             return True
         return False
-    
+
     def __repr__(self):
-        return f'Circle[Point({self.center.x}, {self.center.y}), {self.diameter}]'
+        return (
+            f"Circle[Point({self.center.x}, {self.center.y}), {self.diameter}]"
+        )
 
 
 class Line(object):
@@ -648,7 +676,9 @@ class Line(object):
             and 'y' coordinates
     """
 
-    def __init__(self, slope: float, width: float, length_if_vertical: float = None) -> None:
+    def __init__(
+        self, slope: float, width: float, length_if_vertical: float = None
+    ) -> None:
         """initializing the Line object
 
         Args:
@@ -685,10 +715,8 @@ class Line(object):
 
     @classmethod
     def from_point_and_inclination(
-        cls,
-        point: Type[Point],
-        inclination: float
-        ) -> "Line":
+        cls, point: Type[Point], inclination: float
+    ) -> "Line":
         """Alternative constructor to create a Line instance given a
         single point on the line and an inclination angle
 
@@ -729,11 +757,11 @@ class Line(object):
         """
 
         return np.arctan(self.slope)
-    
+
     def normal(self, point: Type[Point]) -> "Line":
         """returns a Line instance which is normal to the current Line
         instace
-        
+
         Args:
             point (Type[Point]): the given point on the Line instace
                 to draw the normal from
@@ -741,7 +769,7 @@ class Line(object):
         Returns:
             Type[Line]: the Line instance normal to the current one
         """
-        
+
         if self.slope == 0:
             new_slope = np.tan(np.math.pi / 2)
         else:
@@ -764,7 +792,7 @@ class Line(object):
                 "the line instance has the slope of zero, asking for an 'x' coordinate is invalid in this case"
             )
         if self.slope > 1e15 or self.slope < -1e15:
-            if not(self.length_if_vertical is None):
+            if not (self.length_if_vertical is None):
                 return self.length_if_vertical
             return 0
         return (y - self.width) / (self.slope)
@@ -803,7 +831,9 @@ class Line(object):
 
         if step == 0:
             raise RuntimeError("the given step should be a non-zero value")
-        if not operations.intersection(start, self) or not operations.intersection(end, self):
+        if not operations.intersection(
+            start, self
+        ) or not operations.intersection(end, self):
             raise RuntimeError(
                 "the given start and end points should be loacated on the Line instance"
             )
@@ -844,11 +874,12 @@ class Line(object):
         """
 
         # for vertical lines
-        if (isinstance(other, Line)
-            and not(self.length_if_vertical is None)
-            and not(other.length_if_vertical is None)
+        if (
+            isinstance(other, Line)
+            and not (self.length_if_vertical is None)
+            and not (other.length_if_vertical is None)
             and abs(self.length_if_vertical - other.length_if_vertical) < 1e-10
-            ):
+        ):
             return True
         # for other lines
         if (
@@ -858,9 +889,9 @@ class Line(object):
         ):
             return True
         return False
-    
+
     def __repr__(self):
-        return f'Line({self.slope}, {self.width})'
+        return f"Line({self.slope}, {self.width})"
 
 
 class LineSegment(object):
@@ -915,7 +946,7 @@ class LineSegment(object):
             end1, end2 = end2, end1
         self.end1 = end1
         self.end2 = end2
-    
+
     @classmethod
     def from_point_and_inclination(
         cls, point: Type[Point], inclination: float, size: float
@@ -1003,6 +1034,12 @@ class LineSegment(object):
 
         return Line.from_points(self.end1, self.end2)
 
+    @property
+    def center(self):
+        x = (self.end1.x + self.end2.x) / 2
+        y = (self.end1.y + self.end2.y) / 2
+        return Point(x, y)
+
     def get_x(self, y: float) -> float:
         """calculating the 'x' coordinate of a point on the LineSegment
         instance with the given 'y' coordinate
@@ -1059,7 +1096,9 @@ class LineSegment(object):
         """
 
         if ratio < 0 or ratio > 1:
-            raise RuntimeError("the given ratio should have a value between zero and one")
+            raise RuntimeError(
+                "the given ratio should have a value between zero and one"
+            )
         point = Point(self.end1.x, self.end1.y)
         delta_x = (np.cos(self.inclination)) * (self.length) * (ratio)
         delta_y = (np.sin(self.inclination)) * (self.length) * (ratio)
@@ -1079,7 +1118,9 @@ class LineSegment(object):
         """
 
         if step < 0 or step > 1:
-            raise RuntimeError("the given ratio should have a value between zero and one")
+            raise RuntimeError(
+                "the given ratio should have a value between zero and one"
+            )
         x, y = self.end1.x, self.end1.y
         delta_x = (np.cos(self.inclination)) * (self.length) * (step)
         delta_y = (np.sin(self.inclination)) * (self.length) * (step)
@@ -1088,9 +1129,11 @@ class LineSegment(object):
             if not operations.intersection(point, self):
                 break
             yield point
-            x, y = x+delta_x, y+delta_y
+            x, y = x + delta_x, y + delta_y
 
-    def move(self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0) -> None:
+    def move(
+        self, delta_x: float = 0, delta_y: float = 0, delta_theta: float = 0
+    ) -> None:
         """moving the LineSegment instance with the given changes in its
         coordinates
 
@@ -1103,7 +1146,9 @@ class LineSegment(object):
                 instance
         """
 
-        theta = operations.standardized_inclination(self.inclination + delta_theta)
+        theta = operations.standardized_inclination(
+            self.inclination + delta_theta
+        )
         circle = self.circumcircle
         p1 = circle.get_point_on_perimeter(theta)
         p2 = circle.get_point_on_perimeter(theta + np.math.pi)
@@ -1128,77 +1173,68 @@ class LineSegment(object):
             True or False indicating the equality condition
         """
 
-        if (
-            isinstance(other, LineSegment)
-            and ((
-                self.end1 == other.end1
-            and self.end2 == other.end2
-            )
-            or (
-                self.end2 == other.end1
-            and self.end1 == other.end2
-            ))
+        if isinstance(other, LineSegment) and (
+            (self.end1 == other.end1 and self.end2 == other.end2)
+            or (self.end2 == other.end1 and self.end1 == other.end2)
         ):
             return True
         return False
-    
+
     def __hash__(self):
         return (self.end1.__hash__() + self.end2.__hash__()) ** 3
-    
+
     def __repr__(self):
-        return f'LineSegment[Point({self.end1.x}, {self.end1.y}), Point({self.end2.x}, {self.end2.y})]'
+        return f"LineSegment[Point({self.end1.x}, {self.end1.y}), Point({self.end2.x}, {self.end2.y})]"
 
 
 class Arc(object):
     """construct a two dimensional arc which is basically a portion of
     a circle
     """
-    
+
     def __init__(
-        self,
-        base: Type[Circle],
-        end1: Type[Point],
-        end2: Type[Point]
-        ) -> None:
+        self, base: Type[Circle], end1: Type[Point], end2: Type[Point]
+    ) -> None:
         """initialize the Arc instance
 
         Args:
             base (Type[Circle]): the base circle object
             end1 (Type[Point]): the first end of the arc
             end2 (Type[Point]): the second end of the arc
-        
+
         Raises:
             RuntimeError: when any of the given points are not located
                 on the base circle
         """
 
-        if not operations.intersection(end1, base) or operations.intersection(end2, base):
-            raise RuntimeError('the given points are not located on the given base circle')
+        if not operations.intersection(end1, base) or operations.intersection(
+            end2, base
+        ):
+            raise RuntimeError(
+                "the given points are not located on the given base circle"
+            )
         self.base = base
         self.end1 = end1
         self.end2 = end2
-    
+
     @classmethod
     def from_angles(
-        cls,
-        base: Type[Circle],
-        angle1: float,
-        angle2: float
-        ) -> "Arc":
+        cls, base: Type[Circle], angle1: float, angle2: float
+    ) -> "Arc":
         """Alternative constructor to create an arc from the given base
         circle and corresponding angles calculated from the horizental
         plain
-        
+
         Args:
             base (Type[Circle]): the base circle object
             angle1 (float): the starting angle of the arc in radian
             angle2 (float): the ending angle of the arc in radian
         """
-        
+
         end1 = base.get_point_on_perimeter(angle1)
         end2 = base.get_point_on_perimeter(angle2)
         return cls(base, end1, end2)
-    
+
     def __eq__(self, other: Any) -> bool:
         """the equality condition of two arcs
 
@@ -1206,11 +1242,9 @@ class Arc(object):
             other (Any): the geometrical entity with which to compare
                 the equality condition of the current Arc instance
         """
-        
+
         if isinstance(other, Arc) and self.base == other.base:
-            if (
-                (self.end1 == other.end1) and (self.end2 == other.end2)
-                ):
+            if (self.end1 == other.end1) and (self.end2 == other.end2):
                 return True
         return False
 
@@ -1218,48 +1252,51 @@ class Arc(object):
 class LineInterval(object):
     """construct an interval object which is a collection of line
     segments on a same direction
-    
+
     Methods:
         add: adds the given entity to the interval
         remove: removes the given entity from the interval
-    
+
     also these methods where overridden:
         __repr__, __add__, __sub__, __eq__
     """
-    
-    def __init__(
-        self,
-        base: Type[Line]
-        ) -> None:
+
+    def __init__(self, base: Type[Line]) -> None:
         """initialize the Interval instance with the given base entity
 
         Args:
             base (Type[Line]): the base on which to construct the
                 interval object
         """
-        
+
         self.base = base
         self.entities = []
-    
+
     def add(self, *entities: Type[LineSegment]) -> None:
         """adding the given LineSegment to the intervals in the the
         current LineInterval instance; the entities are ordered
         according to their x coordinate
-        
+
         Raises:
             RuntimeError: when the given entity is not located
                 completely on the base line
         """
-        
+
         for entity in entities:
             if isinstance(self.base, LineSegment):
-                cond1 = bool(operations.intersection(entity.end1, self.base.infinite))
-                cond2 = bool(operations.intersection(entity.end2, self.base.infinite))
+                cond1 = bool(
+                    operations.intersection(entity.end1, self.base.infinite)
+                )
+                cond2 = bool(
+                    operations.intersection(entity.end2, self.base.infinite)
+                )
             else:
                 cond1 = bool(operations.intersection(entity.end1, self.base))
                 cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
-                raise RuntimeError('the given entity is not located on the base line')
+                raise RuntimeError(
+                    "the given entity is not located on the base line"
+                )
             if isinstance(self.base, LineSegment):
                 if entity.end1.x < self.base.end1.x:
                     entity.end1 = self.base.end1
@@ -1269,11 +1306,11 @@ class LineInterval(object):
                 self.entities.append(entity)
                 continue
             prev = self._find_prev(entity)
-            nex  = self._find_next(entity)
+            nex = self._find_next(entity)
             if nex > len(self.entities) - 1:
-                self.entities = self.entities[:prev + 1]
+                self.entities = self.entities[: prev + 1]
             else:
-                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+                self.entities = self.entities[: prev + 1] + self.entities[nex:]
             if len(self.entities) == 0:
                 self.entities.append(entity)
                 continue
@@ -1314,12 +1351,12 @@ class LineInterval(object):
                         prev += 1
             new = LineSegment(line1.end1, line2.end2)
             self.entities.insert(prev, new)
-    
+
     def remove(self, *entities: Type[LineSegment]) -> None:
         """removing the the coordinates that overlap with the given
         LineSegment entity from the current LineInterval instance's
         entities array
-        
+
         Raises:
             RuntimeError: when the given entity is not located
                 completely on the base line
@@ -1327,13 +1364,19 @@ class LineInterval(object):
 
         for entity in entities:
             if isinstance(self.base, LineSegment):
-                cond1 = bool(operations.intersection(entity.end1, self.base.infinite))
-                cond2 = bool(operations.intersection(entity.end2, self.base.infinite))
+                cond1 = bool(
+                    operations.intersection(entity.end1, self.base.infinite)
+                )
+                cond2 = bool(
+                    operations.intersection(entity.end2, self.base.infinite)
+                )
             else:
                 cond1 = bool(operations.intersection(entity.end1, self.base))
                 cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
-                raise RuntimeError('the given entity is not located on the base line')
+                raise RuntimeError(
+                    "the given entity is not located on the base line"
+                )
             if isinstance(self.base, LineSegment):
                 if entity.end1.x < self.base.end1.x:
                     if entity.end2.x < self.base.end1.x:
@@ -1346,11 +1389,11 @@ class LineInterval(object):
             if len(self.entities) == 0:
                 return
             prev = self._find_prev(entity)
-            nex  = self._find_next(entity)
+            nex = self._find_next(entity)
             if nex > len(self.entities) - 1:
-                self.entities = self.entities[:prev + 1]
+                self.entities = self.entities[: prev + 1]
             else:
-                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+                self.entities = self.entities[: prev + 1] + self.entities[nex:]
             if len(self.entities) == 0:
                 return
             if prev == -1:
@@ -1391,10 +1434,7 @@ class LineInterval(object):
                     else:
                         continue
 
-    def _find_prev(
-        self,
-        entity: Type[LineSegment]
-        ) -> int:
+    def _find_prev(self, entity: Type[LineSegment]) -> int:
         """finds the index of the an entity insdide the self.entities
         array with the immidiate preceding x coordinate of its first
         end using binary search
@@ -1407,7 +1447,7 @@ class LineInterval(object):
             int: the index of the entity prior to the given one in the
                 self.entites array
         """
-        
+
         if len(self.entities) == 0:
             return -1
         left = 0
@@ -1418,12 +1458,11 @@ class LineInterval(object):
                 right = mid - 1
             else:
                 left = mid + 1
-        return left if self.entities[left].end1.x < entity.end1.x else (left - 1)      
+        return (
+            left if self.entities[left].end1.x < entity.end1.x else (left - 1)
+        )
 
-    def _find_next(
-        self,
-        entity: Type[LineSegment]
-        ) -> int:
+    def _find_next(self, entity: Type[LineSegment]) -> int:
         """finds the LineSegment instance in the self.entities array
         which is the first element to have an x coordinate of its
         second end bigger than the one for the given entity
@@ -1437,7 +1476,7 @@ class LineInterval(object):
             int: the index of the next instance in the self.entities
                 array
         """
-        
+
         if len(self.entities) == 0:
             return -1
         left = 0
@@ -1448,24 +1487,28 @@ class LineInterval(object):
                 right = mid - 1
             else:
                 left = mid - 1
-        return right if self.entities[right].end2.x > entity.end2.x else (right + 1)
-    
+        return (
+            right
+            if self.entities[right].end2.x > entity.end2.x
+            else (right + 1)
+        )
+
     def __add__(self, other: "LineInterval") -> "LineInterval":
         """adding the given LineInterval instance to the current one
 
         Returns:
             Type[LineInterval]: the current LineInterval instance after
                 the given being added to it
-        
+
         Raises:
             RuntimeError: when the given object to be added does not
                 have the same base line with the current instance
         """
-        
+
         if other.base != self.base:
             raise RuntimeError(
-                'the given LineInterval instances do not have the same base lines'
-                )
+                "the given LineInterval instances do not have the same base lines"
+            )
         for line in other.entities:
             self.add(line)
         return self
@@ -1481,15 +1524,15 @@ class LineInterval(object):
             RuntimeError: when the given object to be subtracted does not
                 have the same base line with the current instance
         """
-        
+
         if other.base != self.base:
             raise RuntimeError(
-                'the given LineInterval instances do not have the same base lines'
-                )
+                "the given LineInterval instances do not have the same base lines"
+            )
         for line in other.entities:
             self.remove(line)
         return self
-    
+
     def __eq__(self, other: Any) -> bool:
         """checking the equality condition between the current
         LineInterval instance and the given object
@@ -1501,7 +1544,7 @@ class LineInterval(object):
         Returns:
             bool: True or False indicating the equality condition
         """
-        
+
         if isinstance(other, LineInterval):
             for line1, line2 in zip(self.entities, other.entities):
                 if line1 != line2:
@@ -1515,67 +1558,71 @@ class LineInterval(object):
         Returns:
             str: the string representation of the current instance
         """
-        
-        res = [[(line.end1.x, line.end1.y), (line.end2.x, line.end2.y)] for line in self.entities]
+
+        res = [
+            [(line.end1.x, line.end1.y), (line.end2.x, line.end2.y)]
+            for line in self.entities
+        ]
         return res.__str__
 
 
 class ArcInterval(object):
     """construct an interval object which is a collection of arcs on a
     same base circle
-    
+
     Methods:
         add: adds the given entity to the interval
         remove: removes the given entity from the interval
-    
+
     also these methods where overridden:
         __repr__, __add__, __sub__, __eq__
     """
-    
-    def __init__(
-        self,
-        base: Type[Circle]
-        ) -> None:
+
+    def __init__(self, base: Type[Circle]) -> None:
         """initialize the Interval instance with the given base entity
 
         Args:
             base (Type[Circle]): the base on which to construct the
                 interval object
         """
-        
+
         self.base = base
         self.entities = []
-    
+
     def add(self, *entities: Type[Arc]) -> None:
         """adding the given Arc to the intervals in the the current
         ArcInterval instance; the entities are ordered according to
         their angle on the base circle
-        
+
         Raises:
             RuntimeError: when the given entity is not located
                 completely on the base circle
         """
-        
+
         for entity in entities:
             cond1 = bool(operations.intersection(entity.end1, self.base))
             cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
-                raise RuntimeError('the given entity is not located on the base line')
+                raise RuntimeError(
+                    "the given entity is not located on the base line"
+                )
             if len(self.entities) == 0:
                 self.entities.append(entity)
                 continue
             prev = self._find_prev(entity)
-            nex  = self._find_next(entity)
+            nex = self._find_next(entity)
             if nex > len(self.entities) - 1:
-                self.entities = self.entities[:prev + 1]
+                self.entities = self.entities[: prev + 1]
             else:
-                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+                self.entities = self.entities[: prev + 1] + self.entities[nex:]
             if len(self.entities) == 0:
                 self.entities.append(entity)
                 continue
             if prev == -1:
                 nex = prev + 1
-                if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                if self.base.get_angle(entity.end2) > self.base.get_angle(
+                    self.entities[nex].end1
+                ):
                     line1 = entity
                     line2 = self.entities.pop(nex)
                 else:
@@ -1585,15 +1632,21 @@ class ArcInterval(object):
             else:
                 if prev < len(self.entities) - 1:
                     nex = prev + 1
-                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
-                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(
+                        self.entities[prev].end2
+                    ):
+                        if self.base.get_angle(
+                            entity.end2
+                        ) > self.base.get_angle(self.entities[nex].end1):
                             line1 = self.entities.pop(prev)
                             line2 = self.entities.pop(prev)
                         else:
                             line1 = self.entities.pop(prev)
                             line2 = entity
                     else:
-                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                        if self.base.get_angle(
+                            entity.end2
+                        ) > self.base.get_angle(self.entities[nex].end1):
                             line1 = entity
                             line2 = self.entities.pop(nex)
                         else:
@@ -1601,7 +1654,9 @@ class ArcInterval(object):
                             line2 = entity
                         prev += 1
                 else:
-                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(
+                        self.entities[prev].end2
+                    ):
                         line1 = self.entities.pop(prev)
                         line2 = entity
                     else:
@@ -1610,12 +1665,12 @@ class ArcInterval(object):
                         prev += 1
             new = LineSegment(line1.end1, line2.end2)
             self.entities.insert(prev, new)
-    
+
     def remove(self, *entities: Type[LineSegment]) -> None:
         """removing the the coordinates that overlap with the given
         Arc entity from the current ArcInterval instance's entities
         array
-        
+
         Raises:
             RuntimeError: when the given entity is not located
                 completely on the base circle
@@ -1625,20 +1680,24 @@ class ArcInterval(object):
             cond1 = bool(operations.intersection(entity.end1, self.base))
             cond2 = bool(operations.intersection(entity.end2, self.base))
             if not cond1 or not cond2:
-                raise RuntimeError('the given entity is not located on the base line')
+                raise RuntimeError(
+                    "the given entity is not located on the base line"
+                )
             if len(self.entities) == 0:
                 return
             prev = self._find_prev(entity)
-            nex  = self._find_next(entity)
+            nex = self._find_next(entity)
             if nex > len(self.entities) - 1:
-                self.entities = self.entities[:prev + 1]
+                self.entities = self.entities[: prev + 1]
             else:
-                self.entities = self.entities[:prev + 1] + self.entities[nex:]
+                self.entities = self.entities[: prev + 1] + self.entities[nex:]
             if len(self.entities) == 0:
                 return
             if prev == -1:
                 nex = prev + 1
-                if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                if self.base.get_angle(entity.end2) > self.base.get_angle(
+                    self.entities[nex].end1
+                ):
                     line2 = self.entities.pop(nex)
                     new = LineSegment(entity.end2, line2.end2)
                     self.entities.insert(0, new)
@@ -1647,8 +1706,12 @@ class ArcInterval(object):
             else:
                 if prev < len(self.entities) - 1:
                     nex = prev + 1
-                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
-                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(
+                        self.entities[prev].end2
+                    ):
+                        if self.base.get_angle(
+                            entity.end2
+                        ) > self.base.get_angle(self.entities[nex].end1):
                             line1 = self.entities.pop(prev)
                             line2 = self.entities.pop(prev)
                             new1 = LineSegment(line1.end1, entity.end1)
@@ -1660,20 +1723,24 @@ class ArcInterval(object):
                             new = LineSegment(line1.end1, entity.end1)
                             self.entities.insert(prev, new)
                     else:
-                        if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[nex].end1):
+                        if self.base.get_angle(
+                            entity.end2
+                        ) > self.base.get_angle(self.entities[nex].end1):
                             line2 = self.entities.pop(nex)
                             new = LineSegment(entity.end2, line2.end2)
                             self.entities.insert(nex, new)
                         else:
                             continue
                 else:
-                    if self.base.get_angle(entity.end1) < self.base.get_angle(self.entities[prev].end2):
+                    if self.base.get_angle(entity.end1) < self.base.get_angle(
+                        self.entities[prev].end2
+                    ):
                         line1 = self.entities.pop(prev)
                         new = LineSegment(line1.end1, entity.end1)
                         self.entities.insert(prev, new)
                     else:
                         continue
-    
+
     def _find_prev(self, entity: Type[Arc]) -> int:
         """finds the Arc instance in the self.entities array which is
         the first element to have an angle on the base circle bigger
@@ -1687,21 +1754,25 @@ class ArcInterval(object):
             int: the index of the next instance in the self.entities
                 array
         """
-        
+
         if len(self.entities) == 0:
             return -1
         left = 0
         right = len(self.entities) - 1
         while left < right:
             mid = (left + right) // 2
-            if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[mid].end2):
+            if self.base.get_angle(entity.end2) > self.base.get_angle(
+                self.entities[mid].end2
+            ):
                 right = mid - 1
             else:
                 left = mid - 1
-        if self.base.get_angle(self.entities[right].end2) > self.base.get_angle(entity.end2):
-            return right 
-        return (right + 1)
-    
+        if self.base.get_angle(
+            self.entities[right].end2
+        ) > self.base.get_angle(entity.end2):
+            return right
+        return right + 1
+
     def find_next(self, entity: Type[Arc]) -> int:
         """finds the Arc instance in the self.entities array which is
         the first element to have an angle if its second end on the
@@ -1715,21 +1786,25 @@ class ArcInterval(object):
             int: the index of the next instance in the self.entities
                 array
         """
-        
+
         if len(self.entities) == 0:
             return -1
         left = 0
         right = len(self.entities) - 1
         while left < right:
             mid = (left + right) // 2
-            if self.base.get_angle(entity.end2) > self.base.get_angle(self.entities[mid].end2):
+            if self.base.get_angle(entity.end2) > self.base.get_angle(
+                self.entities[mid].end2
+            ):
                 right = mid - 1
             else:
                 left = mid - 1
-        if self.base.get_angle(self.entities[right].end2) > self.base.get_angle(entity.end2):
-            return right 
-        return (right + 1)
-    
+        if self.base.get_angle(
+            self.entities[right].end2
+        ) > self.base.get_angle(entity.end2):
+            return right
+        return right + 1
+
     def __eq__(self, other: Any) -> bool:
         """checking the equality condition between the current
         ArcInterval instance and the given object
@@ -1741,34 +1816,34 @@ class ArcInterval(object):
         Returns:
             bool: True or False indicating the equality condition
         """
-        
+
         if isinstance(other, ArcInterval):
             for arc1, arc2 in zip(self.entities, other.entities):
                 if arc1 != arc2:
                     return False
             return True
         return False
-    
+
     def __add__(self, other: "ArcInterval") -> "ArcInterval":
         """adding the given ArcInterval instance to the current one
 
         Returns:
             Type[ArcInterval]: the current ArcInterval instance after
                 the given being added to it
-        
+
         Raises:
             RuntimeError: when the given object to be added does not
                 have the same base circlee with the current instance
         """
-        
+
         if other.base != self.base:
             raise RuntimeError(
-                'the given LineInterval instances do not have the same base lines'
-                )
+                "the given LineInterval instances do not have the same base lines"
+            )
         for arc in other.entities:
             self.add(arc)
         return self
-    
+
     def __sub__(self, other: "ArcInterval") -> "ArcInterval":
         """removing the given ArcInterval instance from the current one
 
@@ -1779,21 +1854,24 @@ class ArcInterval(object):
             RuntimeError: when the given object to be subtracted does not
                 have the same base line with the current instance
         """
-        
+
         if other.base != self.base:
             raise RuntimeError(
-                'the given LineInterval instances do not have the same base lines'
-                )
+                "the given LineInterval instances do not have the same base lines"
+            )
         for arc in other.entities:
             self.remove(arc)
         return self
-    
+
     def __repr__(self) -> str:
         """the string representation of the ArcInterval object
 
         Returns:
             str: the string representation of the current instance
         """
-        
-        res = [(self.base.get_angle(arc.end1), self.base.get_angle(arc.end2)) for arc in self.entities]
+
+        res = [
+            (self.base.get_angle(arc.end1), self.base.get_angle(arc.end2))
+            for arc in self.entities
+        ]
         return res.__str__
