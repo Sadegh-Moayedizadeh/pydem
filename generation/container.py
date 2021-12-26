@@ -76,12 +76,12 @@ class Container(object):
         293  # in Kelvin; According to M.Khabazian and A.Mirghasemi, 2018
     )
     gravitational_acceleration = 9.81
-    clay_clay_contact_stiffness = 0
-    sand_clay_contact_stiffness = 0
-    sand_sand_contact_stiffness = 0
-    sand_wall_contact_stiffness = 0
-    clay_wall_contact_stiffness = 0
-    strain_rate = 0
+    clay_clay_contact_stiffness = 1
+    sand_clay_contact_stiffness = 1
+    sand_sand_contact_stiffness = 1
+    sand_wall_contact_stiffness = 1
+    clay_wall_contact_stiffness = 1
+    strain_rate = 1
 
     def __init__(
         self,
@@ -978,7 +978,7 @@ class Container(object):
                     * (np.sin(theta))
                     * (self.sand_clay_contact_stiffness)
                 )
-                m = (fn) * (particle2.shape.radius)
+                m = (fn) * (particle.shape.radius)
                 fx = delta * np.cos(gama)
                 fy = delta * np.sin(gama)
                 forces = [forces[0] + fx, forces[1] + fy, forces[2] + m]
