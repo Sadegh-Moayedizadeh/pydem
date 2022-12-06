@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC, abstractproperty, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from typing import Dict
 
 
