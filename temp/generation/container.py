@@ -21,18 +21,10 @@ from collections import defaultdict
 from typing import Dict, List, Tuple, Type, Union
 
 import numpy as np
+from generation.particles import (Clay, Illite, Kaolinite, Montmorillonite,
+                                  Quartz, Sand, Wall)
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
-
-from generation.particles import (
-    Clay,
-    Illite,
-    Kaolinite,
-    Montmorillonite,
-    Quartz,
-    Sand,
-    Wall,
-)
 
 logging.getLogger().setLevel(logging.INFO)
 

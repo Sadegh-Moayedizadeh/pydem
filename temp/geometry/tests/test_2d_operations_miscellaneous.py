@@ -1,11 +1,12 @@
 """test cases for miscellaneous functions for two dimensional entities
 """
 
-import unittest
-from geometry import two_dimensional_operations as operations
-from geometry import two_dimensional_entities as shapes
-import numpy as np
 import sys
+import unittest
+
+import numpy as np
+from geometry import two_dimensional_entities as shapes
+from geometry import two_dimensional_operations as operations
 
 
 class TestOppositeSides(unittest.TestCase):

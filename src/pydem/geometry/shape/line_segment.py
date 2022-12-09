@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Dict
 
-from pydem.geometry.shape.base_shape import BaseShape
+from pydem.geometry.shape.shape_base import ShapeBase
 from pydem.geometry.value import Radian
 
 
-class LineSegment(BaseShape):
+class LineSegment(ShapeBase):
     def __init__(
         self,
         center_x: float,

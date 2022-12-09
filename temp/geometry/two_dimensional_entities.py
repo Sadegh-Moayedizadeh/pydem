@@ -8,7 +8,6 @@ from itertools import count
 from typing import Any, Optional, Tuple, Type, Union
 
 import numpy as np
-
 from geometry import two_dimensional_operations as operations
 
 

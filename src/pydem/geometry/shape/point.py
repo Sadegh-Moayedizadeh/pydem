@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Dict
 
-from pydem.geometry.shape.base_shape import BaseShape
+from pydem.geometry.shape.shape_base import ShapeBase
 
 
-class Point(BaseShape):
+class Point(ShapeBase):
     def __init__(self, center_x: float, center_y: float) -> None:
         self._center_x = center_x
         self._center_y = center_y

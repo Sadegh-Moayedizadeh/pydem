@@ -1,5 +1,6 @@
+from typing import Dict, List
+
 import matplotlib.pyplot as plt
-from typing import List, Dict
 
 
 def show_plot(data: Dict[List[float]], title: str) -> None:

@@ -1,11 +1,12 @@
 """test cases for 'intersection' function for two dimensional entities
 """
 
-import unittest
 import sys
-from geometry import two_dimensional_operations as operations
-from geometry import two_dimensional_entities as shapes
+import unittest
+
 import numpy as np
+from geometry import two_dimensional_entities as shapes
+from geometry import two_dimensional_operations as operations
 
 
 class TestIntersection(unittest.TestCase):

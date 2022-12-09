@@ -3,9 +3,10 @@ dimentional geometrical entities
 """
 
 import sys
-import numpy as np
 from collections import defaultdict
-from typing import Any, Type, Tuple, Union
+from typing import Any, Tuple, Type, Union
+
+import numpy as np
 from geometry import two_dimensional_entities as shapes
 
 
@@ -2513,6 +2514,8 @@ def distance(
 
 import pickle
 import random
+
+
 def foo():
     di = pickle.load(open("result.p", "rb"))
     for k in di.keys():

@@ -3,13 +3,15 @@ base_classes module
 """
 
 
-from generation import base_classes
+import sys
 import unittest
+from typing import Any, Type, Union
+
 import numpy as np
-from typing import Type, Union, Any
+from generation import base_classes
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
-import sys
+
 # from display import illustraion
 
 

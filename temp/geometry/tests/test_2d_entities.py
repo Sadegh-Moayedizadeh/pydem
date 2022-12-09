@@ -2,10 +2,11 @@
 two_dimensional_entities module from geometry sub-packages
 """
 
+import os
 import sys
 import unittest
+
 import numpy as np
-import os
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
 

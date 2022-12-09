@@ -2,19 +2,20 @@
 """
 
 
-import sys
 import os
+import pathlib
+import sys
+from typing import Any, Dict, List, Set, Tuple, Type, Union
+
+import numpy as np
 import pygame
+from generation.container import Container
+from generation.particles import Clay, Sand
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
-from generation.container import Container
-from generation.particles import Sand, Clay
-import numpy as np
-from typing import Type, Union, Tuple, List, Set, Dict, Any
-import pathlib
-from matplotlib.patches import Rectangle, Circle
 from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.patches import Circle, Rectangle
 
 
 class IllustrationPG(object):

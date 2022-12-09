@@ -1,14 +1,15 @@
 """test cases for all the base classes for particles
 """
 
+import logging
+import sys
 import unittest
+from typing import Any, Type, Union
+
 import numpy as np
-from typing import Type, Union, Any
+from generation import base_classes
 from geometry import two_dimensional_entities as shapes
 from geometry import two_dimensional_operations as operations
-from generation import base_classes
-import sys
-import logging
 
 
 class TestParticle(unittest.TestCase):
