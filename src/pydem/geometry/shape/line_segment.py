@@ -40,7 +40,12 @@ class LineSegment(ShapeBase):
         return 0
 
     def __deepcopy__(self, memo: Dict[int, object]) -> LineSegment:
-        return LineSegment(self._center_x, self._center_y)
+        return LineSegment(
+            self._center_x,
+            self._center_y,
+            self._inclination,
+            self._length
+        )
 
     def __len__(self) -> float:
         return self._length

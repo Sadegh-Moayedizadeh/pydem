@@ -21,3 +21,6 @@ class ShapeBase(ABC):
     def __deepcopy__(self, memo: Dict[int, object]) -> ShapeBase:
         pass
 
+    @abstractmethod
+    def __eq__(self, other: ShapeBase) -> bool:
+        pass
