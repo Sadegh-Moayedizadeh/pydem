@@ -1,5 +1,11 @@
-from abc import ABC
+from abc import ABC, abstractproperty
 
 
 class ParticleBase(ABC):
-    pass
+    @abstractproperty
+    def center_x(self) -> float:
+        pass
+
+    @abstractproperty
+    def center_y(self) -> float:
+        pass
