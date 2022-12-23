@@ -1,5 +1,6 @@
-from typing import Mapping
+from typing import Mapping, Iterable, List
 
+from pydem.particle import ParticleBase
 from pydem.geometry.shape import Rectangle
 
 
@@ -23,7 +24,27 @@ class Mesh:
 
 
 class Cell:
-    pass
+    def __init__(
+        self,
+        id: int,
+        length: float,
+        height: float,
+        lower_left_corner_x: float,
+        lower_left_corner_y: float
+    ) -> None:
+        self._id = id
+        self._particles: List[ParticleBase] = []
+
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @property
+    def particles(self) -> Iterable[ParticleBase]:
+        return self._particles
+
+    def add_particle(self, particle: ParticleBase) -> None:
+        self._particles.append(particle)
 
 
 # # client
