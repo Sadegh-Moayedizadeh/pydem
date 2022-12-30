@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Mapping, Iterable, List, Dict
 from itertools import chain
+from sympy import Polygon
 
 from pydem.particle import ParticleBase
 
@@ -96,6 +97,13 @@ class Cell:
         self._height = height
         self._lower_left_corner_x = lower_left_corner_x
         self._lower_left_corner_y = lower_left_corner_y
+
+        self._shape = Polygon(
+            (lower_left_corner_x, lower_left_corner_y),
+            (lower_left_corner_x + length, lower_left_corner_y),
+            (lower_left_corner_x + length, lower_left_corner_y + height),
+            (lower_left_corner_x, lower_left_corner_y + height)
+        )
 
         self._particles: List[ParticleBase] = []
 
