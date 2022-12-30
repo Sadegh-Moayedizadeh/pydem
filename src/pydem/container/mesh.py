@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Mapping, Iterable, List, Dict
+from itertools import chain
 
 from pydem.particle import ParticleBase
 
@@ -21,6 +22,22 @@ class Mesh:
     @property
     def cells(self) -> Mapping[int, Cell]:
         return self._cells
+
+    def add_particle(self, particle: ParticleBase) -> None:
+        cell = self._find_cell_containing_particle(particle)
+        cell.add_particle(particle)
+
+    def find_candidate_contacting_particles(
+        self,
+        particle: ParticleBase
+    ) -> Iterable[ParticleBase]:
+        main_cell = self._find_cell_containing_particle(particle)
+        adjacent_cells = self._find_adjacent_cells(main_cell)
+        valid_cells = [main_cell] + list(filter(
+            lambda c: particle.intersection(c),
+            adjacent_cells
+        ))
+        return chain.from_iterable(map(lambda c: c.particles, valid_cells))
 
     def _generate_cells(self) -> None:
         cell_length = self._calculate_next_divisor_without_remainder(
@@ -60,6 +77,12 @@ class Mesh:
             divisor += 1
         return number
 
+    def _find_cell_containing_particle(self, particle: ParticleBase) -> Cell:
+        pass
+
+    def _find_adjacent_cells(self, cell: Cell) -> Iterable[Cell]:
+        pass
+
 
 class Cell:
     def __init__(
@@ -91,19 +114,5 @@ class Cell:
     def add_particle(self, particle: ParticleBase) -> None:
         self._particles.append(particle)
 
-
-# # client
-# x = random.uniform(0, length)
-# y = random.uniform(0, height)
-# size = random.uniform(min_size, max_size)
-# new_particel = Particle(x, y, size)
-# cell = mesh.get_cell_containing_coordicates()
-# adjacent_cells = mesh.find_adjacent_cells(cell)
-# cells = adjacent_cells + [cell]
-# if any(
-#         new_particel.intersection(other_particle)
-#         for other_particle in chain.from_iterable(...)):
-#     del new_particel
-# else:
-#     cell.add_particle(new_particel)
-#     count += 1
+    def remove_particle(self, particle: ParticleBase) -> None:
+        self._particles.remove(particle)
