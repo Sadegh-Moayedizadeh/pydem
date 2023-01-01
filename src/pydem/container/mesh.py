@@ -1,6 +1,8 @@
 from __future__ import annotations
-from typing import Mapping, Iterable, List, Dict
+
 from itertools import chain
+from typing import Dict, Iterable, List, Mapping
+
 from sympy import Polygon
 
 from pydem.particle import ParticleBase
