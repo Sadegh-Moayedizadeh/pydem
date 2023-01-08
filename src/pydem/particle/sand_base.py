@@ -1,8 +1,9 @@
+from typing import Iterable, Protocol
+
 from sympy import Circle, intersection
 from sympy.geometry.entity import GeometryEntity
 
 from pydem.particle.particle_base import ParticleBase
-from typing import Protocol, Iterable
 
 
 class GeomericallyShaped(Protocol):
