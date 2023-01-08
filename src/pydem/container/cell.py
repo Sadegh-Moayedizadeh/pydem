@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Iterable
+from typing import Iterable, List
 
 from sympy.geometry import Polygon
 from sympy.geometry.entity import GeometryEntity

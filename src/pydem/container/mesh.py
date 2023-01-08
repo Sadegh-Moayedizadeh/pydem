@@ -3,8 +3,8 @@ from __future__ import annotations
 from itertools import chain
 from typing import Dict, Iterable, Mapping
 
-from pydem.particle import ParticleBase
 from pydem.container.cell import Cell
+from pydem.particle import ParticleBase
 
 
 class Mesh:
