@@ -3,7 +3,8 @@ from __future__ import annotations
 from itertools import chain
 from typing import Dict, Iterable, List, Mapping
 
-from sympy import Polygon
+from sympy.geometry import Polygon
+from sympy.geometry.entity import GeometryEntity
 
 from pydem.particle import ParticleBase
 
@@ -27,17 +28,17 @@ class Mesh:
         return self._cells
 
     def add_particle(self, particle: ParticleBase) -> None:
-        cell = self._find_cell_containing_particle(particle)
+        cell = self._find_cell_containing_particles_center(particle)
         cell.add_particle(particle)
 
     def find_candidate_contacting_particles(
         self,
         particle: ParticleBase
     ) -> Iterable[ParticleBase]:
-        main_cell = self._find_cell_containing_particle(particle)
+        main_cell = self._find_cell_containing_particles_center(particle)
         adjacent_cells = self._find_adjacent_cells(main_cell)
         valid_cells = [main_cell] + list(filter(
-            lambda c: particle.intersection(c),
+            lambda c: bool(particle.intersection(c)),
             adjacent_cells
         ))
         return chain.from_iterable(map(lambda c: c.particles, valid_cells))
@@ -80,11 +81,20 @@ class Mesh:
             divisor += 1
         return number
 
-    def _find_cell_containing_particle(self, particle: ParticleBase) -> Cell:
-        pass
+    def _find_cell_containing_particles_center(
+        self, particle: ParticleBase
+    ) -> Cell:
+        return next(filter(
+            lambda c: c.is_coordinates_inside(
+                particle.center_x, particle.center_y),
+            self._cells
+        ))
 
     def _find_adjacent_cells(self, cell: Cell) -> Iterable[Cell]:
-        pass
+        return filter(
+            lambda other_cell: cell.is_adjacent(other_cell),
+            self._cells
+        )
 
 
 class Cell:
@@ -100,7 +110,7 @@ class Cell:
         self._lower_left_corner_x = lower_left_corner_x
         self._lower_left_corner_y = lower_left_corner_y
 
-        self._shape = Polygon(
+        self._geometrical_shape = Polygon(
             (lower_left_corner_x, lower_left_corner_y),
             (lower_left_corner_x + length, lower_left_corner_y),
             (lower_left_corner_x + length, lower_left_corner_y + height),
@@ -118,6 +128,10 @@ class Cell:
         return self._height
 
     @property
+    def geometrical_shape(self) -> GeometryEntity:
+        return self._geometrical_shape
+
+    @property
     def particles(self) -> Iterable[ParticleBase]:
         return self._particles
 
@@ -126,3 +140,52 @@ class Cell:
 
     def remove_particle(self, particle: ParticleBase) -> None:
         self._particles.remove(particle)
+
+    def is_coordinates_inside(
+        self, x_coordinate: float, y_coordinate: float
+    ) -> bool:
+        return x_coordinate >= self._lower_left_corner_x \
+            and x_coordinate <= self._lower_left_corner_x + self._length \
+            and y_coordinate >= self._lower_left_corner_y \
+            and y_coordinate <= self._lower_left_corner_y + self._height
+
+    def is_adjacent(self, other: Cell) -> bool:
+        return (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x + other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y
+        ) or (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x + other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y + other._height
+        ) or (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x + other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y - other._height
+        ) or (
+            self._lower_left_corner_x == other._lower_left_corner_x
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y + other._height
+        ) or (
+            self._lower_left_corner_x == other._lower_left_corner_x
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y - other._height
+        ) or (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x - other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y - other.height
+        ) or (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x - other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y
+        ) or (
+            self._lower_left_corner_x ==
+            other._lower_left_corner_x - other._length
+            and self._lower_left_corner_y ==
+            other._lower_left_corner_y + other.height
+        )
