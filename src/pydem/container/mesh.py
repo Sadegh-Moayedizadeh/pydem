@@ -25,9 +25,10 @@ class Mesh:
     def cells(self) -> Iterable[Cell]:
         return self._cells
 
-    def add_particle(self, particle: ParticleBase) -> None:
-        cell = self._find_cell_containing_particles_center(particle)
-        cell.add_particle(particle)
+    def add_particles(self, *particles: ParticleBase) -> None:
+        for particle in particles:
+            cell = self._find_cell_containing_particles_center(particle)
+            cell.add_particle(particle)
 
     def find_candidate_contacting_particles(
         self,
@@ -39,7 +40,10 @@ class Mesh:
             lambda c: bool(particle.intersection(c)),
             adjacent_cells
         ))
-        return chain.from_iterable(map(lambda c: c.particles, valid_cells))
+        return filter(
+            lambda candidate_particle: candidate_particle is not particle,
+            chain.from_iterable(map(lambda c: c.particles, valid_cells))
+        )
 
     def _generate_cells(self) -> None:
         cell_length = self._calculate_next_divisor_without_remainder(
