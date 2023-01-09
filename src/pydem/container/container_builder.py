@@ -20,7 +20,7 @@ class ContainerBuilder:
         self._container_height = container_height
         self._number_of_particels = number_of_particels
 
-    def build_container(self) -> ContainerBase:
+    def build(self) -> ContainerBase:
         mesh = self._generate_mesh()
         particles = self._generate_particles(mesh)
         walls = self._generate_walls()
