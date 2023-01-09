@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from itertools import chain
-from typing import Dict, Iterable, Mapping
+from typing import Iterable, List
 
 from pydem.container.cell import Cell
 from pydem.particle import ParticleBase
@@ -17,12 +17,12 @@ class Mesh:
         self._length = length
         self._height = height
         self._min_cell_size = min_cell_size
-        self._cells: Dict[int, Cell] = {}
+        self._cells: List[Cell] = []
 
         self._generate_cells()
 
     @property
-    def cells(self) -> Mapping[int, Cell]:
+    def cells(self) -> Iterable[Cell]:
         return self._cells
 
     def add_particle(self, particle: ParticleBase) -> None:
@@ -50,7 +50,6 @@ class Mesh:
             self._height,
             self._min_cell_size
         )
-        id = 0
         lower_left_corner_x, lower_left_corner_y = 0, 0
         while lower_left_corner_x < self._length:
             while lower_left_corner_y < self._height:
@@ -60,9 +59,8 @@ class Mesh:
                     lower_left_corner_x,
                     lower_left_corner_y
                 )
-                self._cells[id] = cell
+                self._cells.append(cell)
                 lower_left_corner_y += cell_height
-                id += 1
             lower_left_corner_x += cell_length
             lower_left_corner_y = 0
 
