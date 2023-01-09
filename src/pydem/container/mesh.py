@@ -45,6 +45,10 @@ class Mesh:
             chain.from_iterable(map(lambda c: c.particles, valid_cells))
         )
 
+    def refresh(self) -> None:
+        # TODO: implement this method to refresh particles in cells
+        pass
+
     def _generate_cells(self) -> None:
         cell_length = self._calculate_next_divisor_without_remainder(
             self._length,
