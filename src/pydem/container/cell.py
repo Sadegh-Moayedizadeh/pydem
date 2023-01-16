@@ -5,10 +5,11 @@ from typing import Iterable, List
 from sympy.geometry import Polygon
 from sympy.geometry.entity import GeometryEntity
 
+from pydem.geometry import Geometric
 from pydem.particle import ParticleBase
 
 
-class Cell:
+class Cell(Geometric):
     def __init__(
         self,
         length: int,

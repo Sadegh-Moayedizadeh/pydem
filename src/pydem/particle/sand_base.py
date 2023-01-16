@@ -1,17 +1,11 @@
-from typing import Iterable, Protocol
-
-from sympy import Circle, intersection
+from sympy import Circle
 from sympy.geometry.entity import GeometryEntity
 
+from pydem.geometry import Geometric
 from pydem.particle.particle_base import ParticleBase
 
 
-class GeomericallyShaped(Protocol):
-    @property
-    def geometrical_shape(self) -> GeometryEntity: ...
-
-
-class SandBase(ParticleBase):
+class SandBase(ParticleBase, Geometric):
     def __init__(self, center_x: float, center_y: float, size: float) -> None:
         self._center_x = center_x
         self._center_y = center_y
@@ -39,8 +33,3 @@ class SandBase(ParticleBase):
         self._center_y += delta_y
         self._geometrical_shape = Circle(
             (self._center_x, self._center_y), self._radius)
-
-    def intersection(
-        self, other: GeomericallyShaped
-    ) -> Iterable[GeometryEntity]:
-        return intersection(self._geometrical_shape, other.geometrical_shape)
