@@ -1,11 +1,10 @@
 from sympy import Circle
 from sympy.geometry.entity import GeometryEntity
 
-from pydem.geometry import Geometric
 from pydem.particle.particle_base import ParticleBase
 
 
-class SandBase(ParticleBase, Geometric):
+class SandBase(ParticleBase):
     def __init__(self, center_x: float, center_y: float, size: float) -> None:
         self._center_x = center_x
         self._center_y = center_y

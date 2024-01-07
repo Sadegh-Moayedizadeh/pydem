@@ -14,3 +14,6 @@ class Geometric(ABC):
 
     def intersection(self, other: Geometric) -> Iterable[GeometryEntity]:
         return intersection(self.geometrical_shape, other.geometrical_shape)
+
+    def has_intersection_with(self, other: Geometric) -> bool:
+        return bool(self.intersection(other))
