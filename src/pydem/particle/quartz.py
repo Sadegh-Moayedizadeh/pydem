@@ -1,5 +1,5 @@
-from pydem.particle.sand_base import SandBase
+from pydem.particle.sand import Sand
 
 
-class Quartz(SandBase):
+class Quartz(Sand):
     pass
