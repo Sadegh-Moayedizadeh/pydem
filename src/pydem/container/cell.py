@@ -6,7 +6,7 @@ from sympy.geometry import Polygon
 from sympy.geometry.entity import GeometryEntity
 
 from pydem.geometry import Geometric
-from pydem.particle import ParticleBase
+from pydem.particle import Particle
 
 
 class Cell(Geometric):
@@ -29,7 +29,7 @@ class Cell(Geometric):
             (lower_left_corner_x, lower_left_corner_y + height)
         )
 
-        self._particles: List[ParticleBase] = []
+        self._particles: List[Particle] = []
 
     @property
     def length(self) -> int:
@@ -44,13 +44,13 @@ class Cell(Geometric):
         return self._geometrical_shape
 
     @property
-    def particles(self) -> Iterable[ParticleBase]:
+    def particles(self) -> Iterable[Particle]:
         return self._particles
 
-    def add_particle(self, particle: ParticleBase) -> None:
+    def add_particle(self, particle: Particle) -> None:
         self._particles.append(particle)
 
-    def remove_particle(self, particle: ParticleBase) -> None:
+    def remove_particle(self, particle: Particle) -> None:
         self._particles.remove(particle)
 
     def is_coordinates_inside(

@@ -1,5 +1,5 @@
-from pydem.particle.particle_base import ParticleBase
+from pydem.particle.particle import Particle
 
 
-class Wall(ParticleBase):
+class Wall(Particle):
     pass

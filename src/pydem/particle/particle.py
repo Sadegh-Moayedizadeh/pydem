@@ -2,7 +2,7 @@ from abc import ABC, abstractproperty, abstractmethod
 from pydem.geometry import Geometric
 
 
-class ParticleBase(ABC, Geometric):
+class Particle(ABC, Geometric):
     @abstractmethod
     def __init__(self, center_x: float, center_y: float, size: float) -> None:
         pass

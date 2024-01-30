@@ -4,7 +4,7 @@ from itertools import chain
 from typing import Iterable, List
 
 from pydem.container.cell import Cell
-from pydem.particle import ParticleBase
+from pydem.particle import Particle
 
 
 class Mesh:
@@ -25,15 +25,15 @@ class Mesh:
     def cells(self) -> Iterable[Cell]:
         return self._cells
 
-    def add_particles(self, *particles: ParticleBase) -> None:
+    def add_particles(self, *particles: Particle) -> None:
         for particle in particles:
             cell = self._find_cell_containing_particles_center(particle)
             cell.add_particle(particle)
 
     def find_candidate_contacting_particles(
         self,
-        particle: ParticleBase
-    ) -> Iterable[ParticleBase]:
+        particle: Particle
+    ) -> Iterable[Particle]:
         main_cell = self._find_cell_containing_particles_center(particle)
         adjacent_cells = self._find_adjacent_cells(main_cell)
         valid_cells = [main_cell] + list(filter(
@@ -86,7 +86,7 @@ class Mesh:
         return number
 
     def _find_cell_containing_particles_center(
-        self, particle: ParticleBase
+        self, particle: Particle
     ) -> Cell:
         return next(filter(
             lambda c: c.is_coordinates_inside(

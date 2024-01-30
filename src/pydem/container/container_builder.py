@@ -2,7 +2,7 @@ from typing import Iterable, Type
 
 from pydem.container.container_base import ContainerBase
 from pydem.container.mesh import Mesh
-from pydem.particle import ParticleBase, Wall
+from pydem.particle import Particle, Wall
 
 import random
 
@@ -11,7 +11,7 @@ class ContainerBuilder:
     def __init__(
         self,
         container_class: Type[ContainerBase],
-        particle_class: Type[ParticleBase],
+        particle_class: Type[Particle],
         container_length: float,
         container_height: float,
         number_of_particels: int,
@@ -32,7 +32,7 @@ class ContainerBuilder:
         walls = self._generate_walls()
         return self._container_class(mesh, particles, walls)
 
-    def _generate_particles(self, mesh: Mesh) -> Iterable[ParticleBase]:
+    def _generate_particles(self, mesh: Mesh) -> Iterable[Particle]:
         result = []
 
         number_of_generated_particles = 0
